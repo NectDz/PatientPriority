@@ -15,6 +15,14 @@ function Navbar() {
               </Text>
             </Link>
             <Link
+              href="#team"
+              _hover={{ textDecoration: "none", color: "teal.500" }}
+            >
+              <Text fontSize="lg" fontWeight="bold">
+                Team
+              </Text>
+            </Link>
+            <Link
               href="#contact"
               _hover={{ textDecoration: "none", color: "teal.500" }}
             >
