@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import * as React from "react";
 
+import { ChakraProvider } from "@chakra-ui/react";
+import Home from "./pages/Home/Home";
 
-import Home from './pages/Home/home'
 function App() {
-
-  return <Home />;
+  return (
+    <ChakraProvider>
+      <Home />
+    </ChakraProvider>
+  );
 }
 
-export default App
+export default App;
