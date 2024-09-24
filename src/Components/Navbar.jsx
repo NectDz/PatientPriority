@@ -4,14 +4,14 @@ function Navbar() {
   return (
     <ChakraProvider>
       <Box position="fixed" top="0" width="100%" zIndex="100" bg="transparent">
-        <Flex as="nav" justify="left" py={4} px={8} backdropFilter="blur(10px)">
+        <Flex as="nav" justify="left" py={4} px={8}>
           <Stack direction="row" spacing={8} align="center">
             <Link
-              href="#about"
+              href="/"
               _hover={{ textDecoration: "none", color: "teal.500" }}
             >
               <Text fontSize="lg" fontWeight="bold">
-                About
+                PatientPriority
               </Text>
             </Link>
             <Link
@@ -20,14 +20,6 @@ function Navbar() {
             >
               <Text fontSize="lg" fontWeight="bold">
                 Team
-              </Text>
-            </Link>
-            <Link
-              href="#contact"
-              _hover={{ textDecoration: "none", color: "teal.500" }}
-            >
-              <Text fontSize="lg" fontWeight="bold">
-                Contact
               </Text>
             </Link>
           </Stack>
