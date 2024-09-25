@@ -7,7 +7,7 @@ const Home = () => {
 
   const handleDoctorLogin = () => { navigate('/doctorSignIn'); };
 
-  const handlePatientLogin = () => { navigate('/patient-login'); };
+  const handlePatientLogin = () => { navigate('/patientSignIn'); };
 
   return (
     <ChakraProvider>
@@ -31,7 +31,25 @@ const Home = () => {
         
         <Box display="flex" gap="4">
           
-          
+          <Button
+            colorScheme="teal"
+            onClick={handleDoctorLogin}
+            bg="#0B2545"
+            color="#EEF4ED"
+            _hover={{ bg: "#8DA9C4" }}
+          >
+            Sign in as Doctor
+          </Button>
+
+          <Button
+            colorScheme="teal"
+            onClick={handlePatientLogin}
+            bg="#0B2545"
+            color="#EEF4ED"
+            _hover={{ bg: "#8DA9C4" }}
+          >
+            Sign in as Patient
+          </Button>
 
         </Box>
         
