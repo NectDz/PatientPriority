@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChakraProvider, Box, Heading, Text, Button } from "@chakra-ui/react";
+import { ChakraProvider, Box, Heading, Text, Button, Link } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -7,7 +7,9 @@ const Home = () => {
 
   const handleDoctorLogin = () => { navigate('/doctorSignIn'); };
 
-  const handlePatientLogin = () => { navigate('/patientSignIn'); };
+  const handlePatientLogin = () => { navigate('/patientSignIn'); }; //buttons
+
+  const handleCreateAccount = () => { navigate('/signUp'); }; //triggered when user clicks first time here link
 
   return (
     <ChakraProvider>
@@ -29,8 +31,7 @@ const Home = () => {
           Helping patients and doctors stay connected, informed, and proactive.
         </Text>
         
-        <Box display="flex" gap="4">
-          
+        <Box display="flex" gap="4" mb="4">
           <Button
             colorScheme="teal"
             onClick={handleDoctorLogin}
@@ -50,8 +51,17 @@ const Home = () => {
           >
             Sign in as Patient
           </Button>
-
         </Box>
+
+        <Text
+          fontSize="xl"
+          color="navy"
+          cursor="pointer"
+          textDecoration="underline"
+          onClick={handleCreateAccount}
+        >
+          First time? Create an account!
+        </Text>
         
       </Box>
     </ChakraProvider>
