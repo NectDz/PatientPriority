@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, IconButton, VStack, Text, HStack } from "@chakra-ui/react";
+import { Box, IconButton, VStack, Text, HStack, Link } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { HamburgerIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons"; // Import Chakra UI icons
 
@@ -19,12 +19,14 @@ const SidePanel = () => {
       color="white"
       display="flex"
       flexDirection="column"
-      alignItems={isMaximized ? "flex-start" : "center"}
-      transition="width 0.4s ease"
-      pt="100px"
-      position="relative" // Allow absolute positioning of the button
+      alignItems="flex-start"
+      paddingLeft="17px"
+      transition="width 0.5s ease"
+      position="fixed"
+      onMouseEnter={toggleMaximize}
+      onMouseLeave={toggleMaximize}
     >
-      <IconButton
+      {/* <IconButton
         aria-label="Toggle maximize"
         icon={isMaximized ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         onClick={toggleMaximize}
@@ -37,9 +39,11 @@ const SidePanel = () => {
         left={isMaximized ? "140px" : "10px"} // Move to the right when maximized
         transition="left 0.4s ease" // Smooth transition for the button
         marginTop="40px"
-      />
+      /> */}
 
-      <VStack spacing={4} align="start"> {/* Align to the start when maximized */}
+      <VStack pt="60px" spacing={4} align="start">
+        {" "}
+        {/* Align to the start when maximized */}
         <HStack spacing={2}>
           <IconButton
             icon={<HamburgerIcon />}
@@ -47,9 +51,8 @@ const SidePanel = () => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {isMaximized && <Text>Menu</Text>}
+          {isMaximized && <Link>Profile</Link>}
         </HStack>
-
         <HStack spacing={2}>
           <IconButton
             icon={<InfoIcon />}
@@ -57,9 +60,8 @@ const SidePanel = () => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {isMaximized && <Text>Profile</Text>}
+          {isMaximized && <Link>Overview</Link>}
         </HStack>
-
         <HStack spacing={2}>
           <IconButton
             icon={<SettingsIcon />}
@@ -67,7 +69,7 @@ const SidePanel = () => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {isMaximized && <Text>Settings</Text>}
+          {isMaximized && <Link>Doctors</Link>}
         </HStack>
       </VStack>
     </Box>

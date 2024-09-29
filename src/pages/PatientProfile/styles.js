@@ -12,8 +12,9 @@ const styles = {
     minW: "fit-content",
     p: 8,
     pt: "60px",
+    marginLeft: "70px",
+    flexGrow: 1,
   },
-
 };
 
 export default styles;
