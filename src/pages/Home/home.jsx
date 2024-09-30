@@ -112,7 +112,26 @@ const Home = () => {
           <Button bg="#5AACA8" color="white" size="lg">Submit</Button>
         </Box>
 
-        
+        <Box
+          position="absolute"
+          top="0"
+          left={visibleForm === 'patient' ? '0' : '100%'} //slide itno view from left (patient)
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100%"
+          backgroundColor="#EFF8F8"
+          p={8}
+          transition="left 0.5s ease-in-out"
+        >
+          <Heading fontSize="4xl" color="#252B42" mb="4">Patient Login</Heading>
+          <Input placeholder="Username" mb="4" />
+          <Input placeholder="Password" mb="4" />
+          <Input placeholder="Re-enter Password" mb="4" />
+          <Button bg="#5AACA8" color="white" size="lg">Submit</Button>
+        </Box>
       </Box>
     </ChakraProvider>
   );
