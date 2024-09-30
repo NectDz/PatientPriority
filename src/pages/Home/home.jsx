@@ -1,63 +1,62 @@
-import React from 'react';
-import { ChakraProvider, Box, Heading, Text, Button, Link, Image } from "@chakra-ui/react";
+import React, { useState } from 'react'; //new import
+import { ChakraProvider, Box, Heading, Text, Button, Input, Image } from "@chakra-ui/react"; //input for form
 import { useNavigate } from 'react-router-dom';
-import pulseHeart from "../../assets/pulse-heart.png"; // Adjust the path if necessary
+import pulseHeart from "../../assets/pulse-heart.png"; 
 
 const Home = () => {
-  const navigate = useNavigate(); // from react router, use to redirect to pages
+  const navigate = useNavigate(); 
 
-  const handleDoctorLogin = () => { navigate('/doctorSignIn'); };
+  const [visibleForm, setVisibleForm] = useState(null); // managing state for which form is currently visible, default to null (other states are 'doctor or patient')
 
-  const handlePatientLogin = () => { navigate('/patientSignIn'); }; // buttons
-
-  const handleCreateAccount = () => { navigate('/signUp'); }; // triggered when user clicks first time here link
+  const handleDoctorLogin = () => { setVisibleForm('doctor'); };
+  const handlePatientLogin = () => { setVisibleForm('patient'); };
+  const handleCreateAccount = () => { navigate('/signUp'); }; //tbd
 
   return (
     <ChakraProvider>
+
       <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
+        position="relative"
+        height="100vh" //need to keep these at a 100 for full view
         width="100vw"
         backgroundColor="#EEF4ED"
+        overflow="hidden"
       >
-        <Box
-          display="flex"
-          flexDirection="row" 
-          justifyContent="center"
-          alignItems="center"
-          height="100%" 
-          width="100%" 
-          backgroundColor="#EFF8F8" // diff background color for the welcome text and the heart
-          p={8} // spacing
-          borderRadius="md"
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="flex-start"
-            width="60%"
-            mx={4} // Add horizontal margin
-          >
-            <Heading fontSize="8xl" as="h1" size="2xl" color="#252B42" mb="4" textAlign="left"> 
-              A Place Where Care meets Clarity...
-            </Heading>
 
-            <Text fontSize="4xl" color="#737373" mb="10" textAlign="left"> 
+        <Box
+          position="absolute"
+          top="0"
+          left={visibleForm === 'doctor' ? '100%' : visibleForm === 'patient' ? '-100%' : '0'} //when visible form is doctor, its 100 aka slide right. vice versa for patient, 0 if null (default)
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between" 
+          alignItems="center" //vertically center
+          width="100%"
+          height="100%"
+          backgroundColor="#EFF8F8"
+          p={8}
+          transition="left 0.5s ease-in-out" //slide transition
+        >
+          
+          <Box display="flex" flexDirection="column">
+            <Heading fontSize="8xl" color="#252B42" mb="0">
+              A Place Where Care
+            </Heading>
+            <Heading fontSize="8xl" color="#252B42">
+              Meets Clarity...
+            </Heading>
+            <Text fontSize="4xl" color="#737373" mt="4">
               Helping doctors and patients stay informed and proactive.
             </Text>
-            
-            <Box display="flex" gap="4" mb="4">
+
+            <Box display="flex" gap="4" mt="8">
               <Button
                 colorScheme="teal"
                 onClick={handleDoctorLogin}
-                bg="#5AACA8" 
-                color="white" 
-                size="lg" 
-                _hover={{ bg: "#4D9A94" }}
+                bg="#5AACA8"
+                color="white"
+                size="lg"
+                _hover={{ bg: "#4D9A94" }} //not visible if not hovering?
                 borderColor="#EFF8F8"
                 borderWidth="2px"
               >
@@ -67,24 +66,18 @@ const Home = () => {
               <Button
                 colorScheme="teal"
                 onClick={handlePatientLogin}
-                bg="#EFF8F8" 
-                color="#5AACA8" 
-                size="lg" 
-                _hover={{ bg: "#D9E7E7" }} 
-                borderColor="#00000"
+                bg="#EFF8F8"
+                color="#5AACA8"
+                size="lg"
+                _hover={{ bg: "#D9E7E7" }}
+                borderColor="#EFF8F8"
                 borderWidth="2px"
               >
                 Login as Patient
               </Button>
             </Box>
 
-            <Text
-              fontSize="2xl"
-              color="#5AACA8"
-              cursor="pointer"
-              textDecoration="underline"
-              onClick={handleCreateAccount}
-            >
+            <Text fontSize="2xl" color="#5AACA8" cursor="pointer" textDecoration="underline" mt="4" onClick={handleCreateAccount}>
               Don’t have an account? Click here to sign up!
             </Text>
           </Box>
@@ -92,15 +85,37 @@ const Home = () => {
           <Image
             src={pulseHeart}
             alt="Pulse Heart"
-            boxSize="800px" // heart size
+            boxSize="800px"
             objectFit="contain"
-            mx={4} // Add horizontal margin to balance space from the edge
-            ml="auto" // push image to the right
+            mr="0" //push image to the right
           />
         </Box>
+
+        <Box
+          position="absolute"
+          top="0"
+          left={visibleForm === 'doctor' ? '0' : '-100%'} //slide itno view from right (doctor)
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100%"
+          backgroundColor="#EFF8F8"
+          p={8}
+          transition="left 0.5s ease-in-out" 
+        >
+          <Heading fontSize="4xl" color="#252B42" mb="4">Doctor Login</Heading>
+          <Input placeholder="First Name" mb="4" />
+          <Input placeholder="Last Name" mb="4" />
+          <Input placeholder="Credential" mb="4" />
+          <Button bg="#5AACA8" color="white" size="lg">Submit</Button>
+        </Box>
+
+        
       </Box>
     </ChakraProvider>
   );
-}
+};
 
 export default Home;
