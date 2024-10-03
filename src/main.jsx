@@ -7,6 +7,7 @@ import Team from "./pages/Team/Team";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Layout from "./routes/Layout";
+import AudioTest from "./pages/AudioTest/AudioTest.jsx";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
@@ -19,6 +20,7 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/" element={<App />}></Route>
               <Route path="/team" element={<Team />}></Route>
               <Route path="login" element={<Login />} />
+              <Route path="audio-test" element={<AudioTest />} />
             </Routes>
           </BrowserRouter>
         </Layout>
