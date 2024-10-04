@@ -8,10 +8,22 @@ const Home = () => {
 
   const [visibleForm, setVisibleForm] = useState(null); // managing state for which form is currently visible, default to null (other states are 'doctor or patient')
 
+  const [isAuthenticating, setIsAuthenticating] = useState(false); // new state for authenticating screen -- prolly delete after database check is done?
+
   const handleDoctorLogin = () => { setVisibleForm('doctor'); }; //handlers to show form
   const handlePatientLogin = () => { setVisibleForm('patient'); };
   const handleCreateAccount = () => { navigate('/signUp'); }; //tbd, rn it just routes
   const handleBack = () => { setVisibleForm(null); }; //to go back to homepage from form
+  const handleSubmit = (formType) => {
+    setIsAuthenticating(true); //show authenticating screen
+    setTimeout(() => {
+      if (formType === 'doctor') {
+        navigate('/doctorLogin'); //navigate to doctor login
+      } else {
+        navigate('/patientLogin'); 
+      }
+    }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
+  };
 
   return (
     <ChakraProvider>
@@ -23,6 +35,23 @@ const Home = () => {
         backgroundColor="#EEF4ED"
         overflow="hidden"
       >
+
+        {isAuthenticating && (
+          <Box 
+            position="absolute" 
+            top="0" 
+            left="0" 
+            width="100%" 
+            height="100%" 
+            display="flex" 
+            justifyContent="center" 
+            alignItems="center" 
+            backgroundColor="#EFF8F8"
+            zIndex="999"
+          >
+            <Text fontSize="4xl" color="#252B42">Authenticating...</Text>
+          </Box>
+        )}
 
         <Box
           position="absolute"
@@ -122,7 +151,7 @@ const Home = () => {
           
           <Box display="flex" flexDirection="row" gap="4" mt="4">
           
-            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px">
+            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('doctor')}>
               Submit
             </Button>
             
@@ -157,7 +186,7 @@ const Home = () => {
 
           <Box display="flex" flexDirection="row" gap="4" mt="4">
           
-            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px">
+            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('doctor')}>
               Submit
             </Button> 
             
