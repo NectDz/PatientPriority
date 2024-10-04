@@ -23,7 +23,7 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/team" element={<Team />}></Route>
               <Route path="login" element={<Login />} />
               <Route path="/doctorLogin" element={<DoctorLogin />} />
-              <Route path="/patientLogin" element={<DoctorLogin />} />
+              <Route path="/patientLogin" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
             </Routes>
           </BrowserRouter>
