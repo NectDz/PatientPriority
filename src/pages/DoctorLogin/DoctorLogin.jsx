@@ -9,7 +9,7 @@ const DoctorLogin = () => {
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate("/");
+      navigate("/audio-test"); //goes to upload audio after successful sign on!!
     } catch (error) {
       console.error(error);
     }

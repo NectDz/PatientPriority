@@ -19,12 +19,12 @@ const Home = () => {
     setTimeout(() => {
       if (formType === 'doctor') 
         {
-        navigate('/Login'); //change to navigate('/doctorLogin') when routing is fixed, currently it's just a blank screen (10/4)
+        navigate('/doctorLogin');
       } 
 
       else if (formType === 'patient') 
       {
-        navigate('/Login'); //change to navigate('/patientLogin') when routing is fixed, currently it's just a blank screen (10/4)
+        navigate('/patientLogin');
       }
 
     }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
