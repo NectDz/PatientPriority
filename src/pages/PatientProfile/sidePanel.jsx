@@ -1,19 +1,32 @@
-import React, { useState } from "react";
-import { Box, IconButton, VStack, Text, HStack, Link } from "@chakra-ui/react";
-import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
-import { HamburgerIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons"; // Import Chakra UI icons
+import React, { useState, useEffect } from "react";
+import { Box, IconButton, VStack, HStack, Link } from "@chakra-ui/react";
+import { HamburgerIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons"; // import Chakra UI icons
 
-const SidePanel = () => {
-  const [isMaximized, setIsMaximized] = useState(false);
+const SidePanel = ({ onToggleMaximize }) => { // onToggleMaximize is the prop that the child parent recieved
+  const [isMaximized, setIsMaximized] = useState(false); 
+  // isMaximized is the current local state value
+  // setIsMaximized is the function to update the state value
+  // false is the initial value for isMaximized
 
+
+  // this is a function that calls the setIsMaximized function and passes the value !isMaximized which updates the state of isMaximized
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
   };
 
+  // handles side effects, renders when component mounts, and then continues to render if any value in in dependency array changed from last render
+  useEffect(() => {
+    // code we want to run
+    // calls the onToggleMaximize prop (aka handleToggleMaximize from parent component) when local isMaximized value changes
+    onToggleMaximize(isMaximized); // basically calling -> handleToggleMaximize(isMaximized)
+    // the local isMaximized state becomes the "value" in handleToggleMaximize function
+  }, [isMaximized, onToggleMaximize]); // dependancy array: what the useEffect should listen to, to run the code; 
+                                      // onToggleMaximize isn't really needed bc it's not a value but its best practice to add it
+  
   return (
     <Box
       as="nav"
-      width={isMaximized ? "200px" : "70px"} // Adjust width based on state
+      width={isMaximized ? "200px" : "70px"} //
       height="100vh"
       bg="gray.800"
       color="white"
@@ -23,27 +36,10 @@ const SidePanel = () => {
       paddingLeft="17px"
       transition="width 0.5s ease"
       position="fixed"
-      onMouseEnter={toggleMaximize}
-      onMouseLeave={toggleMaximize}
+      onMouseEnter={toggleMaximize} // calls function toggleMaximize which would make the value of isMaximized true
+      onMouseLeave={toggleMaximize} // when the mouse leaves, isMaximized becomes false again
     >
-      {/* <IconButton
-        aria-label="Toggle maximize"
-        icon={isMaximized ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        onClick={toggleMaximize}
-        bg="gray.700"
-        color="white"
-        _hover={{ bg: "gray.600" }}
-        mb={4}
-        position="absolute" // Position it absolutely
-        top="10px" // Adjust vertical position
-        left={isMaximized ? "140px" : "10px"} // Move to the right when maximized
-        transition="left 0.4s ease" // Smooth transition for the button
-        marginTop="40px"
-      /> */}
-
       <VStack pt="60px" spacing={4} align="start">
-        {" "}
-        {/* Align to the start when maximized */}
         <HStack spacing={2}>
           <IconButton
             icon={<HamburgerIcon />}
