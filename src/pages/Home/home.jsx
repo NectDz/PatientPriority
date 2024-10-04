@@ -17,11 +17,16 @@ const Home = () => {
   const handleSubmit = (formType) => {
     setIsAuthenticating(true); //show authenticating screen
     setTimeout(() => {
-      if (formType === 'doctor') {
-        navigate('/doctorLogin'); //navigate to doctor login
-      } else {
-        navigate('/patientLogin'); 
+      if (formType === 'doctor') 
+        {
+        navigate('/Login'); //change to navigate('/doctorLogin') when routing is fixed, currently it's just a blank screen (10/4)
+      } 
+
+      else if (formType === 'patient') 
+      {
+        navigate('/Login'); //change to navigate('/patientLogin') when routing is fixed, currently it's just a blank screen (10/4)
       }
+
     }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
   };
 
@@ -186,7 +191,7 @@ const Home = () => {
 
           <Box display="flex" flexDirection="row" gap="4" mt="4">
           
-            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('doctor')}>
+            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('patient')}>
               Submit
             </Button> 
             

@@ -2,7 +2,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Flex, Button, Text } from "@chakra-ui/react";
 
-const Login = () => {
+const DoctorLogin = () => {
   let navigate = useNavigate();
   const { signInWithGoogle } = useAuth();
 
@@ -31,4 +31,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default DoctorLogin;
