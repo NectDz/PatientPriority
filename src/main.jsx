@@ -7,7 +7,10 @@ import Team from "./pages/Team/Team";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Layout from "./routes/Layout";
+import PatientProfile from "./pages/PatientProfile/PatientProfile";
 import AudioTest from "./pages/AudioTest/AudioTest.jsx";
+import DoctorLogin from "./pages/DoctorLogin/DoctorLogin.jsx";
+import PatientLogin from "./pages/PatientLogin/PatientLogin.jsx";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
@@ -20,7 +23,10 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/" element={<App />}></Route>
               <Route path="/team" element={<Team />}></Route>
               <Route path="login" element={<Login />} />
-              <Route path="audio-test" element={<AudioTest />} />
+              <Route path="/patient-profile" element={<PatientProfile />}></Route>
+              <Route path="/doctorLogin" element={<DoctorLogin />} />
+              <Route path="/patientLogin" element={<PatientLogin />} />
+              <Route path="/audio-test" element={<AudioTest />} />
             </Routes>
           </BrowserRouter>
         </Layout>
