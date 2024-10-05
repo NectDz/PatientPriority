@@ -2,14 +2,14 @@ import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Flex, Button, Text } from "@chakra-ui/react";
 
-const Login = () => {
+const DoctorLogin = () => {
   let navigate = useNavigate();
   const { signInWithGoogle } = useAuth();
 
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate("/");
+      navigate("/audio-test"); //goes to upload audio after successful sign on!!
     } catch (error) {
       console.error(error);
     }
@@ -31,4 +31,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default DoctorLogin;
