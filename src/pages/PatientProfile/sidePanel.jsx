@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, IconButton, VStack, HStack, Link } from "@chakra-ui/react";
+import { Box, IconButton, VStack, HStack, Link, Text} from "@chakra-ui/react";
 import { HamburgerIcon, InfoIcon, SettingsIcon } from "@chakra-ui/icons"; // import Chakra UI icons
 
 const SidePanel = ({ onToggleMaximize }) => { // onToggleMaximize is the prop that the child parent recieved
@@ -26,7 +26,7 @@ const SidePanel = ({ onToggleMaximize }) => { // onToggleMaximize is the prop th
   return (
     <Box
       as="nav"
-      width={isMaximized ? "200px" : "70px"} //
+      width={isMaximized ? "220px" : "70px"}
       height="100vh"
       bg="gray.800"
       color="white"
@@ -40,6 +40,7 @@ const SidePanel = ({ onToggleMaximize }) => { // onToggleMaximize is the prop th
       onMouseLeave={toggleMaximize} // when the mouse leaves, isMaximized becomes false again
     >
       <VStack pt="60px" spacing={4} align="start">
+        <Text> Panel </Text>
         <HStack spacing={2}>
           <IconButton
             icon={<HamburgerIcon />}
@@ -51,21 +52,48 @@ const SidePanel = ({ onToggleMaximize }) => { // onToggleMaximize is the prop th
         </HStack>
         <HStack spacing={2}>
           <IconButton
-            icon={<InfoIcon />}
+            icon={<HamburgerIcon />}
             aria-label="Profile"
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {isMaximized && <Link>Overview</Link>}
+          {isMaximized && <Link minW="150px">Overview</Link>}
         </HStack>
         <HStack spacing={2}>
           <IconButton
-            icon={<SettingsIcon />}
+            icon={<HamburgerIcon />}
             aria-label="Settings"
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {isMaximized && <Link>Doctors</Link>}
+          {isMaximized && <Link minW="150px">Lab Test Results</Link>}
+        </HStack>
+        <HStack spacing={2}>
+          <IconButton
+            icon={<HamburgerIcon />}
+            aria-label="Settings"
+            variant="ghost"
+            colorScheme="whiteAlpha"
+          />
+          {isMaximized && <Link minW="150px">Care Team and Providers</Link>}
+        </HStack>
+        <HStack spacing={2}>
+          <IconButton
+            icon={<HamburgerIcon />}
+            aria-label="Settings"
+            variant="ghost"
+            colorScheme="whiteAlpha"
+          />
+          {isMaximized && <Link minW="150px">Integrated Calendar</Link>}
+        </HStack>
+        <HStack spacing={2}>
+          <IconButton
+            icon={<HamburgerIcon />}
+            aria-label="Settings"
+            variant="ghost"
+            colorScheme="whiteAlpha"
+          />
+          {isMaximized && <Link minW="150px">Medical History</Link>}
         </HStack>
       </VStack>
     </Box>
