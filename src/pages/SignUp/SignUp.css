@@ -1,0 +1,8 @@
+.hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-effect:hover {
+    transform: scale(1.1); /* Enlarges the image slightly */
+    box-shadow: 0 0 20px 10px rgba(216, 30, 91, 0.7); /* Glowing outline */
+  }  

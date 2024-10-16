@@ -1,61 +1,92 @@
 import React from 'react';
-import { ChakraProvider, Box, Heading, Text, Image, VStack } from '@chakra-ui/react';
-import doctorIcon from "../../assets/doctor.png"; // import your doctor icon
-import patientIcon from "../../assets/patient.png"; // import your patient icon
-import './SignUp.css'; // for the divider and additional styling
+import { Box, Heading, Image, Text } from "@chakra-ui/react";
+import { useNavigate } from 'react-router-dom';
+import doctorIcon from "../../assets/doctor.png";
+import patientIcon from "../../assets/patient.png";
+import './SignUp.css';
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
+  const handleDoctorSignUp = () => {
+    navigate('/doctorSignUp');
+  };
+
+  const handlePatientSignUp = () => {
+    navigate('/patientSignUp');
+  };
+
   return (
-    <ChakraProvider>
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
-        height="100vh" 
-        backgroundColor="#EEF4ED"
-        padding="2rem"
+    <Box
+      height="100vh"
+      width="100vw"
+      backgroundColor="#EEF4ED" // Matches the homepage background
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      p={8}
+    >
+      <Box mb="8">
+        <Heading fontSize="6xl" color="#252B42" mb="4">Glad to have you here!</Heading>
+        <Text fontSize="3xl" color="#737373">What best describes you?</Text>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        width="100%"
+        height="60%"
       >
-        <Heading fontSize="4xl" color="#252B42" mb="4">
-          Glad to have you here!
-        </Heading>
-
-        <Text fontSize="2xl" color="#737373" mb="6">
-          What best describes you?
-        </Text>
-
-        <Box 
-          display="flex" 
-          flexDirection="row" 
-          alignItems="center" 
+        {/* Doctor Side */}
+        <Box
+          width="50%"
+          display="flex"
+          flexDirection="column"
           justifyContent="center"
-          width="80%"
-          height="60vh"
-          backgroundColor="#EFF8F8"
-          borderRadius="10px"
-          boxShadow="lg"
+          alignItems="center"
+          cursor="pointer"
+          onClick={handleDoctorSignUp}
+          className="hover-effect" // Applies the hover effect from CSS
         >
-          {/* Doctor Side */}
-          <VStack width="50%" justifyContent="center" alignItems="center">
-            <Image src={doctorIcon} alt="Doctor Icon" boxSize="150px" />
-            <Text fontSize="2xl" color="#252B42">Doctor</Text>
-          </VStack>
-
-          {/* Divider */}
-          <Box 
-            className="vertical-divider"
-            height="80%"
-            backgroundColor="#D9E7E7"
+          <Image
+            src={doctorIcon}
+            alt="Doctor Icon"
+            boxSize="250px" // Bigger size for the PNG icon
+            objectFit="contain"
           />
+          <Text fontSize="3xl" color="#252B42" mt="4">Doctor</Text>
+        </Box>
 
-          {/* Patient Side */}
-          <VStack width="50%" justifyContent="center" alignItems="center">
-            <Image src={patientIcon} alt="Patient Icon" boxSize="150px" />
-            <Text fontSize="2xl" color="#252B42">Patient</Text>
-          </VStack>
+        {/* Vertical Divider */}
+        <Box
+          width="1px"
+          height="100%"
+          backgroundColor="#737373" // Vertical divider with gray color
+        />
+
+        {/* Patient Side */}
+        <Box
+          width="50%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          cursor="pointer"
+          onClick={handlePatientSignUp}
+          className="hover-effect"
+        >
+          <Image
+            src={patientIcon}
+            alt="Patient Icon"
+            boxSize="250px"
+            objectFit="contain"
+          />
+          <Text fontSize="3xl" color="#252B42" mt="4">Patient</Text>
         </Box>
       </Box>
-    </ChakraProvider>
+    </Box>
   );
 };
 
