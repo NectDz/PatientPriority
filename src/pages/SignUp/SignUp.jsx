@@ -9,27 +9,38 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleDoctorSignUp = () => {
-    navigate('/doctorSignUp');
+    navigate('/doctorSignUp'); //unsure
   };
 
   const handlePatientSignUp = () => {
-    navigate('/patientSignUp');
+    navigate('/patientSignUp'); //not sure, probably nav to rahats questionnaire
   };
 
   return (
     <Box
       height="100vh"
       width="100vw"
-      backgroundColor="#EEF4ED" // Matches the homepage background
+      backgroundColor="#EEF4ED"
       display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
       p={8}
     >
-      <Box mb="8">
-        <Heading fontSize="6xl" color="#252B42" mb="4">Glad to have you here!</Heading>
-        <Text fontSize="3xl" color="#737373">What best describes you?</Text>
+      <Box
+        mb="8"
+        textAlign="center"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Heading fontSize="6xl" color="#252B42" mb="4">
+          Glad to have you here!
+        </Heading>
+        <Text fontSize="3xl" color="#737373">
+          What best describes you?
+        </Text>
       </Box>
 
       <Box
@@ -39,7 +50,7 @@ const SignUp = () => {
         width="100%"
         height="60%"
       >
-        {/* Doctor Side */}
+        
         <Box
           width="50%"
           display="flex"
@@ -48,25 +59,26 @@ const SignUp = () => {
           alignItems="center"
           cursor="pointer"
           onClick={handleDoctorSignUp}
-          className="hover-effect" // Applies the hover effect from CSS
+          className="doctor-hover-effect"
         >
           <Image
             src={doctorIcon}
             alt="Doctor Icon"
-            boxSize="250px" // Bigger size for the PNG icon
+            className="image-hover-effect"
+            boxSize="300px" //icon size
             objectFit="contain"
           />
-          <Text fontSize="3xl" color="#252B42" mt="4">Doctor</Text>
+          <Text fontSize="3xl" color="#252B42" mt="4">
+            Doctor
+          </Text>
         </Box>
 
-        {/* Vertical Divider */}
         <Box
-          width="1px"
+          width="5px"
           height="100%"
-          backgroundColor="#737373" // Vertical divider with gray color
+          backgroundColor="#737373"
         />
 
-        {/* Patient Side */}
         <Box
           width="50%"
           display="flex"
@@ -75,15 +87,18 @@ const SignUp = () => {
           alignItems="center"
           cursor="pointer"
           onClick={handlePatientSignUp}
-          className="hover-effect"
+          className="patient-hover-effect"
         >
           <Image
             src={patientIcon}
             alt="Patient Icon"
-            boxSize="250px"
+            className="image-hover-effect"
+            boxSize="300px"
             objectFit="contain"
           />
-          <Text fontSize="3xl" color="#252B42" mt="4">Patient</Text>
+          <Text fontSize="3xl" color="#252B42" mt="4">
+            Patient
+          </Text>
         </Box>
       </Box>
     </Box>
