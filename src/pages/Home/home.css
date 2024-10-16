@@ -1,10 +1,10 @@
 .pulse-animation {
-    transform: scale(1); /* Initial state */
-    transition: transform 0.3s ease-in-out; /* Smooth transition when scaling */
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out; /*smooth transition when scaling*/
   }
   
   .pulse-animation:hover {
-    animation: pulse 5s infinite; /* Only animate on hover */
+    animation: pulse 5s infinite; /*only animate on hover*/
   }
   
   @keyframes pulse {
