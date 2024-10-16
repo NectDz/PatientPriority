@@ -35,15 +35,28 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const audio = audioRef.current;
-    //audio.play(); //play sound
-    const interval = setInterval(() => {
-      audio.currentTime = 0; //reset to sync with the heartbeat
-      audio.play(); //play sound at start of each pulse
-    }, 5000); //sync timing with the CSS animation duration (1.5s)
+    // const audio = audioRef.current;
+    // //audio.play(); //play sound
+    // const interval = setInterval(() => {
+    //   audio.currentTime = 0; //reset to sync with the heartbeat
+    //   audio.play(); //play sound at start of each pulse
+    // }, 5000); //sync timing with the CSS animation duration (1.5s)
 
-    return () => clearInterval(interval); // Cleanup the interval when component unmounts
+    // return () => clearInterval(interval); // Cleanup the interval when component unmounts
   }, []);
+
+  const handleMouseEnter = () => {
+    const audio = audioRef.current;
+    audio.currentTime = 0;  // Restart sound from beginning
+    audio.play();  // Play sound on hover
+    audio.loop = true;
+  };
+
+  const handleMouseLeave = () => {
+    const audio = audioRef.current;
+    audio.pause();  // Pause sound when hover stops
+    audio.currentTime = 0;  // Reset the sound to the start
+    audio.loop = false;
   };
 
   return (
@@ -149,6 +162,8 @@ const Home = () => {
             objectFit="contain"
             mr="0" //push image to the right
             className="pulse-animation"
+            onMouseEnter={handleMouseEnter} // Trigger animation and sound on hover
+            onMouseLeave={handleMouseLeave} // Stop sound when hover ends
           />
 
         </Box>
