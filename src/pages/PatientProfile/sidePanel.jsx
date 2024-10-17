@@ -123,15 +123,19 @@
 // export default SidePanel;
 
 import React, { useState } from "react";
-import { Box, IconButton, VStack, HStack, Link, Text } from "@chakra-ui/react";
+import { Box, IconButton, VStack, HStack, Text, Link as ChakraLink } from "@chakra-ui/react";
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
 import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
 
-const SidePanel = ({ scrollToSection }) => {
+import { Link as ReactRouterLink } from 'react-router-dom'
+// import { Link as ChakraLink, LinkProps } from '@chakra-ui/react'
+
+
+const SidePanel = () => {
   return (
     <Box
       as="nav"
-      width="220px"
+      width="225px"
       height="100vh"
       bg="gray.800"
       color="white"
@@ -143,31 +147,33 @@ const SidePanel = ({ scrollToSection }) => {
       left="0px"
     >
       <VStack pt="60px" spacing={4} align="start">
-        <Text>Panel</Text>
+        <Box width="70px" align="center">
+          <Text>Panel</Text>
+        </Box>
 
-        <HStack spacing={2}>
+        {/* <HStack spacing={2}>
           <IconButton
             icon={<HamburgerIcon />}
             aria-label="Profile"
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("profile-card")}>
+          <Link>
             Profile
           </Link>
-        </HStack>
+        </HStack> */}
 
-        <HStack spacing={2}>
+        {/* <HStack spacing={2}>
           <IconButton
             icon={<HamburgerIcon />}
             aria-label="Overview"
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("overview-card")}>
+          <Link >
             Overview
           </Link>
-        </HStack>
+        </HStack> */}
 
         <HStack spacing={2}>
           <IconButton
@@ -176,9 +182,9 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("lab-results-card")}>
-            Lab Test Results
-          </Link>
+          <ChakraLink as={ReactRouterLink} to='/patient-health-records'>
+            Health Records
+          </ChakraLink>
         </HStack>
 
         <HStack spacing={2}>
@@ -188,9 +194,9 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("care-team-card")}>
-            Care Team
-          </Link>
+          <ChakraLink as={ReactRouterLink} to='/lab-test-results'>
+            Lab Test Results
+          </ChakraLink>
         </HStack>
 
         <HStack spacing={2}>
@@ -200,9 +206,9 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("calendar-card")}>
-            Integrated Calendar
-          </Link>
+          <ChakraLink as={ReactRouterLink} to='/care-team'>
+            Care Team and Providers
+          </ChakraLink>
         </HStack>
 
         <HStack spacing={2}>
@@ -212,10 +218,11 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("medical-history-card")}>
+          <ChakraLink as={ReactRouterLink} to='/medical-history'>
             Medical History
-          </Link>
+          </ChakraLink>
         </HStack>
+
 
         {/* Settings Section */}
         <HStack spacing={2}>
@@ -225,9 +232,9 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("settings-card")}>
+          <ChakraLink >
             Settings
-          </Link>
+          </ChakraLink>
         </HStack>
 
         {/* Log Out Section */}
@@ -238,9 +245,9 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          <Link onClick={() => scrollToSection("log-out-card")}>
+          <ChakraLink as={ReactRouterLink} to='/'>
             Log Out
-          </Link>
+          </ChakraLink>
         </HStack>
 
       </VStack>

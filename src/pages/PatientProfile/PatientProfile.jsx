@@ -82,31 +82,34 @@ import CalendarCard from "./Cards/CalendarCard";
 import TranscriptionCard from "./Cards/TranscriptionCard";
 
 function PatientProfile() {
-  const profileRef = useRef(null);
-  const overviewRef = useRef(null);
-  const calendarRef = useRef(null);
-  const transcriptionRef = useRef(null);
+  // const profileRef = useRef(null);
+  // const overviewRef = useRef(null);
+  // const calendarRef = useRef(null);
+  // const transcriptionRef = useRef(null);
 
-  const scrollToSection = (sectionId) => {
-    const refMap = {
-      "profile-card": profileRef,
-      "overview-card": overviewRef,
-      "calendar-card": calendarRef,
-      "transcription-card": transcriptionRef,
-    };
-    if (refMap[sectionId]?.current) {
-      refMap[sectionId].current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  // const scrollToSection = (sectionId) => {
+  //   const refMap = {
+  //     "profile-card": profileRef,
+  //     "overview-card": overviewRef,
+  //     "calendar-card": calendarRef,
+  //     "transcription-card": transcriptionRef,
+  //   };
+  //   if (refMap[sectionId]?.current) {
+  //     refMap[sectionId].current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // };
 
   return (
     <ChakraProvider>
       <Flex pt="50px" minH="100vh" bg="#EFF8F8">
-        <SidePanel scrollToSection={scrollToSection} />
+        {/* <SidePanel scrollToSection={scrollToSection} /> */}
+        <SidePanel />
+
 
         {/* Main Content Area */}
         <Grid
-          pl="8"
+          pl="6"
+          pr="6"
           pt="60px"
           marginLeft="220px"  // Set fixed margin to account for side panel width
           templateRows="repeat(8, 1fr)"
@@ -115,22 +118,22 @@ function PatientProfile() {
           width="100%"  // Set the grid to use full width of the container
         >
           {/* Profile Card */}
-          <GridItem ref={profileRef} id="profile-card">
+          <GridItem id="profile-card"> 
             <ProfileCard />
           </GridItem>
 
           {/* Overview Card */}
-          <GridItem ref={overviewRef} id="overview-card">
+          <GridItem  id="overview-card">
             <OverviewCard />
           </GridItem>
 
           {/* Reminders / Appointments (CalendarCard) */}
-          <GridItem ref={calendarRef} id="calendar-card">
+          <GridItem id="calendar-card">
             <CalendarCard />
           </GridItem>
 
           {/* Transcription / Summary (TranscriptionCard) */}
-          <GridItem ref={transcriptionRef} id="transcription-card">
+          <GridItem id="transcription-card">
             <TranscriptionCard />
           </GridItem>
         </Grid>
