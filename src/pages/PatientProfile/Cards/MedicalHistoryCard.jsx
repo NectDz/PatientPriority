@@ -6,7 +6,7 @@ import {
     Text,
   } from "@chakra-ui/react";
   
-  function OverviewCard() {
+  function MedicalHistoryCard() {
     return (
       <Card width="100%" height="100%" border="1px solid" borderColor="gray.300">
         <CardHeader
@@ -29,5 +29,5 @@ import {
     );
   }
   
-  export default OverviewCard;
+  export default MedicalHistoryCard;
   

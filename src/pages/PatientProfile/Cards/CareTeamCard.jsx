@@ -6,7 +6,7 @@ import {
     Text,
   } from "@chakra-ui/react";
   
-  function OverviewCard() {
+  function CareTeamCard() {
     return (
       <Card width="100%" height="100%" border="1px solid" borderColor="gray.300">
         <CardHeader
@@ -19,7 +19,7 @@ import {
           Care Team and Providers
         </CardHeader>
   
-        <CardBody display="flex">
+        <CardBody display="flex" maxHeight="400px" overflow="auto" pt="20px" >
           <Box p="4">
             <Text> blah blah blah </Text>
             
@@ -29,5 +29,5 @@ import {
     );
   }
   
-  export default OverviewCard;
+  export default CareTeamCard;
   

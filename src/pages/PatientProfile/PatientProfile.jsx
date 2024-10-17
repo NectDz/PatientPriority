@@ -1,87 +1,140 @@
-import { ChakraProvider, Box, Flex } from "@chakra-ui/react";
+// import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
+// import SidePanel from "./sidePanel";
+// import { useRef, useState } from "react";
+// import ProfileCard from "./Cards/ProfileCard";
+// import OverviewCard from "./Cards/OverviewCard";
+// import CalendarCard from "./Cards/CalendarCard";
+// import TranscriptionCard from "./Cards/TranscriptionCard";
+
+// function PatientProfile() {
+//   const [isMaximized, setIsMaximized] = useState(false);
+
+//   const handleToggleMaximize = (value) => setIsMaximized(value);
+
+//   const profileRef = useRef(null);
+//   const overviewRef = useRef(null);
+//   const calendarRef = useRef(null);
+//   const transcriptionRef = useRef(null);
+
+//   const scrollToSection = (sectionId) => {
+//     const refMap = {
+//       "profile-card": profileRef,
+//       "overview-card": overviewRef,
+//       "calendar-card": calendarRef,
+//       "transcription-card": transcriptionRef,
+//     };
+//     if (refMap[sectionId]?.current) {
+//       refMap[sectionId].current.scrollIntoView({ behavior: "smooth" });
+//     }
+//   };
+
+//   return (
+//     <ChakraProvider>
+//       <Flex pt="50px" minH="100vh" bg="#EFF8F8">
+//         <SidePanel
+//           onToggleMaximize={handleToggleMaximize}
+//           scrollToSection={scrollToSection}
+//         />
+
+//         {/* Main Content Area */}
+//         <Grid
+//           pl="8"
+//           pt="60px"
+//           transition="margin-left 0.5s ease"
+//           marginLeft={isMaximized ? "200px" : "70px"}
+//           templateRows="repeat(8, 1fr)"
+//           templateColumns="repeat(1, 1fr)"  // Only one column for full-width cards
+//           gap={6}  // Increased gap for better spacing
+//           width="100%"  // Set the grid to use full width of the container
+//         >
+//           {/* Profile Card */}
+//           <GridItem ref={profileRef} id="profile-card">
+//             <ProfileCard />
+//           </GridItem>
+
+//           {/* Overview Card */}
+//           <GridItem ref={overviewRef} id="overview-card">
+//             <OverviewCard />
+//           </GridItem>
+
+//           {/* Reminders / Appointments (CalendarCard) */}
+//           <GridItem ref={calendarRef} id="calendar-card">
+//             <CalendarCard />
+//           </GridItem>
+
+//           {/* Transcription / Summary (TranscriptionCard) */}
+//           <GridItem ref={transcriptionRef} id="transcription-card">
+//             <TranscriptionCard />
+//           </GridItem>
+//         </Grid>
+//       </Flex>
+//     </ChakraProvider>
+//   );
+// }
+
+// export default PatientProfile;
+import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import SidePanel from "./sidePanel";
-import { useState } from "react";
-// instead of making all the cards on this file, keep it better organized by making each cards in another file
+import { useRef, useState } from "react";
 import ProfileCard from "./Cards/ProfileCard";
 import OverviewCard from "./Cards/OverviewCard";
-import LabResultsCard from "./Cards/LabResultsCard";
-import CareTeamCard from "./Cards/CareTeamCard";
 import CalendarCard from "./Cards/CalendarCard";
-import MedicalHistoryCard from "./Cards/MedicalHistoryCard";
-
-import { Grid, GridItem } from "@chakra-ui/react";
+import TranscriptionCard from "./Cards/TranscriptionCard";
 
 function PatientProfile() {
-  // manage state of isMaximized
-  const [isMaximized, setIsMaximized] = useState(false);
-  // this is a function that updates the value of isMaximized
-  const handleToggleMaximize = (value) => {
-    setIsMaximized(value);
-  };
+  // const profileRef = useRef(null);
+  // const overviewRef = useRef(null);
+  // const calendarRef = useRef(null);
+  // const transcriptionRef = useRef(null);
+
+  // const scrollToSection = (sectionId) => {
+  //   const refMap = {
+  //     "profile-card": profileRef,
+  //     "overview-card": overviewRef,
+  //     "calendar-card": calendarRef,
+  //     "transcription-card": transcriptionRef,
+  //   };
+  //   if (refMap[sectionId]?.current) {
+  //     refMap[sectionId].current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // };
 
   return (
     <ChakraProvider>
       <Flex pt="50px" minH="100vh" bg="#EFF8F8">
-        <SidePanel
-          onToggleMaximize={handleToggleMaximize}
-          // send as prop to child component
-          // this is to lift state of isMaximized from child component to parent component
-        />
+        {/* <SidePanel scrollToSection={scrollToSection} /> */}
+        <SidePanel />
 
-        {/* where all the cards will go */}
-        {/* <Flex
-          display="flex"
-          // minW="fit-content"
-          pl="8"
-          pt="60px"
-          // flexGrow="1"
-          transition="margin-left 0.5s ease" // Smooth transition for margin
-          marginLeft={isMaximized ? "200px" : "70px"} // Adjust the margin based on panel state
-          gap="35px"
-          wrap="wrap"
-        >
-          <ProfileCard/>
-          <OverviewCard setMaximized={handleToggleMaximize}/>
-          {/* <LabResults/>
-          <CareTeamCard/>
-          <CalendarCard/>
-          <MedicalHistoryCard/> 
-        </Flex> */}
 
+        {/* Main Content Area */}
         <Grid
-          pl="8"
+          pl="6"
+          pr="6"
           pt="60px"
-          transition="margin-left 0.5s ease" // Smooth transition for margin... i can't even tell if its working...
-          marginLeft={isMaximized ? "200px" : "70px"} // adjust the margin based on panel state
-          templateRows="repeat(10, 1fr)"
-          templateColumns="repeat(6, 1fr)"
-          gap={4}
+          marginLeft="220px"  // Set fixed margin to account for side panel width
+          templateRows="repeat(8, 1fr)"
+          templateColumns="repeat(1, 1fr)"  // Only one column for full-width cards
+          gap={6}  // Increased gap for better spacing
+          width="100%"  // Set the grid to use full width of the container
         >
-          <GridItem rowSpan={2} colSpan={2}>
-            {" "}
-            <ProfileCard />{" "}
+          {/* Profile Card */}
+          <GridItem id="profile-card"> 
+            <ProfileCard />
           </GridItem>
-          <GridItem rowSpan={3} colSpan={4} minW="1110px">
-            {" "}
-            <OverviewCard />{" "}
+
+          {/* Overview Card */}
+          <GridItem  id="overview-card">
+            <OverviewCard />
           </GridItem>
-          {/* Not entirely sure how grid works yet but the above card needs a min width since the grid is formatted based on the size of the content inside of it?
-              If its smaller, then everything else will shrink too bc the width of each "fraction" will be smaller. */}
-          <GridItem rowSpan={4} colSpan={2}>
-            {" "}
-            <LabResultsCard />{" "}
+
+          {/* Reminders / Appointments (CalendarCard) */}
+          <GridItem id="calendar-card">
+            <CalendarCard />
           </GridItem>
-          <GridItem rowSpan={3} colSpan={2}>
-            {" "}
-            <CareTeamCard />{" "}
-          </GridItem>
-          <GridItem rowSpan={3} colSpan={2}>
-            {" "}
-            <CalendarCard />{" "}
-          </GridItem>
-          <GridItem rowSpan={3} colSpan={3}>
-            {" "}
-            <MedicalHistoryCard />{" "}
+
+          {/* Transcription / Summary (TranscriptionCard) */}
+          <GridItem id="transcription-card">
+            <TranscriptionCard />
           </GridItem>
         </Grid>
       </Flex>
