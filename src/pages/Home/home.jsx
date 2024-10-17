@@ -1,7 +1,9 @@
-import React, { useState } from 'react'; //new import
+import React, { useState, useEffect, useRef } from 'react'; //new import
 import { ChakraProvider, Box, Heading, Text, Button, Input, Image } from "@chakra-ui/react"; //input for form
 import { useNavigate } from 'react-router-dom';
-import pulseHeart from "../../assets/pulse-heart.png"; 
+import pulseHeart from "../../assets/pulse-heart.png";
+import heartBeatSound from "../../assets/heartbeat-sound.mp3"; 
+import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate(); 
@@ -9,6 +11,8 @@ const Home = () => {
   const [visibleForm, setVisibleForm] = useState(null); // managing state for which form is currently visible, default to null (other states are 'doctor or patient')
 
   const [isAuthenticating, setIsAuthenticating] = useState(false); // new state for authenticating screen -- prolly delete after database check is done?
+
+  const audioRef = useRef(null);
 
   const handleDoctorLogin = () => { setVisibleForm('doctor'); }; //handlers to show form
   const handlePatientLogin = () => { setVisibleForm('patient'); };
@@ -28,6 +32,31 @@ const Home = () => {
       }
 
     }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
+  };
+
+  useEffect(() => {
+    // const audio = audioRef.current;
+    // //audio.play(); //play sound
+    // const interval = setInterval(() => {
+    //   audio.currentTime = 0; //reset to sync with the heartbeat
+    //   audio.play(); //play sound at start of each pulse
+    // }, 5000); //sync timing with the CSS animation duration (1.5s)
+
+    // return () => clearInterval(interval); // Cleanup the interval when component unmounts
+  }, []);
+
+  const handleMouseEnter = () => {
+    const audio = audioRef.current;
+    audio.currentTime = 0;  // Restart sound from beginning
+    audio.play();  // Play sound on hover
+    audio.loop = true;
+  };
+
+  const handleMouseLeave = () => {
+    const audio = audioRef.current;
+    audio.pause();  // Pause sound when hover stops
+    audio.currentTime = 0;  // Reset the sound to the start
+    audio.loop = false;
   };
 
   return (
@@ -124,12 +153,17 @@ const Home = () => {
           
           </Box>
 
+          <audio ref={audioRef} src={heartBeatSound} />
+
           <Image
             src={pulseHeart}
             alt="Pulse Heart"
             boxSize="800px"
             objectFit="contain"
             mr="0" //push image to the right
+            className="pulse-animation"
+            onMouseEnter={handleMouseEnter} // Trigger animation and sound on hover
+            onMouseLeave={handleMouseLeave} // Stop sound when hover ends
           />
 
         </Box>
