@@ -122,20 +122,16 @@
 
 // export default SidePanel;
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, IconButton, VStack, HStack, Link, Text } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
+import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
 
 const SidePanel = ({ scrollToSection }) => {
-  // Always start with the panel maximized
-  const [isMaximized, setIsMaximized] = useState(true);
-
-  // No need for the toggle function if you always want it expanded
-
   return (
     <Box
       as="nav"
-      width="220px"  // Fixed width for the expanded panel
+      width="220px"
       height="100vh"
       bg="gray.800"
       color="white"
@@ -143,12 +139,11 @@ const SidePanel = ({ scrollToSection }) => {
       flexDirection="column"
       alignItems="flex-start"
       paddingLeft="17px"
-      transition="width 0.5s ease"  // Smooth width transition, but it's always expanded now
       position="fixed"
-      left="0px"  // Always fixed at the left
+      left="0px"
     >
       <VStack pt="60px" spacing={4} align="start">
-        <Text> Panel </Text>
+        <Text>Panel</Text>
 
         <HStack spacing={2}>
           <IconButton
@@ -157,7 +152,6 @@ const SidePanel = ({ scrollToSection }) => {
             variant="ghost"
             colorScheme="whiteAlpha"
           />
-          {/* Always show text since panel is fixed and maximized */}
           <Link onClick={() => scrollToSection("profile-card")}>
             Profile
           </Link>
@@ -222,6 +216,33 @@ const SidePanel = ({ scrollToSection }) => {
             Medical History
           </Link>
         </HStack>
+
+        {/* Settings Section */}
+        <HStack spacing={2}>
+          <IconButton
+            icon={<SettingsIcon />}  // Use SettingsIcon here
+            aria-label="Settings"
+            variant="ghost"
+            colorScheme="whiteAlpha"
+          />
+          <Link onClick={() => scrollToSection("settings-card")}>
+            Settings
+          </Link>
+        </HStack>
+
+        {/* Log Out Section */}
+        <HStack spacing={2}>
+          <IconButton
+            icon={<IoIosLogOut />}  // Use IoIosLogOut here
+            aria-label="Log Out"
+            variant="ghost"
+            colorScheme="whiteAlpha"
+          />
+          <Link onClick={() => scrollToSection("log-out-card")}>
+            Log Out
+          </Link>
+        </HStack>
+
       </VStack>
     </Box>
   );
