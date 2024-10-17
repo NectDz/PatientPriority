@@ -1,46 +1,41 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Box,
-  Text,
-  List,
-  UnorderedList,
-  ListItem,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Card, CardHeader, CardBody, Box, Text, UnorderedList, ListItem } from "@chakra-ui/react";
 
 function OverviewCard() {
   return (
-    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300">
+    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="md">
       <CardHeader
-        p="0"
+        p="4"
         fontWeight="bold"
         textAlign="center"
-        fontSize="x-large"
+        fontSize="xl"
         textDecoration="underline"
+        bg="gray.100"
       >
         Overview
       </CardHeader>
 
-      <CardBody display="flex">
-        <Box p="2">
-          <Text> Current Health Information: </Text>
-          <UnorderedList>
-            <ListItem> patient is 100% healthy </ListItem>
-            <ListItem> may be a little coco loco </ListItem>
-            <ListItem> hints of delulu is not the solulu </ListItem>
-          </UnorderedList>
-        </Box>
-        <Box p="2">
-          <Text> Current Medications: </Text>
-          <UnorderedList>
-            <ListItem> Percocet </ListItem>
-          </UnorderedList>
-        </Box>
-        <Box p="2">
-          <Text> Meeting Summaries: </Text>
-          <UnorderedList> </UnorderedList>
+      <CardBody p={6}>
+        <Box display="flex" justifyContent="space-around">
+          <Box>
+            <Text fontWeight="bold">Current Health Information:</Text>
+            <UnorderedList>
+              <ListItem>Patient is 100% healthy</ListItem>
+              <ListItem>May be a little coco loco</ListItem>
+              <ListItem>Hints of delulu is not the solulu</ListItem>
+            </UnorderedList>
+          </Box>
+
+          <Box>
+            <Text fontWeight="bold">Current Medications:</Text>
+            <UnorderedList>
+              <ListItem>Percocet</ListItem>
+            </UnorderedList>
+          </Box>
+
+          <Box>
+            <Text fontWeight="bold">Meeting Summaries:</Text>
+            <UnorderedList></UnorderedList>
+          </Box>
         </Box>
       </CardBody>
     </Card>
@@ -48,3 +43,4 @@ function OverviewCard() {
 }
 
 export default OverviewCard;
+

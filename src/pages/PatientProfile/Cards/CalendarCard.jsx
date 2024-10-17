@@ -1,28 +1,27 @@
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Box,
-    Text,
-  } from "@chakra-ui/react";
-  
+import { Card, CardHeader, CardBody, Box, Text, UnorderedList, ListItem } from "@chakra-ui/react";
+
   function CalendarCard() {
     return (
-      <Card width="100%" height="100%" border="1px solid" borderColor="gray.300">
+      <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="md">
         <CardHeader
-          p="0"
+          p="4"
           fontWeight="bold"
           textAlign="center"
-          fontSize="x-large"
+          fontSize="xl"
           textDecoration="underline"
+          bg="gray.100"
         >
-          Calendar
+          Reminders / Appointments
         </CardHeader>
   
-        <CardBody display="flex">
-          <Box p="4">
-            <Text> blah blah blah </Text>
-            
+        <CardBody p={6}>
+          <Box>
+            <Text fontWeight="bold">Upcoming Appointments:</Text>
+            <UnorderedList>
+              <ListItem>October 20th, 2024: General Checkup</ListItem>
+              <ListItem>November 1st, 2024: Blood Test Follow-up</ListItem>
+              <ListItem>December 5th, 2024: Vaccination</ListItem>
+            </UnorderedList>
           </Box>
         </CardBody>
       </Card>
