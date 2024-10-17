@@ -1,67 +1,26 @@
-import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
-import SidePanel from "./sidePanel";
-import { useRef, useState } from "react";
-import ProfileCard from "./Cards/ProfileCard";
-import OverviewCard from "./Cards/OverviewCard";
-import CalendarCard from "./Cards/CalendarCard";
-import TranscriptionCard from "./Cards/TranscriptionCard";
+import { ChakraProvider, Box, Flex, Grid } from "@chakra-ui/react";
 
-function PatientProfile() {
-  const profileRef = useRef(null);
-  const overviewRef = useRef(null);
-  const calendarRef = useRef(null);
-  const transcriptionRef = useRef(null);
-
-  const scrollToSection = (sectionId) => {
-    const refMap = {
-      "profile-card": profileRef,
-      "overview-card": overviewRef,
-      "calendar-card": calendarRef,
-      "transcription-card": transcriptionRef,
-    };
-    if (refMap[sectionId]?.current) {
-      refMap[sectionId].current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
+function DoctorProfile() {
   return (
     <ChakraProvider>
       <Flex pt="50px" minH="100vh" bg="#EFF8F8">
-        <SidePanel scrollToSection={scrollToSection} />
-
         {/* Main Content Area */}
         <Grid
-          pl="8"
-          pt="60px"
-          marginLeft="220px"  // Set fixed margin to account for side panel width
-          templateRows="repeat(8, 1fr)"
-          templateColumns="repeat(1, 1fr)"  // Only one column for full-width cards
-          gap={6}  // Increased gap for better spacing
-          width="100%"  // Set the grid to use full width of the container
+          templateColumns="1fr"  // Single column to stack boxes
+          gap={6}  // Space between boxes
+          marginLeft="220px"  // Account for side panel width
+          width="calc(100% - 220px)"  // Full width minus the side panel space
+          placeItems="center"  // Center boxes horizontally
+          pt="60px"  // Padding on top
         >
-          {/* Profile Card */}
-          <GridItem ref={profileRef} id="profile-card">
-            <ProfileCard />
-          </GridItem>
-
-          {/* Overview Card */}
-          <GridItem ref={overviewRef} id="overview-card">
-            <OverviewCard />
-          </GridItem>
-
-          {/* Reminders / Appointments (CalendarCard) */}
-          <GridItem ref={calendarRef} id="calendar-card">
-            <CalendarCard />
-          </GridItem>
-
-          {/* Transcription / Summary (TranscriptionCard) */}
-          <GridItem ref={transcriptionRef} id="transcription-card">
-            <TranscriptionCard />
-          </GridItem>
+          {/* Three rectangular boxes with rounded edges */}
+          <Box bg="teal.200" height="250px" width="100%" borderRadius="20px" />
+          <Box bg="teal.200" height="250px" width="100%" borderRadius="20px" />
+          <Box bg="teal.200" height="250px" width="100%" borderRadius="20px" />
         </Grid>
       </Flex>
     </ChakraProvider>
   );
 }
 
-export default PatientProfile;
+export default DoctorProfile;
