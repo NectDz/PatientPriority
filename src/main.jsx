@@ -20,6 +20,7 @@ import LabTestResults from "./pages/PatientProfile/SidePanelPages/LabTestResults
 import CareTeam from "./pages/PatientProfile/SidePanelPages/CareTeam.jsx"
 import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx"
 
+import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
@@ -44,6 +45,7 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/patient-care-team" element={<CareTeam/>} />
               <Route path="/patient-medical-history" element={<MedicalHistory/>} />
 
+              <Route path="/doctor-profile" element={<DoctorProfile />}></Route>
             </Routes>
           </BrowserRouter>
         </Layout>
