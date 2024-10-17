@@ -9,7 +9,7 @@ const PatientLogin = () => {
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate("/");
+      navigate("/patient-profile"); //goes to patient-profile after successful sign on!!
     } catch (error) {
       console.error(error);
     }

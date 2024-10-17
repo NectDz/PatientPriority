@@ -9,7 +9,8 @@ const DoctorLogin = () => {
   const handleSignInWithGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate("/audio-test"); //goes to upload audio after successful sign on!!
+      // navigate("/audio-test"); //goes to upload audio after successful sign on!! //with deeedats doctorlogin it should go to doctor login now
+      navigate("/doctor-profile"); //with deeedats doctorlogin it should go to doctor login now
     } catch (error) {
       console.error(error);
     }

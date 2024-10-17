@@ -1,0 +1,41 @@
+.pulse-animation {
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out; /*smooth transition when scaling*/
+  }
+  
+  .pulse-animation:hover {
+    animation: pulse 5s infinite; /*only animate on hover*/
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    10% {
+      transform: scale(1.15);
+    }
+    20% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.1);
+    }
+    40% {
+      transform: scale(1);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    70% {
+      transform: scale(1);
+    }
+    80% {
+      transform: scale(1.1);
+    }
+    90% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }

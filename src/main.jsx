@@ -11,6 +11,16 @@ import PatientProfile from "./pages/PatientProfile/PatientProfile";
 import AudioTest from "./pages/AudioTest/AudioTest.jsx";
 import DoctorLogin from "./pages/DoctorLogin/DoctorLogin.jsx";
 import PatientLogin from "./pages/PatientLogin/PatientLogin.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
+
+
+// PatientProfile SidePanel Routes
+import HealthRecords from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx"
+import LabTestResults from "./pages/PatientProfile/SidePanelPages/LabTestResults.jsx"
+import CareTeam from "./pages/PatientProfile/SidePanelPages/CareTeam.jsx"
+import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx"
+
+import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
@@ -27,6 +37,15 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/doctorLogin" element={<DoctorLogin />} />
               <Route path="/patientLogin" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
+              <Route path="/signUp" element={<SignUp />} />
+
+              {/* PatientProfile SidePanel Routes*/}
+              <Route path="/patient-health-records" element={<HealthRecords/>} />
+              <Route path="/patient-lab-test-results" element={<LabTestResults/>} />
+              <Route path="/patient-care-team" element={<CareTeam/>} />
+              <Route path="/patient-medical-history" element={<MedicalHistory/>} />
+
+              <Route path="/doctor-profile" element={<DoctorProfile />}></Route>
             </Routes>
           </BrowserRouter>
         </Layout>

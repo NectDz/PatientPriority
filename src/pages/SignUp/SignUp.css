@@ -1,0 +1,19 @@
+.image-hover-effect {
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  
+  .image-hover-effect:hover {
+    transform: scale(1.2); /*enlarge*/
+    /* filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.5));*/
+  }
+  
+  /* For the doctor side */
+  .doctor-hover-effect:hover .image-hover-effect {
+    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.5)); /* blue tint = doctor? */
+  }
+  
+  /* For the patient side */
+  .patient-hover-effect:hover .image-hover-effect {
+    filter: drop-shadow(0 0 15px rgb(200, 22, 22)); /* red = patient?*/
+  }
+  
