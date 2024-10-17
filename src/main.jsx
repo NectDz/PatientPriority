@@ -11,6 +11,7 @@ import PatientProfile from "./pages/PatientProfile/PatientProfile";
 import AudioTest from "./pages/AudioTest/AudioTest.jsx";
 import DoctorLogin from "./pages/DoctorLogin/DoctorLogin.jsx";
 import PatientLogin from "./pages/PatientLogin/PatientLogin.jsx";
+import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 
 const rootElement = document.getElementById("root");
 ReactDOM.createRoot(rootElement).render(
@@ -27,6 +28,7 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/doctorLogin" element={<DoctorLogin />} />
               <Route path="/patientLogin" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
+              <Route path="/doctor-profile" element={<DoctorProfile />}></Route>
             </Routes>
           </BrowserRouter>
         </Layout>
