@@ -11,11 +11,13 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebase-config"; // Make sure to import both auth and db
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Firebase Authentication
 
 function DoctorSignUp() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [doctorInfo, setDoctorInfo] = useState({
     firstName: "",
@@ -36,7 +38,8 @@ function DoctorSignUp() {
   const verifyCredentials = async () => {
     setLoading(true);
     try {
-      const q = query(
+      // First, verify the credentials in the 'credentials' collection
+      const credentialsQuery = query(
         collection(db, "credentials"),
         where("credential_id", "==", doctorInfo.credentials),
         where("firstName", "==", doctorInfo.firstName),
@@ -44,9 +47,9 @@ function DoctorSignUp() {
         where("hospital", "==", doctorInfo.hospital)
       );
 
-      const querySnapshot = await getDocs(q);
+      const credentialsSnapshot = await getDocs(credentialsQuery);
 
-      if (querySnapshot.empty) {
+      if (credentialsSnapshot.empty) {
         toast({
           title: "Verification Failed",
           description: "The provided credentials do not match our records.",
@@ -54,16 +57,43 @@ function DoctorSignUp() {
           duration: 4000,
           isClosable: true,
         });
-      } else {
+        setLoading(false);
+        return;
+      }
+
+      // Next, check if the doctor already exists in the 'doctor' collection
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("credential_id", "==", doctorInfo.credentials),
+        where("firstName", "==", doctorInfo.firstName),
+        where("lastName", "==", doctorInfo.lastName),
+        where("hospitalName", "==", doctorInfo.hospital)
+      );
+
+      const doctorSnapshot = await getDocs(doctorQuery);
+
+      if (!doctorSnapshot.empty) {
         toast({
-          title: "Verification Successful",
-          description: "Credentials verified. Proceeding to the next step.",
-          status: "success",
+          title: "Doctor Already Exists",
+          description:
+            "A doctor with the same credentials is already registered.",
+          status: "error",
           duration: 4000,
           isClosable: true,
         });
-        setStep(2);
+        setLoading(false);
+        return;
       }
+
+      // If both checks pass, proceed to the next step
+      toast({
+        title: "Verification Successful",
+        description: "Credentials verified. Proceeding to the next step.",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+      setStep(2);
     } catch (error) {
       console.error("Error verifying credentials: ", error);
       toast({
@@ -90,13 +120,14 @@ function DoctorSignUp() {
 
       const user = userCredential.user;
 
-      // Add doctor information to Firestore
+      // Add doctor information to Firestore, including the email
       await addDoc(collection(db, "doctor"), {
         id: user.uid, // Use the user's unique Firebase ID
         firstName: doctorInfo.firstName,
         lastName: doctorInfo.lastName,
         hospitalName: doctorInfo.hospital,
         credential_id: doctorInfo.credentials,
+        email: doctorInfo.email, // Add the doctor's email here
         accountCreatedDate: new Date(), // Set the current date as the account creation date
       });
 
@@ -109,6 +140,7 @@ function DoctorSignUp() {
       });
 
       console.log("User created:", userCredential.user);
+      navigate("/doctor-login");
       // Add more logic here if needed (e.g., redirect to another page)
     } catch (error) {
       console.error("Error signing up:", error);
