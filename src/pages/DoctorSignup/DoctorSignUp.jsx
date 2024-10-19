@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   Grid,
-  Text,
   Heading,
   Input,
   Button,
@@ -12,10 +11,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { db } from "../../firebase-config";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth"; // Import Firebase Authentication
-import { auth } from "../../firebase-config"; // Import the auth instance from your Firebase configuration
+import { db, auth } from "../../firebase-config"; // Make sure to import both auth and db
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth"; // Firebase Authentication
 
 function DoctorSignUp() {
   const [step, setStep] = useState(1);
@@ -39,14 +37,14 @@ function DoctorSignUp() {
     setLoading(true);
     try {
       const q = query(
-        collection(db, "credentials"), // Query the 'credentials' collection
+        collection(db, "credentials"),
         where("credential_id", "==", doctorInfo.credentials),
         where("firstName", "==", doctorInfo.firstName),
         where("lastName", "==", doctorInfo.lastName),
         where("hospital", "==", doctorInfo.hospital)
       );
 
-      const querySnapshot = await getDocs(q); // Execute the query
+      const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
         toast({
@@ -83,12 +81,24 @@ function DoctorSignUp() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Firebase Authentication - Create a user with email and password
+      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         doctorInfo.email,
         doctorInfo.password
       );
+
+      const user = userCredential.user;
+
+      // Add doctor information to Firestore
+      await addDoc(collection(db, "doctor"), {
+        id: user.uid, // Use the user's unique Firebase ID
+        firstName: doctorInfo.firstName,
+        lastName: doctorInfo.lastName,
+        hospitalName: doctorInfo.hospital,
+        credential_id: doctorInfo.credentials,
+        accountCreatedDate: new Date(), // Set the current date as the account creation date
+      });
 
       toast({
         title: "Sign Up Successful",
@@ -99,7 +109,7 @@ function DoctorSignUp() {
       });
 
       console.log("User created:", userCredential.user);
-      // You can also add more logic here, like redirecting to another page
+      // Add more logic here if needed (e.g., redirect to another page)
     } catch (error) {
       console.error("Error signing up:", error);
       toast({
