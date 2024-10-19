@@ -1,12 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react'; //new import
-import { ChakraProvider, Box, Heading, Text, Button, Input, Image } from "@chakra-ui/react"; //input for form
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react"; //new import
+import {
+  ChakraProvider,
+  Box,
+  Heading,
+  Text,
+  Button,
+  Input,
+  Image,
+} from "@chakra-ui/react"; //input for form
+import { useNavigate } from "react-router-dom";
 import pulseHeart from "../../assets/pulse-heart.png";
-import heartBeatSound from "../../assets/heartbeat-sound.mp3"; 
-import './Home.css';
+import heartBeatSound from "../../assets/heartbeat-sound.mp3";
+import "./Home.css";
 
 const Home = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const [visibleForm, setVisibleForm] = useState(null); // managing state for which form is currently visible, default to null (other states are 'doctor or patient')
 
@@ -14,23 +22,26 @@ const Home = () => {
 
   const audioRef = useRef(null);
 
-  const handleDoctorLogin = () => { setVisibleForm('doctor'); }; //handlers to show form
-  const handlePatientLogin = () => { setVisibleForm('patient'); };
-  const handleCreateAccount = () => { navigate('/signUp'); }; //tbd, rn it just routes
-  const handleBack = () => { setVisibleForm(null); }; //to go back to homepage from form
+  const handleDoctorLogin = () => {
+    navigate("/doctor-login");
+  }; //handlers to show form
+  const handlePatientLogin = () => {
+    setVisibleForm("patient");
+  };
+  const handleCreateAccount = () => {
+    navigate("/signUp");
+  }; //tbd, rn it just routes
+  const handleBack = () => {
+    setVisibleForm(null);
+  }; //to go back to homepage from form
   const handleSubmit = (formType) => {
     setIsAuthenticating(true); //show authenticating screen
     setTimeout(() => {
-      if (formType === 'doctor') 
-        {
-        navigate('/doctorLogin');
-      } 
-
-      else if (formType === 'patient') 
-      {
-        navigate('/patientLogin');
+      if (formType === "doctor") {
+        navigate("/doctor-login");
+      } else if (formType === "patient") {
+        navigate("/patientLogin");
       }
-
     }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
   };
 
@@ -41,27 +52,25 @@ const Home = () => {
     //   audio.currentTime = 0; //reset to sync with the heartbeat
     //   audio.play(); //play sound at start of each pulse
     // }, 5000); //sync timing with the CSS animation duration (1.5s)
-
     // return () => clearInterval(interval); // Cleanup the interval when component unmounts
   }, []);
 
   const handleMouseEnter = () => {
     const audio = audioRef.current;
-    audio.currentTime = 0;  // Restart sound from beginning
-    audio.play();  // Play sound on hover
+    audio.currentTime = 0; // Restart sound from beginning
+    audio.play(); // Play sound on hover
     audio.loop = true;
   };
 
   const handleMouseLeave = () => {
     const audio = audioRef.current;
-    audio.pause();  // Pause sound when hover stops
-    audio.currentTime = 0;  // Reset the sound to the start
+    audio.pause(); // Pause sound when hover stops
+    audio.currentTime = 0; // Reset the sound to the start
     audio.loop = false;
   };
 
   return (
     <ChakraProvider>
-
       <Box
         position="relative"
         height="100vh" //need to keep these at a 100 for full view
@@ -69,31 +78,38 @@ const Home = () => {
         backgroundColor="#EEF4ED"
         overflow="hidden"
       >
-
         {isAuthenticating && (
-          <Box 
-            position="absolute" 
-            top="0" 
-            left="0" 
-            width="100%" 
-            height="100%" 
-            display="flex" 
-            justifyContent="center" 
-            alignItems="center" 
+          <Box
+            position="absolute"
+            top="0"
+            left="0"
+            width="100%"
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
             backgroundColor="#EFF8F8"
             zIndex="999"
           >
-            <Text fontSize="4xl" color="#252B42">Authenticating...</Text>
+            <Text fontSize="4xl" color="#252B42">
+              Authenticating...
+            </Text>
           </Box>
         )}
 
         <Box
           position="absolute"
           top="0"
-          left={visibleForm === 'doctor' ? '100%' : visibleForm === 'patient' ? '-100%' : '0'} //when visible form is doctor, its 100 aka slide right. vice versa for patient, 0 if null (default)
+          left={
+            visibleForm === "doctor"
+              ? "100%"
+              : visibleForm === "patient"
+              ? "-100%"
+              : "0"
+          } //when visible form is doctor, its 100 aka slide right. vice versa for patient, 0 if null (default)
           display="flex"
           flexDirection="row"
-          justifyContent="space-between" 
+          justifyContent="space-between"
           alignItems="center" //vertically center
           width="100%"
           height="100%"
@@ -101,9 +117,7 @@ const Home = () => {
           p={8}
           transition="left 0.5s ease-in-out" //slide transition
         >
-          
           <Box display="flex" flexDirection="column">
-
             <Heading fontSize="8xl" color="#252B42" mb="0">
               A Place Where Care
             </Heading>
@@ -117,7 +131,6 @@ const Home = () => {
             </Text>
 
             <Box display="flex" gap="4" mt="8">
-              
               <Button
                 colorScheme="teal"
                 onClick={handleDoctorLogin}
@@ -131,7 +144,6 @@ const Home = () => {
                 Login as Doctor
               </Button>
 
-
               <Button
                 colorScheme="teal"
                 onClick={handlePatientLogin}
@@ -144,13 +156,18 @@ const Home = () => {
               >
                 Login as Patient
               </Button>
-
             </Box>
 
-            <Text fontSize="2xl" color="#5AACA8" cursor="pointer" textDecoration="underline" mt="4" onClick={handleCreateAccount}>
+            <Text
+              fontSize="2xl"
+              color="#5AACA8"
+              cursor="pointer"
+              textDecoration="underline"
+              mt="4"
+              onClick={handleCreateAccount}
+            >
               Don’t have an account? Click here to sign up!
             </Text>
-          
           </Box>
 
           <audio ref={audioRef} src={heartBeatSound} />
@@ -165,48 +182,12 @@ const Home = () => {
             onMouseEnter={handleMouseEnter} // Trigger animation and sound on hover
             onMouseLeave={handleMouseLeave} // Stop sound when hover ends
           />
-
         </Box>
 
         <Box
           position="absolute" //doctor login form
           top="0"
-          left={visibleForm === 'doctor' ? '0' : '-100%'} //slide itno view from right (doctor)
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          width="100%"
-          height="100%"
-          backgroundColor="#EFF8F8"
-          p={8}
-          transition="left 0.5s ease-in-out" 
-        >
-          
-          <Heading fontSize="4xl" color="#252B42" mb="4">Doctor Login</Heading> 
-          <Input placeholder="First Name" mb="4" /> 
-          <Input placeholder="Last Name" mb="4" />
-          <Input placeholder="Credential" mb="4" />
-          
-          <Box display="flex" flexDirection="row" gap="4" mt="4">
-          
-            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('doctor')}>
-              Submit
-            </Button>
-            
-            <Button bg="#737373" color="white" size="lg" width="200px" height="50px" onClick={handleBack}>
-              Back
-            </Button>
-        
-          </Box>
-
-        </Box>
-
-
-        <Box
-          position="absolute" //patient login form
-          top="0"
-          left={visibleForm === 'patient' ? '0' : '100%'} //slide itno view from left (patient)
+          left={visibleForm === "doctor" ? "0" : "-100%"} //slide itno view from right (doctor)
           display="flex"
           flexDirection="column"
           justifyContent="center"
@@ -217,27 +198,84 @@ const Home = () => {
           p={8}
           transition="left 0.5s ease-in-out"
         >
-          
-          <Heading fontSize="4xl" color="#252B42" mb="4">Patient Login</Heading>
+          <Heading fontSize="4xl" color="#252B42" mb="4">
+            Doctor Login
+          </Heading>
+          <Input placeholder="First Name" mb="4" />
+          <Input placeholder="Last Name" mb="4" />
+          <Input placeholder="Credential" mb="4" />
+
+          <Box display="flex" flexDirection="row" gap="4" mt="4">
+            <Button
+              bg="#5AACA8"
+              color="white"
+              size="lg"
+              width="200px"
+              height="50px"
+              onClick={() => handleSubmit("doctor")}
+            >
+              Submit
+            </Button>
+
+            <Button
+              bg="#737373"
+              color="white"
+              size="lg"
+              width="200px"
+              height="50px"
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+          </Box>
+        </Box>
+
+        <Box
+          position="absolute" //patient login form
+          top="0"
+          left={visibleForm === "patient" ? "0" : "100%"} //slide itno view from left (patient)
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100%"
+          backgroundColor="#EFF8F8"
+          p={8}
+          transition="left 0.5s ease-in-out"
+        >
+          <Heading fontSize="4xl" color="#252B42" mb="4">
+            Patient Login
+          </Heading>
           <Input placeholder="Username" mb="4" />
           <Input placeholder="Password" mb="4" />
           <Input placeholder="Re-enter Password" mb="4" />
 
           <Box display="flex" flexDirection="row" gap="4" mt="4">
-          
-            <Button bg="#5AACA8" color="white" size="lg" width="200px" height="50px" onClick={() => handleSubmit('patient')}>
+            <Button
+              bg="#5AACA8"
+              color="white"
+              size="lg"
+              width="200px"
+              height="50px"
+              onClick={() => handleSubmit("patient")}
+            >
               Submit
-            </Button> 
-            
-            <Button bg="#737373" color="white" size="lg" width="200px" height="50px" onClick={handleBack}>
+            </Button>
+
+            <Button
+              bg="#737373"
+              color="white"
+              size="lg"
+              width="200px"
+              height="50px"
+              onClick={handleBack}
+            >
               Back
             </Button>
-        
           </Box>
-
         </Box>
       </Box>
-
     </ChakraProvider>
   );
 };
