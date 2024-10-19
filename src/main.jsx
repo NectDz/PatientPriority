@@ -37,7 +37,6 @@ ReactDOM.createRoot(rootElement).render(
                 path="/patient-profile"
                 element={<PatientProfile />}
               ></Route>
-              <Route path="/doctorLogin" element={<DoctorLogin />} />
               <Route path="/patientLogin" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
               <Route path="/signUp" element={<SignUp />} />
@@ -58,6 +57,7 @@ ReactDOM.createRoot(rootElement).render(
               />
 
               <Route path="/doctor-profile" element={<DoctorProfile />}></Route>
+              <Route path="/doctor-login" element={<DoctorLogin />} />
               <Route path="/doctor-signup" element={<DoctorSignUp />}></Route>
             </Routes>
           </BrowserRouter>

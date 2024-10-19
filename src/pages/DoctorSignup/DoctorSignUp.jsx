@@ -170,7 +170,8 @@ function DoctorSignUp() {
                 />
               </FormControl>
               <Button
-                colorScheme="blue"
+                bg="#5AACA8"
+                color="white"
                 onClick={verifyCredentials}
                 isLoading={loading}
               >
@@ -203,7 +204,8 @@ function DoctorSignUp() {
                 />
               </FormControl>
               <Button
-                colorScheme="green"
+                bg="#5AACA8"
+                color="white"
                 onClick={handleSubmit}
                 isLoading={loading} // Show loading state while creating the user
               >
