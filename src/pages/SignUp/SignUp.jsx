@@ -1,19 +1,19 @@
-import React from 'react';
+import React from "react";
 import { Box, Heading, Image, Text } from "@chakra-ui/react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import doctorIcon from "../../assets/doctor.png";
 import patientIcon from "../../assets/patient.png";
-import './SignUp.css';
+import "./SignUp.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
   const handleDoctorSignUp = () => {
-    navigate('/doctorSignUp'); //unsure
+    navigate("/doctor-signup"); //unsure
   };
 
   const handlePatientSignUp = () => {
-    navigate('/patientSignUp'); //not sure, probably nav to rahats questionnaire
+    navigate("/patientSignUp"); //not sure, probably nav to rahats questionnaire
   };
 
   return (
@@ -50,7 +50,6 @@ const SignUp = () => {
         width="100%"
         height="60%"
       >
-        
         <Box
           width="50%"
           display="flex"
@@ -73,11 +72,7 @@ const SignUp = () => {
           </Text>
         </Box>
 
-        <Box
-          width="5px"
-          height="100%"
-          backgroundColor="#737373"
-        />
+        <Box width="5px" height="100%" backgroundColor="#737373" />
 
         <Box
           width="50%"
