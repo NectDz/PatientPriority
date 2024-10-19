@@ -1,10 +1,10 @@
 import * as React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import * as ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import App from "./App";
 import Team from "./pages/Team/Team";
-import { AuthProvider } from "./Context/AuthContext.jsx";
+import { AuthProvider, useAuth } from "./Context/AuthContext.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Layout from "./routes/Layout";
 import PatientProfile from "./pages/PatientProfile/PatientProfile";
@@ -22,7 +22,27 @@ import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
+// Create a wrapper for the protected route
+function PrivateRoute({ children }) {
+  const { currentUser } = useAuth(); // Get the current user from the AuthContext
+
+  return currentUser ? children : <Navigate to="/doctor-login" />;
+}
+
+function HomeRoute() {
+  const { currentUser } = useAuth();
+
+  // If logged in, redirect to the doctor profile page
+  if (currentUser) {
+    return <Navigate to="/doctor-profile" />;
+  }
+
+  // Otherwise, render the home page (App component)
+  return <App />;
+}
+
 const rootElement = document.getElementById("root");
+
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ChakraProvider>
@@ -30,18 +50,15 @@ ReactDOM.createRoot(rootElement).render(
         <Layout>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<App />}></Route>
-              <Route path="/team" element={<Team />}></Route>
-              <Route path="login" element={<Login />} />
-              <Route
-                path="/patient-profile"
-                element={<PatientProfile />}
-              ></Route>
+              <Route path="/" element={<HomeRoute />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/patient-profile" element={<PatientProfile />} />
               <Route path="/patientLogin" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
               <Route path="/signUp" element={<SignUp />} />
 
-              {/* PatientProfile SidePanel Routes*/}
+              {/* PatientProfile SidePanel Routes */}
               <Route
                 path="/patient-health-records"
                 element={<HealthRecords />}
@@ -56,9 +73,18 @@ ReactDOM.createRoot(rootElement).render(
                 element={<MedicalHistory />}
               />
 
-              <Route path="/doctor-profile" element={<DoctorProfile />}></Route>
+              {/* Protect the doctor profile route */}
+              <Route
+                path="/doctor-profile"
+                element={
+                  <PrivateRoute>
+                    <DoctorProfile />
+                  </PrivateRoute>
+                }
+              />
+
               <Route path="/doctor-login" element={<DoctorLogin />} />
-              <Route path="/doctor-signup" element={<DoctorSignUp />}></Route>
+              <Route path="/doctor-signup" element={<DoctorSignUp />} />
             </Routes>
           </BrowserRouter>
         </Layout>

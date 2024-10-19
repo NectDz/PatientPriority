@@ -14,8 +14,10 @@ import {
 } from "@chakra-ui/react";
 import { signInWithEmailAndPassword } from "firebase/auth"; // Import the signIn function from Firebase
 import { auth } from "../../firebase-config"; // Import Firebase authentication instance
+import { useAuth } from "../../Context/AuthContext";
 
 const DoctorLogin = () => {
+  const { login } = useAuth();
   let navigate = useNavigate();
   const toast = useToast();
 
@@ -26,9 +28,7 @@ const DoctorLogin = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      // Sign in with Firebase using email and password
-      await signInWithEmailAndPassword(auth, email, password);
-
+      await login(email, password); // Use login function from Auth context
       toast({
         title: "Login Successful",
         description: "You have successfully logged in!",
@@ -36,14 +36,12 @@ const DoctorLogin = () => {
         duration: 4000,
         isClosable: true,
       });
-
-      // Redirect to doctor profile page
-      navigate("/doctor-profile");
+      navigate("/doctor-profile"); // Redirect to doctor profile after login
     } catch (error) {
       console.error("Error logging in:", error);
       toast({
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: error.message,
         status: "error",
         duration: 4000,
         isClosable: true,
