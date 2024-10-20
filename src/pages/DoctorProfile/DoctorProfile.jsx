@@ -6,7 +6,6 @@ import {
   Text,
   Heading,
   Icon,
-  Button,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CalendarIcon } from "@chakra-ui/icons";
 import {
@@ -14,18 +13,25 @@ import {
   FaUserMd,
   FaClipboardList,
   FaSignOutAlt,
-} from "react-icons/fa"; // React icons for custom icons
-import { useAuth } from "../../Context/AuthContext"; // Import useAuth to access the logout function
-import { useNavigate } from "react-router-dom"; // To navigate after logout
+} from "react-icons/fa";
+import { useAuth } from "../../Context/AuthContext";
+import {
+  useNavigate,
+  Outlet,
+  Link,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 function DoctorProfile() {
-  const { logout } = useAuth(); // Access the logout function from AuthContext
-  const navigate = useNavigate(); // To navigate after logging out
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await logout(); // Perform the logout
-      navigate("/"); // Redirect to login page after logout
+      await logout();
+      navigate("/");
     } catch (error) {
       console.error("Failed to log out", error);
     }
@@ -47,27 +53,34 @@ function DoctorProfile() {
           flexDirection="column"
           justifyContent="space-between"
         >
-          {/* Top Side Panel Items */}
           <Flex flexDirection="column" gap={8} align="start">
-            <Box as="button" display="flex" alignItems="center" gap="4">
-              <Icon as={HamburgerIcon} />
-              <Text>Home</Text>
-            </Box>
+            <Link to="/">
+              <Box as="button" display="flex" alignItems="center" gap="4">
+                <Icon as={HamburgerIcon} />
+                <Text>Home</Text>
+              </Box>
+            </Link>
 
-            <Box as="button" display="flex" alignItems="center" gap="4">
-              <Icon as={HamburgerIcon} />
-              <Text>Patients</Text>
-            </Box>
+            <Link to="/patients">
+              <Box as="button" display="flex" alignItems="center" gap="4">
+                <Icon as={HamburgerIcon} />
+                <Text>Patients</Text>
+              </Box>
+            </Link>
 
-            <Box as="button" display="flex" alignItems="center" gap="4">
-              <Icon as={HamburgerIcon} />
-              <Text>Appointments</Text>
-            </Box>
+            <Link to="/doctor-profile/appointments">
+              <Box as="button" display="flex" alignItems="center" gap="4">
+                <Icon as={HamburgerIcon} />
+                <Text>Appointments</Text>
+              </Box>
+            </Link>
 
-            <Box as="button" display="flex" alignItems="center" gap="4">
-              <Icon as={HamburgerIcon} />
-              <Text>Calendar</Text>
-            </Box>
+            <Link to="/calendar">
+              <Box as="button" display="flex" alignItems="center" gap="4">
+                <Icon as={HamburgerIcon} />
+                <Text>Calendar</Text>
+              </Box>
+            </Link>
           </Flex>
 
           {/* Bottom Signout Button */}
@@ -85,76 +98,15 @@ function DoctorProfile() {
 
         {/* Main Content Area */}
         <Grid
-          templateColumns="1fr" // Single column for stacking boxes
-          gap={6} // Space between boxes
-          marginLeft="220px" // To account for the side panel width
-          width="calc(100% - 220px)" // Full width minus the side panel space
-          pt="60px" // Padding from the top
-          px="16" // Horizontal padding
-          pb="8" // Padding from the bottom
+          templateColumns="1fr"
+          gap={6}
+          marginLeft="220px"
+          width="calc(100% - 220px)"
+          pt="60px"
+          px="16"
+          pb="8"
         >
-          {/* First Box - My Day */}
-          <Box
-            bg="#5AACA8" // Color from the home page's button
-            height="200px"
-            width="100%"
-            borderRadius="20px"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="start"
-            p={8} // Padding inside the box
-          >
-            <Heading fontSize="2xl" color="white" mb="4">
-              <Icon as={CalendarIcon} mr={2} /> {/* Calendar Icon */}
-              My Day
-            </Heading>
-            <Text fontSize="lg" color="white">
-              View your schedule and daily tasks here.
-            </Text>
-          </Box>
-
-          {/* Second Box - Recent Patients */}
-          <Box
-            bg="#EFF8F8" // Lighter background from the home page
-            height="200px"
-            width="100%"
-            borderRadius="20px"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="start"
-            p={8}
-          >
-            <Heading fontSize="2xl" color="#252B42" mb="4">
-              <Icon as={FaUserMd} mr={2} /> {/* Doctor Icon */}
-              Recent Patients
-            </Heading>
-            <Text fontSize="lg" color="#737373">
-              See your most recent patient interactions.
-            </Text>
-          </Box>
-
-          {/* Third Box - My Team */}
-          <Box
-            bg="#737373" // Darker grey for variety
-            height="200px"
-            width="100%"
-            borderRadius="20px"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="start"
-            p={8}
-          >
-            <Heading fontSize="2xl" color="white" mb="4">
-              <Icon as={FaUserFriends} mr={2} /> {/* Team Icon */}
-              My Team
-            </Heading>
-            <Text fontSize="lg" color="white">
-              Manage and collaborate with your team members.
-            </Text>
-          </Box>
+          <Outlet /> {/* This will render the current route's content */}
         </Grid>
       </Flex>
     </ChakraProvider>
