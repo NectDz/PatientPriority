@@ -20,6 +20,9 @@ import CareTeam from "./pages/PatientProfile/SidePanelPages/CareTeam.jsx";
 import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx";
 
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
+import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
+import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCreation.jsx";
+import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
 // Create a wrapper for the protected route
@@ -75,13 +78,24 @@ ReactDOM.createRoot(rootElement).render(
 
               {/* Protect the doctor profile route */}
               <Route
-                path="/doctor-profile"
+                path="/doctor-profile/*"
                 element={
                   <PrivateRoute>
                     <DoctorProfile />
                   </PrivateRoute>
                 }
-              />
+              >
+                {/* Nested Routes within DoctorProfile */}
+                <Route path="appointments" element={<Appointments />} />
+                <Route
+                  path="appointments/create-appointment"
+                  element={<AppointmentCreation />}
+                />
+                <Route
+                  path="appointments/:id"
+                  element={<AppointmentDetail />}
+                />
+              </Route>
 
               <Route path="/doctor-login" element={<DoctorLogin />} />
               <Route path="/doctor-signup" element={<DoctorSignUp />} />
