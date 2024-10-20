@@ -9,7 +9,15 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  query,
+  where,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 
 // Firebase initialization
 const db = getFirestore();
@@ -17,6 +25,7 @@ const db = getFirestore();
 function AppointmentDetail() {
   const { id } = useParams(); // Get the appointment ID from the URL parameters
   const [appointment, setAppointment] = useState(null);
+  const [patientName, setPatientName] = useState(""); // State to store the patient's name
   const [audioFile, setAudioFile] = useState(null); // For audio upload
   const [uploading, setUploading] = useState(false); // Loading state for upload
   const [loading, setLoading] = useState(true); // Loading state for fetching the appointment
@@ -25,9 +34,25 @@ function AppointmentDetail() {
   useEffect(() => {
     async function fetchAppointment() {
       try {
+        // Fetch the appointment details using the appointment ID
         const appointmentDoc = await getDoc(doc(db, "appointment", id));
         if (appointmentDoc.exists()) {
-          setAppointment(appointmentDoc.data());
+          const appointmentData = appointmentDoc.data();
+          setAppointment(appointmentData);
+
+          // Fetch the patient details using the patient_id in the appointment
+          const patientsQuery = query(
+            collection(db, "patients"),
+            where("id", "==", appointmentData.patient_id) // Match appointment's patient_id to patient's id field
+          );
+
+          const patientsSnapshot = await getDocs(patientsQuery);
+          if (!patientsSnapshot.empty) {
+            const patientData = patientsSnapshot.docs[0].data(); // Get the first matching patient document
+            setPatientName(`${patientData.firstName} ${patientData.lastName}`);
+          } else {
+            setPatientName("Unknown Patient");
+          }
         } else {
           console.error("Appointment not found");
         }
@@ -121,7 +146,7 @@ function AppointmentDetail() {
       </Heading>
       <Box p={6} bg="white" borderRadius="md" boxShadow="md">
         <Text>
-          <strong>Patient Name:</strong> {appointment.patientName}
+          <strong>Patient Name:</strong> {patientName}
         </Text>
         <Text>
           <strong>Date:</strong>{" "}
