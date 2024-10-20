@@ -1,30 +1,100 @@
-import React from "react";
-import { Box, Heading, Text, VStack, Button } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Heading, Text, VStack, Button, Spinner } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import {
-  Outlet,
-  Link,
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
+// Firebase initialization (make sure to import your Firebase config)
+const db = getFirestore();
 
 function Appointments() {
-  const appointments = [
-    {
-      id: 1,
-      patientName: "John Doe",
-      date: "2024-10-20",
-      time: "10:00 AM",
-      description: "Routine checkup",
-    },
-    {
-      id: 2,
-      patientName: "Jane Smith",
-      date: "2024-10-21",
-      time: "1:30 PM",
-      description: "Follow-up for lab results",
-    },
-  ];
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    async function fetchAppointments() {
+      try {
+        if (!user) {
+          return;
+        }
+
+        const doctorEmail = user.email;
+
+        // Step 1: Get the doctor's ID by matching the email in the "doctor" collection
+        const doctorQuery = query(
+          collection(db, "doctor"),
+          where("email", "==", doctorEmail)
+        );
+        const doctorSnapshot = await getDocs(doctorQuery);
+
+        if (!doctorSnapshot.empty) {
+          const doctorData = doctorSnapshot.docs[0].data();
+          const doctorId = doctorData.id;
+
+          // Step 2: Get patients associated with this doctor
+          const patientQuery = query(
+            collection(db, "patients"),
+            where("doctor_id", "==", doctorId)
+          );
+          const patientSnapshot = await getDocs(patientQuery);
+
+          const patientIds = patientSnapshot.docs.map((doc) => ({
+            id: doc.data().id,
+            firstName: doc.data().firstName,
+            lastName: doc.data().lastName,
+          }));
+
+          // Step 3: Get appointments for each patient and display their first and last name
+          const appointmentPromises = patientIds.map(async (patient) => {
+            const appointmentQuery = query(
+              collection(db, "appointment"),
+              where("patient_id", "==", patient.id)
+            );
+            const appointmentSnapshot = await getDocs(appointmentQuery);
+
+            return appointmentSnapshot.docs.map((doc) => ({
+              id: doc.id,
+              date: doc.data().appointmentDate,
+              description: doc.data().appointmentDescription,
+              patientName: `${patient.firstName} ${patient.lastName}`,
+            }));
+          });
+
+          const fetchedAppointments = (
+            await Promise.all(appointmentPromises)
+          ).flat();
+          setAppointments(fetchedAppointments);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchAppointments();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minH="100vh"
+      >
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
 
   return (
     <Box p={8}>
@@ -44,8 +114,14 @@ function Appointments() {
               <Heading as="h2" size="md" mb={2}>
                 {appointment.patientName}
               </Heading>
-              <Text>Date: {appointment.date}</Text>
-              <Text>Time: {appointment.time}</Text>
+              <Text>
+                Date:{" "}
+                {new Date(appointment.date.seconds * 1000).toLocaleDateString()}
+              </Text>
+              <Text>
+                Time:{" "}
+                {new Date(appointment.date.seconds * 1000).toLocaleTimeString()}
+              </Text>
               <Text>Description: {appointment.description}</Text>
               <Button colorScheme="teal" mt={4}>
                 View Details
