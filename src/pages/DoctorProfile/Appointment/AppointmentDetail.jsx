@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  ChakraProvider,
   Box,
   Heading,
+  Text,
   Button,
   Input,
-  Text,
   Spinner,
+  Divider,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -15,13 +15,12 @@ import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 const db = getFirestore();
 
 function AppointmentDetail() {
-  const { id } = useParams(); // Get appointment ID from route parameters
+  const { id } = useParams(); // Get the appointment ID from the URL parameters
   const [appointment, setAppointment] = useState(null);
-  const [audioFile, setAudioFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [audioFile, setAudioFile] = useState(null); // For audio upload
+  const [uploading, setUploading] = useState(false); // Loading state for upload
+  const [loading, setLoading] = useState(true); // Loading state for fetching the appointment
   const [message, setMessage] = useState("");
-  const [transcription, setTranscription] = useState(""); // State to store transcription text
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAppointment() {
@@ -29,13 +28,11 @@ function AppointmentDetail() {
         const appointmentDoc = await getDoc(doc(db, "appointment", id));
         if (appointmentDoc.exists()) {
           setAppointment(appointmentDoc.data());
-          setTranscription(appointmentDoc.data().appointmentTranscript || ""); // Load existing transcript
         } else {
-          setMessage("Appointment not found.");
+          console.error("Appointment not found");
         }
       } catch (error) {
         console.error("Error fetching appointment:", error);
-        setMessage("Error loading appointment details.");
       } finally {
         setLoading(false);
       }
@@ -60,7 +57,6 @@ function AppointmentDetail() {
     try {
       setUploading(true);
       setMessage("");
-      setTranscription("");
 
       const response = await fetch("http://localhost:3000/transcribe", {
         method: "POST",
@@ -68,15 +64,19 @@ function AppointmentDetail() {
       });
 
       if (response.ok) {
-        const text = await response.text();
-        setTranscription(text); // Display transcription text
+        const transcript = await response.text();
 
-        // Step 3: Update the appointment object in Firestore with the transcription
+        // Update the appointment with the transcript in Firestore
         await updateDoc(doc(db, "appointment", id), {
-          appointmentTranscript: text,
+          appointmentTranscript: transcript,
         });
 
-        setMessage("Transcription successful and saved to the appointment.");
+        setAppointment((prevAppointment) => ({
+          ...prevAppointment,
+          appointmentTranscript: transcript,
+        }));
+
+        setMessage("Transcript uploaded and saved.");
       } else {
         setMessage("Error during transcription.");
       }
@@ -101,86 +101,94 @@ function AppointmentDetail() {
     );
   }
 
-  return (
-    <ChakraProvider>
+  if (!appointment) {
+    return (
       <Box
         display="flex"
-        flexDirection="column"
         justifyContent="center"
         alignItems="center"
         minH="100vh"
-        gap={4}
       >
-        {appointment ? (
-          <>
-            <Heading>Appointment Details</Heading>
-            <Box
-              p={4}
-              borderWidth="1px"
-              borderRadius="md"
-              w="80%"
-              bg="gray.100"
-            >
-              <Text>
-                <strong>Date:</strong>{" "}
-                {new Date(
-                  appointment.appointmentDate.seconds * 1000
-                ).toLocaleDateString()}
-              </Text>
-              <Text>
-                <strong>Time:</strong>{" "}
-                {new Date(
-                  appointment.appointmentDate.seconds * 1000
-                ).toLocaleTimeString()}
-              </Text>
-              <Text>
-                <strong>Description:</strong>{" "}
-                {appointment.appointmentDescription}
-              </Text>
-            </Box>
+        <Heading>Appointment not found</Heading>
+      </Box>
+    );
+  }
 
-            <Heading mt={8}>Upload Audio File</Heading>
-            <Input
-              type="file"
-              accept="audio/*"
-              onChange={handleFileChange}
-              display="none"
-              id="audio-upload"
-            />
-            <Button as="label" htmlFor="audio-upload" colorScheme="blue">
-              Select Audio
-            </Button>
-            <Button
-              onClick={handleUpload}
-              colorScheme="green"
-              isLoading={uploading}
-              mt={4}
-            >
-              Upload and Transcribe
-            </Button>
-            {message && <Box mt={4}>{message}</Box>}
+  return (
+    <Box p={8}>
+      <Heading as="h1" size="xl" mb={6}>
+        Appointment Details
+      </Heading>
+      <Box p={6} bg="white" borderRadius="md" boxShadow="md">
+        <Text>
+          <strong>Patient Name:</strong> {appointment.patientName}
+        </Text>
+        <Text>
+          <strong>Date:</strong>{" "}
+          {new Date(
+            appointment.appointmentDate.seconds * 1000
+          ).toLocaleDateString()}
+        </Text>
+        <Text>
+          <strong>Time:</strong>{" "}
+          {new Date(
+            appointment.appointmentDate.seconds * 1000
+          ).toLocaleTimeString()}
+        </Text>
+        <Text>
+          <strong>Description:</strong> {appointment.appointmentDescription}
+        </Text>
+      </Box>
+      <Divider my={6} />{" "}
+      {/* Separator between appointment details and transcript */}
+      {/* Transcript Section */}
+      <Box p={6} bg="gray.50" borderRadius="md" boxShadow="md">
+        <Heading as="h2" size="lg" mb={4}>
+          Appointment Transcript
+        </Heading>
 
-            {transcription && (
-              <Box
-                mt={4}
-                p={4}
-                borderWidth="1px"
-                borderRadius="md"
-                w="80%"
-                bg="gray.100"
-              >
-                <Heading size="md" mb={2}>
-                  Transcription:
-                </Heading>
-                <Text whiteSpace="pre-wrap">{transcription}</Text>
-              </Box>
-            )}
-          </>
+        {appointment.appointmentTranscript ? (
+          <Box
+            p={4}
+            bg="white"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="auto"
+            maxH="450px"
+          >
+            <Text whiteSpace="pre-wrap">
+              {appointment.appointmentTranscript}
+            </Text>
+          </Box>
         ) : (
-          <Text>{message}</Text>
+          <Text>No transcript available for this appointment.</Text>
         )}
       </Box>
-    </ChakraProvider>
+      {/* Conditionally render buttons if there's no transcript */}
+      {!appointment.appointmentTranscript && (
+        <Box mt={6}>
+          <Input
+            type="file"
+            accept="audio/*"
+            onChange={handleFileChange}
+            display="none"
+            id="audio-upload"
+          />
+          <Button as="label" htmlFor="audio-upload" colorScheme="blue" mt={4}>
+            Select Audio
+          </Button>
+          <Button
+            onClick={handleUpload}
+            colorScheme="green"
+            mt={4}
+            isLoading={uploading}
+          >
+            Upload and Transcribe
+          </Button>
+        </Box>
+      )}
+      {message && <Box mt={4}>{message}</Box>}
+    </Box>
   );
 }
 
