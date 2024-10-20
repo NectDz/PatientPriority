@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Heading, Text, VStack, Button, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Text,
+  VStack,
+  Button,
+  Spinner,
+  HStack,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import {
@@ -16,6 +24,9 @@ const db = getFirestore();
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 3; // Set the number of appointments per page
+
   const auth = getAuth();
   const user = auth.currentUser;
 
@@ -83,6 +94,28 @@ function Appointments() {
     fetchAppointments();
   }, [user]);
 
+  // Pagination logic
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(
+    indexOfFirstAppointment,
+    indexOfLastAppointment
+  );
+
+  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   if (loading) {
     return (
       <Box
@@ -101,9 +134,9 @@ function Appointments() {
       <Heading as="h1" size="xl" mb={6}>
         Appointments
       </Heading>
-      {appointments.length > 0 ? (
+      {currentAppointments.length > 0 ? (
         <VStack spacing={6} align="stretch">
-          {appointments.map((appointment) => (
+          {currentAppointments.map((appointment) => (
             <Box
               key={appointment.id}
               p={6}
@@ -132,6 +165,22 @@ function Appointments() {
       ) : (
         <Text>No appointments scheduled.</Text>
       )}
+
+      {/* Pagination Controls */}
+      {appointments.length > appointmentsPerPage && (
+        <HStack mt={6} justify="center">
+          <Button onClick={prevPage} disabled={currentPage === 1}>
+            Previous
+          </Button>
+          <Text>
+            Page {currentPage} of {totalPages}
+          </Text>
+          <Button onClick={nextPage} disabled={currentPage === totalPages}>
+            Next
+          </Button>
+        </HStack>
+      )}
+
       <Box display="flex" justifyContent="center" mt={8} mb={6}>
         <Link to="/doctor-profile/appointments/create-appointment">
           <Button colorScheme="teal" display="flex" alignItems="center" gap="4">
