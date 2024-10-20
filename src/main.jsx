@@ -22,6 +22,7 @@ import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
 import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCreation.jsx";
+import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
 // Create a wrapper for the protected route
@@ -89,6 +90,10 @@ ReactDOM.createRoot(rootElement).render(
                 <Route
                   path="appointments/create-appointment"
                   element={<AppointmentCreation />}
+                />
+                <Route
+                  path="appointments/:id"
+                  element={<AppointmentDetail />}
                 />
               </Route>
 

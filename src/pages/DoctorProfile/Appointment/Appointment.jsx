@@ -156,7 +156,12 @@ function Appointments() {
                 {new Date(appointment.date.seconds * 1000).toLocaleTimeString()}
               </Text>
               <Text>Description: {appointment.description}</Text>
-              <Button colorScheme="teal" mt={4}>
+              <Button
+                as={Link}
+                to={`/doctor-profile/appointments/${appointment.id}`}
+                colorScheme="teal"
+                mt={4}
+              >
                 View Details
               </Button>
             </Box>
