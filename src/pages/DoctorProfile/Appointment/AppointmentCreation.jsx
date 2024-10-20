@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -7,26 +7,80 @@ import {
   Input,
   Button,
   Textarea,
+  Spinner,
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-// Predefined patient data
-const patients = [
-  { value: "john-doe", label: "John Doe" },
-  { value: "jane-smith", label: "Jane Smith" },
-  { value: "michael-jordan", label: "Michael Jordan" },
-  { value: "sarah-connor", label: "Sarah Connor" },
-];
+// Firebase initialization (make sure Firebase is initialized properly)
+const db = getFirestore();
 
 function AppointmentCreation() {
   const navigate = useNavigate();
+  const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    async function fetchPatients() {
+      try {
+        if (!user) {
+          return;
+        }
+
+        const doctorEmail = user.email;
+
+        // Step 1: Get the doctor's ID by matching the email in the "doctor" collection
+        const doctorQuery = query(
+          collection(db, "doctor"),
+          where("email", "==", doctorEmail)
+        );
+        const doctorSnapshot = await getDocs(doctorQuery);
+
+        if (!doctorSnapshot.empty) {
+          const doctorData = doctorSnapshot.docs[0].data();
+          const doctorId = doctorData.id;
+
+          // Step 2: Get patients associated with this doctor
+          const patientQuery = query(
+            collection(db, "patients"),
+            where("doctor_id", "==", doctorId)
+          );
+          const patientSnapshot = await getDocs(patientQuery);
+
+          const patientList = patientSnapshot.docs.map((doc) => ({
+            value: doc.data().id, // Use patient_id as value
+            label: `${doc.data().firstName} ${doc.data().lastName}`, // Combine first and last name
+          }));
+
+          setPatients(patientList);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchPatients();
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation
@@ -35,18 +89,52 @@ function AppointmentCreation() {
       return;
     }
 
-    const newAppointment = {
-      patient: selectedPatient.label,
-      date,
-      time,
-      description,
-    };
+    try {
+      // Get doctor ID again for this session
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("email", "==", user.email)
+      );
+      const doctorSnapshot = await getDocs(doctorQuery);
 
-    console.log("New Appointment:", newAppointment);
+      if (!doctorSnapshot.empty) {
+        const doctorData = doctorSnapshot.docs[0].data();
+        const doctorId = doctorData.id;
 
-    // After creating the appointment, navigate back to the appointments page
-    navigate("/doctor-profile/appointments");
+        // Create the new appointment object
+        const newAppointment = {
+          appointmentDate: new Date(`${date}T${time}:00`), // Combines date and time into a single Date object
+          appointmentDescription: description,
+          appointmentTranscript: "", // Leave transcript blank
+          doctor_id: doctorId,
+          patient_id: selectedPatient.value,
+        };
+
+        // Step 3: Save the new appointment to Firestore in the "appointment" collection
+        await addDoc(collection(db, "appointment"), newAppointment);
+
+        console.log("New Appointment:", newAppointment);
+
+        // After creating the appointment, navigate back to the appointments page
+        navigate("/doctor-profile/appointments");
+      }
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+    }
   };
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minH="100vh"
+      >
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
 
   return (
     <Box p={8}>
