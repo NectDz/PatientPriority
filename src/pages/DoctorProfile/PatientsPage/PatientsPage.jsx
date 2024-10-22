@@ -154,6 +154,15 @@ function Patients() {
           </Button>
         </HStack>
       )}
+
+        <Box display="flex" justifyContent="center" mt={8} mb={6}>
+            <Link to="/doctor-profile/patients/add-new-patient">
+                <Button colorScheme="teal" display="flex" alignItems="center" gap="4">
+                    Add New Patient
+                </Button>
+            </Link>
+        </Box>
+
     </Box>
   );
 }
