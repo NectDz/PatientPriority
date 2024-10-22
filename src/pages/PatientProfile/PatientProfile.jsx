@@ -111,11 +111,11 @@ function PatientProfile() {
           pl="6"
           pr="6"
           pt="60px"
-          marginLeft="220px"  // Set fixed margin to account for side panel width
-          templateRows="repeat(8, 1fr)"
-          templateColumns="repeat(1, 1fr)"  // Only one column for full-width cards
-          gap={6}  // Increased gap for better spacing
-          width="100%"  // Set the grid to use full width of the container
+          marginLeft="220px"
+          templateRows="repeat(4, 1fr)"
+          templateColumns="repeat(1, 1fr)"
+          gap={6}
+          width="100%"
         >
           {/* Profile Card */}
           <GridItem id="profile-card"> 

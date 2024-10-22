@@ -12,7 +12,7 @@ function Home() {
   const [audioFile, setAudioFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
-  const [transcription, setTranscription] = useState(""); // State to store transcription text
+  const [transcription, setTranscription] = useState(""); //state to store transcription text
 
   const handleFileChange = (event) => {
     setAudioFile(event.target.files[0]);
@@ -39,7 +39,7 @@ function Home() {
 
       if (response.ok) {
         const text = await response.text();
-        setTranscription(text); // Display transcription text
+        setTranscription(text); //display transcription text
         setMessage("Transcription successful.");
       } else {
         setMessage("Error during transcription.");
