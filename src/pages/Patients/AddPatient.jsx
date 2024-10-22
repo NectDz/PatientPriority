@@ -110,3 +110,33 @@ const AddPatient = () => {
 
         <form onSubmit={handleSubmit}>
           <VStack spacing={6} align="stretch">
+            {/* Step 1: Personal Information */}
+            <Box mb={6}>
+              <Heading fontSize="lg" color="teal.500" mb={4}>Step 1: Personal Information</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
+
+            <FormControl id="name" isRequired>
+              <FormLabel>Full Name</FormLabel>
+              <Input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="dob" isRequired>
+              <FormLabel>Date of Birth</FormLabel>
+              <Input
+                type="date"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
