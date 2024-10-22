@@ -21,7 +21,6 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-// Firebase initialization (make sure Firebase is initialized properly)
 const db = getFirestore();
 
 function AppointmentCreation() {
@@ -45,7 +44,7 @@ function AppointmentCreation() {
 
         const doctorEmail = user.email;
 
-        // Step 1: Get the doctor's ID by matching the email in the "doctor" collection
+        //1 - get the doctor's ID by matching the email in the "doctor" collection
         const doctorQuery = query(
           collection(db, "doctor"),
           where("email", "==", doctorEmail)
@@ -56,7 +55,7 @@ function AppointmentCreation() {
           const doctorData = doctorSnapshot.docs[0].data();
           const doctorId = doctorData.id;
 
-          // Step 2: Get patients associated with this doctor
+          //2 - get patients associated with this doctor
           const patientQuery = query(
             collection(db, "patients"),
             where("doctor_id", "==", doctorId)
@@ -64,8 +63,8 @@ function AppointmentCreation() {
           const patientSnapshot = await getDocs(patientQuery);
 
           const patientList = patientSnapshot.docs.map((doc) => ({
-            value: doc.data().id, // Use patient_id as value
-            label: `${doc.data().firstName} ${doc.data().lastName}`, // Combine first and last name
+            value: doc.data().id, //use patient_id as value
+            label: `${doc.data().firstName} ${doc.data().lastName}`, //combine first and last name
           }));
 
           setPatients(patientList);
@@ -83,14 +82,14 @@ function AppointmentCreation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simple validation
+    //validate
     if (!selectedPatient || !date || !time || !description) {
       alert("Please fill out all fields");
       return;
     }
 
     try {
-      // Get doctor ID again for this session
+      //get doctor ID again for this session
       const doctorQuery = query(
         collection(db, "doctor"),
         where("email", "==", user.email)
@@ -101,21 +100,21 @@ function AppointmentCreation() {
         const doctorData = doctorSnapshot.docs[0].data();
         const doctorId = doctorData.id;
 
-        // Create the new appointment object
+        //create new appointment object
         const newAppointment = {
-          appointmentDate: new Date(`${date}T${time}:00`), // Combines date and time into a single Date object
+          appointmentDate: new Date(`${date}T${time}:00`),
           appointmentDescription: description,
-          appointmentTranscript: "", // Leave transcript blank
+          appointmentTranscript: "",
           doctor_id: doctorId,
           patient_id: selectedPatient.value,
         };
 
-        // Step 3: Save the new appointment to Firestore in the "appointment" collection
+        //3 - save new appointment to Firestore in the "appointment"
         await addDoc(collection(db, "appointment"), newAppointment);
 
         console.log("New Appointment:", newAppointment);
 
-        // After creating the appointment, navigate back to the appointments page
+        //navigate back to the appointments page after creating an appointment
         navigate("/doctor-profile/appointments");
       }
     } catch (error) {

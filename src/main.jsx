@@ -25,9 +25,9 @@ import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCr
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
-// Create a wrapper for the protected route
+// wrapper for the protected route
 function PrivateRoute({ children }) {
-  const { currentUser } = useAuth(); // Get the current user from the AuthContext
+  const { currentUser } = useAuth(); //get current user from AuthContext
 
   return currentUser ? children : <Navigate to="/doctor-login" />;
 }
@@ -35,12 +35,12 @@ function PrivateRoute({ children }) {
 function HomeRoute() {
   const { currentUser } = useAuth();
 
-  // If logged in, redirect to the doctor profile page
+  //if logged in redirect to the doctor profile page
   if (currentUser) {
     return <Navigate to="/doctor-profile" />;
   }
 
-  // Otherwise, render the home page (App component)
+  //else show homepage
   return <App />;
 }
 
@@ -76,7 +76,7 @@ ReactDOM.createRoot(rootElement).render(
                 element={<MedicalHistory />}
               />
 
-              {/* Protect the doctor profile route */}
+              {/*protect doctor profile route */}
               <Route
                 path="/doctor-profile/*"
                 element={
@@ -85,7 +85,7 @@ ReactDOM.createRoot(rootElement).render(
                   </PrivateRoute>
                 }
               >
-                {/* Nested Routes within DoctorProfile */}
+                {/*nested Routes within DoctorProfile */}
                 <Route path="appointments" element={<Appointments />} />
                 <Route
                   path="appointments/create-appointment"
