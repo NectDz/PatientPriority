@@ -25,6 +25,9 @@ import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCr
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
+// Import the AddPatient page
+import AddPatient from "./pages/Patients/AddPatient"; // Update the path accordingly
+
 // Create a wrapper for the protected route
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth(); // Get the current user from the AuthContext
@@ -97,8 +100,13 @@ ReactDOM.createRoot(rootElement).render(
                 />
               </Route>
 
+              {/* Doctor Routes */}
               <Route path="/doctor-login" element={<DoctorLogin />} />
               <Route path="/doctor-signup" element={<DoctorSignUp />} />
+
+              {/* New route for adding a patient */}
+              <Route path="/patients/AddPatient" element={<AddPatient />} /> {/* New Route */}
+
             </Routes>
           </BrowserRouter>
         </Layout>
