@@ -106,7 +106,7 @@ function DoctorProfile() {
           px="16"
           pb="8"
         >
-          <Outlet /> {/* This will render the current route's content */}
+          <Outlet />
         </Grid>
       </Flex>
     </ChakraProvider>

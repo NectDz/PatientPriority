@@ -12,9 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db, auth } from "../../firebase-config"; // Make sure to import both auth and db
+import { db, auth } from "../../firebase-config"; // import both auth and db
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth"; // Firebase Authentication
+import { createUserWithEmailAndPassword } from "firebase/auth"; // firebase Authentication
 
 function DoctorSignUp() {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ function DoctorSignUp() {
   const verifyCredentials = async () => {
     setLoading(true);
     try {
-      // First, verify the credentials in the 'credentials' collection
+      //verify the credentials in the 'credentials'
       const credentialsQuery = query(
         collection(db, "credentials"),
         where("credential_id", "==", doctorInfo.credentials),
@@ -61,7 +61,7 @@ function DoctorSignUp() {
         return;
       }
 
-      // Next, check if the doctor already exists in the 'doctor' collection
+      //check if the doctor already exists in the 'doctor'
       const doctorQuery = query(
         collection(db, "doctor"),
         where("credential_id", "==", doctorInfo.credentials),
@@ -85,7 +85,7 @@ function DoctorSignUp() {
         return;
       }
 
-      // If both checks pass, proceed to the next step
+      //if both checks pass, proceed
       toast({
         title: "Verification Successful",
         description: "Credentials verified. Proceeding to the next step.",
@@ -111,7 +111,7 @@ function DoctorSignUp() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Create user in Firebase Authentication
+      //create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         doctorInfo.email,
@@ -120,15 +120,15 @@ function DoctorSignUp() {
 
       const user = userCredential.user;
 
-      // Add doctor information to Firestore, including the email
+      //add doctor info to Firestore, including email
       await addDoc(collection(db, "doctor"), {
-        id: user.uid, // Use the user's unique Firebase ID
+        id: user.uid, //use the user's unique Firebase ID
         firstName: doctorInfo.firstName,
         lastName: doctorInfo.lastName,
         hospitalName: doctorInfo.hospital,
         credential_id: doctorInfo.credentials,
-        email: doctorInfo.email, // Add the doctor's email here
-        accountCreatedDate: new Date(), // Set the current date as the account creation date
+        email: doctorInfo.email, //add the doctor's email here
+        accountCreatedDate: new Date(), //set current date as the account creation date
       });
 
       toast({
@@ -141,7 +141,7 @@ function DoctorSignUp() {
 
       console.log("User created:", userCredential.user);
       navigate("/doctor-login");
-      // Add more logic here if needed (e.g., redirect to another page)
+      
     } catch (error) {
       console.error("Error signing up:", error);
       toast({
@@ -239,7 +239,7 @@ function DoctorSignUp() {
                 bg="#5AACA8"
                 color="white"
                 onClick={handleSubmit}
-                isLoading={loading} // Show loading state while creating the user
+                isLoading={loading} //show loading state while creating
               >
                 Sign Up
               </Button>

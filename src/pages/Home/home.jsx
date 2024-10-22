@@ -58,14 +58,14 @@ const Home = () => {
   const handleMouseEnter = () => {
     const audio = audioRef.current;
     audio.currentTime = 0; // Restart sound from beginning
-    audio.play(); // Play sound on hover
+    audio.play(); // play sound on hover
     audio.loop = true;
   };
 
   const handleMouseLeave = () => {
     const audio = audioRef.current;
-    audio.pause(); // Pause sound when hover stops
-    audio.currentTime = 0; // Reset the sound to the start
+    audio.pause(); // pause sound when hover stops
+    audio.currentTime = 0; // reset the sound to the start
     audio.loop = false;
   };
 
@@ -114,19 +114,16 @@ const Home = () => {
           width="100%"
           height="100%"
           backgroundColor="#EFF8F8"
-          p={8}
+          // p={8}
+          pl="4%"
           transition="left 0.5s ease-in-out" //slide transition
         >
           <Box display="flex" flexDirection="column">
-            <Heading fontSize="8xl" color="#252B42" mb="0">
-              A Place Where Care
+            <Heading fontSize="6xl" color="#252B42" mb="0">
+              A Place Where Care Meets Clarity...
             </Heading>
 
-            <Heading fontSize="8xl" color="#252B42">
-              Meets Clarity...
-            </Heading>
-
-            <Text fontSize="4xl" color="#737373" mt="4">
+            <Text fontSize="2xl" color="#737373" mt="4">
               Helping doctors and patients stay informed and proactive.
             </Text>
 
@@ -136,7 +133,7 @@ const Home = () => {
                 onClick={handleDoctorLogin}
                 bg="#5AACA8"
                 color="white"
-                size="lg"
+                size="md"
                 _hover={{ bg: "#4D9A94" }} //not visible if not hovering?
                 borderColor="#EFF8F8"
                 borderWidth="2px"
@@ -149,7 +146,7 @@ const Home = () => {
                 onClick={handlePatientLogin}
                 bg="#EFF8F8"
                 color="#5AACA8"
-                size="lg"
+                size="md"
                 _hover={{ bg: "#D9E7E7" }}
                 borderColor="#EFF8F8"
                 borderWidth="2px"
@@ -159,7 +156,7 @@ const Home = () => {
             </Box>
 
             <Text
-              fontSize="2xl"
+              fontSize="xl"
               color="#5AACA8"
               cursor="pointer"
               textDecoration="underline"
@@ -170,20 +167,22 @@ const Home = () => {
             </Text>
           </Box>
 
-          <audio ref={audioRef} src={heartBeatSound} />
+          <Box>
+            <audio ref={audioRef} src={heartBeatSound} />
 
-          <Image
-            src={pulseHeart}
-            alt="Pulse Heart"
-            boxSize="800px"
-            objectFit="contain"
-            mr="0" //push image to the right
-            className="pulse-animation"
-            onMouseEnter={handleMouseEnter} // Trigger animation and sound on hover
-            onMouseLeave={handleMouseLeave} // Stop sound when hover ends
-          />
+            <Image
+              src={pulseHeart}
+              alt="Pulse Heart"
+              boxSize="600px"
+              objectFit="contain"
+              mr="20" //push image to the right
+              className="pulse-animation"
+              onMouseEnter={handleMouseEnter} // trigger animation and sound on hover
+              onMouseLeave={handleMouseLeave} // stop sound when hover ends
+            />
         </Box>
-
+        </Box>
+        
         <Box
           position="absolute" //doctor login form
           top="0"
