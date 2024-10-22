@@ -61,7 +61,7 @@ function DoctorProfile() {
               </Box>
             </Link>
 
-            <Link to="/patients">
+            <Link to="/doctor-profile/patients">
               <Box as="button" display="flex" alignItems="center" gap="4">
                 <Icon as={HamburgerIcon} />
                 <Text>Patients</Text>
