@@ -3,19 +3,21 @@ import profilePic from "../../../assets/profile pic.png";
 
 function ProfileCard() {
   return (
-    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="md">
+    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="8px">
       <CardHeader
         p="4"
         fontWeight="bold"
         textAlign="center"
         fontSize="xl"
         textDecoration="underline"
-        bg="gray.100"
+        bg="#134074"
+        borderRadius="8px 8px 0px 0px"
+        color="white"
       >
         Profile
       </CardHeader>
 
-      <CardBody p={6}>
+      <CardBody p={6} bg="#F0F0EE" >
         <Box display="flex" flexDirection="column" alignItems="center">
           <Image
             src={profilePic}
