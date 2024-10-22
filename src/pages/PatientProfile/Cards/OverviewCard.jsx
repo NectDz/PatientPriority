@@ -32,10 +32,10 @@ function OverviewCard() {
             </UnorderedList>
           </Box>
 
-          <Box>
+          {/* <Box>
             <Text fontWeight="bold">Meeting Summaries:</Text>
             <UnorderedList></UnorderedList>
-          </Box>
+          </Box> */}
         </Box>
       </CardBody>
     </Card>

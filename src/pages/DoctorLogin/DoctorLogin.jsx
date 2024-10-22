@@ -12,8 +12,8 @@ import {
   FormLabel,
   useToast,
 } from "@chakra-ui/react";
-import { signInWithEmailAndPassword } from "firebase/auth"; // Import the signIn function from Firebase
-import { auth } from "../../firebase-config"; // Import Firebase authentication instance
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase-config";
 import { useAuth } from "../../Context/AuthContext";
 
 const DoctorLogin = () => {
@@ -28,7 +28,7 @@ const DoctorLogin = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await login(email, password); // Use login function from Auth context
+      await login(email, password); //login function from Auth context
       toast({
         title: "Login Successful",
         description: "You have successfully logged in!",
@@ -36,7 +36,7 @@ const DoctorLogin = () => {
         duration: 4000,
         isClosable: true,
       });
-      navigate("/doctor-profile"); // Redirect to doctor profile after login
+      navigate("/doctor-profile"); //redirect to doctor profile after login
     } catch (error) {
       console.error("Error logging in:", error);
       toast({
@@ -84,7 +84,7 @@ const DoctorLogin = () => {
               bg="#5AACA8"
               color={"white"}
               onClick={handleLogin}
-              isLoading={loading} // Show loading spinner while logging in
+              isLoading={loading} //loading spinner while logging in
             >
               Log In
             </Button>

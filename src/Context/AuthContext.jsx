@@ -6,39 +6,38 @@ import {
   signOut,
 } from "firebase/auth";
 
-// Create the AuthContext
 const AuthContext = createContext();
 
-// Create a custom hook to use the AuthContext
+//hook
 export const useAuth = () => useContext(AuthContext);
 
-// AuthProvider component to wrap your app and provide authentication state
+//AuthProvider component to wrap and provide authentication state
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Firebase listener for authentication state changes
+  //firebase listener for authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      setLoading(false); // Set loading to false once user state is set
+      setLoading(false); 
     });
 
-    // Cleanup the listener on unmount
+    
     return () => unsubscribe();
   }, []);
 
-  // Login function
+  //login
   const login = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Logout function
+  //logout
   const logout = () => {
     return signOut(auth);
   };
 
-  // Provide currentUser, login, and logout functions to all components
+  //currentUser, login, and logout functions to all components
   const value = {
     currentUser,
     login,
@@ -47,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children} {/* Only render the app if not loading */}
+      {!loading && children} {/* Only render app if not loading */}
     </AuthContext.Provider>
   );
 };

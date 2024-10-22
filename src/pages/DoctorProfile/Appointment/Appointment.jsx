@@ -18,14 +18,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-// Firebase initialization (make sure to import your Firebase config)
+//firebase init
 const db = getFirestore();
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const appointmentsPerPage = 3; // Set the number of appointments per page
+  const appointmentsPerPage = 3; //number of appointments per page
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -39,7 +39,7 @@ function Appointments() {
 
         const doctorEmail = user.email;
 
-        // Step 1: Get the doctor's ID by matching the email in the "doctor" collection
+        //1 - get the doctor's ID by matching the email in the "doctor" collection
         const doctorQuery = query(
           collection(db, "doctor"),
           where("email", "==", doctorEmail)
@@ -50,7 +50,7 @@ function Appointments() {
           const doctorData = doctorSnapshot.docs[0].data();
           const doctorId = doctorData.id;
 
-          // Step 2: Get patients associated with this doctor
+          //2 - get patients associated with this doctor
           const patientQuery = query(
             collection(db, "patients"),
             where("doctor_id", "==", doctorId)
@@ -63,7 +63,7 @@ function Appointments() {
             lastName: doc.data().lastName,
           }));
 
-          // Step 3: Get appointments for each patient and display their first and last name
+          //3 - get appointments for each patient and display their first and last name
           const appointmentPromises = patientIds.map(async (patient) => {
             const appointmentQuery = query(
               collection(db, "appointment"),
