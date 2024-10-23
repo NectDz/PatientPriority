@@ -344,3 +344,149 @@ const AddPatient = () => {
                 borderRadius="md"
               />
             </FormControl>
+
+            {/* Step 4: Medical History */}
+            <Box mt={8}>
+              <Heading fontSize="lg" color="teal.500" mb={4}>Step 4: Medical History</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
+
+            <FormControl id="conditions">
+              <FormLabel>Known Medical Conditions</FormLabel>
+              <Textarea
+                name="conditions"
+                value={formData.conditions}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="medications">
+              <FormLabel>Current Medications</FormLabel>
+              <Textarea
+                name="medications"
+                value={formData.medications}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="surgeries">
+              <FormLabel>Past Surgeries</FormLabel>
+              <Textarea
+                name="surgeries"
+                value={formData.surgeries}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="allergies">
+              <FormLabel>Known Allergies</FormLabel>
+              <Textarea
+                name="allergies"
+                value={formData.allergies}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+{/* Step 5: Lifestyle Information */}
+<Box mt={8}>
+  <Heading fontSize="lg" color="teal.500" mb={4}>Step 5: Lifestyle Information</Heading>
+  <Divider borderColor="gray.300" />
+</Box>
+
+<FormControl id="lifestyle" isRequired>
+  <FormLabel>Lifestyle & Habits</FormLabel>
+  <Select
+    name="lifestyle"
+    value={formData.lifestyle}
+    onChange={handleChange}
+    focusBorderColor="teal.400"
+    borderRadius="md"
+    placeholder="Select lifestyle habit"
+  >
+    <option value="non-smoker">Non-smoker</option>
+    <option value="smoker">Smoker</option>
+    <option value="former-smoker">Former Smoker</option>
+  </Select>
+</FormControl>
+
+<FormControl id="alcoholConsumption" isRequired>
+  <FormLabel>Alcohol Consumption</FormLabel>
+  <Select
+    name="alcoholConsumption"
+    value={formData.alcoholConsumption}
+    onChange={handleChange}
+    focusBorderColor="teal.400"
+    borderRadius="md"
+    placeholder="Select alcohol consumption"
+  >
+    <option value="none">None</option>
+    <option value="occasionally">Occasionally</option>
+    <option value="frequently">Frequently</option>
+  </Select>
+</FormControl>
+
+<FormControl id="physicalActivity" isRequired>
+  <FormLabel>Physical Activity Level</FormLabel>
+  <Select
+    name="physicalActivity"
+    value={formData.physicalActivity}
+    onChange={handleChange}
+    focusBorderColor="teal.400"
+    borderRadius="md"
+    placeholder="Select activity level"
+  >
+    <option value="sedentary">Sedentary</option>
+    <option value="moderatelyActive">Moderately Active</option>
+    <option value="active">Active</option>
+  </Select>
+</FormControl>
+
+<FormControl id="diet" isRequired>
+  <FormLabel>Dietary Habits</FormLabel>
+  <Select
+    name="diet"
+    value={formData.diet}
+    onChange={handleChange}
+    focusBorderColor="teal.400"
+    borderRadius="md"
+    placeholder="Select diet"
+  >
+    <option value="vegetarian">Vegetarian</option>
+    <option value="nonVegetarian">Non-Vegetarian</option>
+    <option value="vegan">Vegan</option>
+  </Select>
+</FormControl>
+
+<FormControl id="sleep" isRequired>
+  <FormLabel>Sleep Quality</FormLabel>
+  <Select
+    name="sleep"
+    value={formData.sleep}
+    onChange={handleChange}
+    focusBorderColor="teal.400"
+    borderRadius="md"
+    placeholder="Select sleep quality"
+  >
+    <option value="poor">Poor</option>
+    <option value="average">Average</option>
+    <option value="good">Good</option>
+  </Select>
+</FormControl>
+
+
+          </VStack>
+        </form>
+      </Box>
+    </Container>
+  );
+};
+
+export default AddPatient;
