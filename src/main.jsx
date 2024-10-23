@@ -16,7 +16,7 @@ import SignUp from "./pages/SignUp/SignUp.jsx";
 // PatientProfile SidePanel Routes
 //changed the names -  health records to overview, lab test results to reminders/Appointments, Care Team to Meeting Summaries, Medical History to AI Insights
 import Overview from "./pages/PatientProfile/SidePanelPages/Overview.jsx";
-import LabTestResults from "./pages/PatientProfile/SidePanelPages/LabTestResults.jsx";
+import RemindersAndAppointments from "./pages/PatientProfile/SidePanelPages/RemindersAndAppointments.jsx";
 import CareTeam from "./pages/PatientProfile/SidePanelPages/CareTeam.jsx";
 import AIInsights from "./pages/PatientProfile/SidePanelPages/AIInsights.jsx";
 
@@ -68,8 +68,8 @@ ReactDOM.createRoot(rootElement).render(
                 element={<Overview />} 
               />
               <Route
-                path="/patient-lab-test-results"
-                element={<LabTestResults />}
+                path="/reminders-and-appointments"
+                element={<RemindersAndAppointments />}
               />
               <Route path="/patient-care-team" element={<CareTeam />} />
               <Route
