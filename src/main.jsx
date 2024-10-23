@@ -17,7 +17,7 @@ import SignUp from "./pages/SignUp/SignUp.jsx";
 import HealthRecords from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx";
 import LabTestResults from "./pages/PatientProfile/SidePanelPages/LabTestResults.jsx";
 import CareTeam from "./pages/PatientProfile/SidePanelPages/CareTeam.jsx";
-import MedicalHistory from "./pages/PatientProfile/SidePanelPages/HealthRecords.jsx";
+import AIInsights from "./pages/PatientProfile/SidePanelPages/AIInsights.jsx";
 
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
@@ -72,8 +72,8 @@ ReactDOM.createRoot(rootElement).render(
               />
               <Route path="/patient-care-team" element={<CareTeam />} />
               <Route
-                path="/patient-medical-history"
-                element={<MedicalHistory />}
+                path="/ai-insights"
+                element={<AIInsights />}
               />
 
               {/*protect doctor profile route */}
