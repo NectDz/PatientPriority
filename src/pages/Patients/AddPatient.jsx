@@ -288,4 +288,59 @@ const AddPatient = () => {
               />
             </FormControl>
 
-         
+            {/* Step 3: Emergency Contact */}
+            <Box mt={8}>
+              <Heading fontSize="lg" color="teal.500" mb={4}>Step 3: Emergency Contact</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
+
+            <FormControl id="emergencyContactName" isRequired>
+              <FormLabel>Emergency Contact Name</FormLabel>
+              <Input
+                type="text"
+                name="emergencyContactName"
+                value={formData.emergencyContact.name}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="relationship" isRequired>
+              <FormLabel>Relationship to Patient</FormLabel>
+              <Select
+                name="relationship"
+                value={formData.emergencyContact.relationship}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              >
+                <option value="mother">Mother</option>
+                <option value="father">Father</option>
+                <option value="other">Other</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="emergencyPhone" isRequired>
+              <FormLabel>Emergency Phone Number</FormLabel>
+              <Input
+                type="tel"
+                name="emergencyPhone"
+                value={formData.emergencyContact.phone}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="emergencyEmail" isRequired>
+              <FormLabel>Emergency Email Address</FormLabel>
+              <Input
+                type="email"
+                name="emergencyEmail"
+                value={formData.emergencyContact.email}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
