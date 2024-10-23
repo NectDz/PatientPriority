@@ -25,12 +25,11 @@ import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCr
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 
-// Import the AddPatient page
-import AddPatient from "./pages/Patients/AddPatient"; // Update the path accordingly
+import AddPatient from "./pages/Patients/AddPatient"; //need to update after kazi's patient tab is added
 
-// Create a wrapper for the protected route
+//a wrapper for the protected route
 function PrivateRoute({ children }) {
-  const { currentUser } = useAuth(); // Get the current user from the AuthContext
+  const { currentUser } = useAuth(); //get current user from the AuthContext
 
   return currentUser ? children : <Navigate to="/doctor-login" />;
 }
@@ -38,12 +37,12 @@ function PrivateRoute({ children }) {
 function HomeRoute() {
   const { currentUser } = useAuth();
 
-  // If logged in, redirect to the doctor profile page
+  //if logged in, redirect to doctor profile page
   if (currentUser) {
     return <Navigate to="/doctor-profile" />;
   }
 
-  // Otherwise, render the home page (App component)
+  //else render the home page (App component)
   return <App />;
 }
 
@@ -54,7 +53,7 @@ ReactDOM.createRoot(rootElement).render(
     <ChakraProvider>
       <AuthProvider>
         <Layout>
-          <BrowserRouter>
+        <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomeRoute />} />
               <Route path="/team" element={<Team />} />
@@ -104,8 +103,17 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/doctor-login" element={<DoctorLogin />} />
               <Route path="/doctor-signup" element={<DoctorSignUp />} />
 
-              {/* New route for adding a patient */}
-              <Route path="/patients/AddPatient" element={<AddPatient />} /> {/* New Route */}
+              {/* Nested protected route for adding a patient under /patients */}
+              <Route
+                path="/patients/*"
+                element={
+                  <PrivateRoute>
+                    <Routes>
+                      <Route path="AddPatient" element={<AddPatient />} />
+                    </Routes>
+                  </PrivateRoute>
+                }
+              />
 
             </Routes>
           </BrowserRouter>
