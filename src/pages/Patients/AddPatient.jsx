@@ -70,6 +70,27 @@ const AddPatient = () => {
     mentalHealth: '',
   });
 
+  const requiredFields = [
+    'name', 'dob', 'gender', 'phone', 'email',
+    'address.street', 'address.city', 'address.state', 'address.zip',
+    'insuranceProvider', 'policyNumber',
+    'physicianName', 'physicianPhone',
+    'emergencyContact.name', 'emergencyContact.relationship', 'emergencyContact.phone', 'emergencyContact.email'
+  ];
+
+  // Function to calculate the progress of filled fields
+  const calculateProgress = () => {
+    const totalFields = requiredFields.length;
+    let filledFields = 0;
+
+    requiredFields.forEach((field) => {
+      const value = field.split('.').reduce((obj, key) => obj[key], formData);
+      if (value) filledFields += 1;
+    });
+
+    return (filledFields / totalFields) * 100;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -104,7 +125,9 @@ const AddPatient = () => {
       mt={24}  
       mb={12}
     >
-      <Progress hasStripe value={40} size="md" colorScheme="teal" mb={6} />
+      {/* Calculate progress dynamically */}
+      <Progress hasStripe value={calculateProgress()} size="md" colorScheme="teal" mb={6} />
+      
       <Box 
         bg="white" 
         p={{ base: 6, md: 10 }} 
@@ -124,7 +147,7 @@ const AddPatient = () => {
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 1: Personal Information</Heading>
               <Divider borderColor="gray.300" />
             </Box>
-                 {/* USED THE GRID TO MAKE IT LOOK CLEANER*/}
+
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
               <FormControl id="name" isRequired>
                 <FormLabel>Full Name</FormLabel>
