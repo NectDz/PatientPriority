@@ -101,7 +101,7 @@ function PatientProfile() {
 
   return (
     <ChakraProvider>
-      <Flex pt="50px" minH="100vh" bg="#EFF8F8">
+      <Flex pt="50px" minH="100vh" bg="#FAFAFA">
         {/* <SidePanel scrollToSection={scrollToSection} /> */}
         <SidePanel />
 
@@ -111,8 +111,9 @@ function PatientProfile() {
           pl="6"
           pr="6"
           pt="60px"
+          marginBottom="30px"
           marginLeft="220px"
-          templateRows="repeat(4, 1fr)"
+          templateRows="repeat(3, 1fr)"
           templateColumns="repeat(1, 1fr)"
           gap={6}
           width="100%"
@@ -133,9 +134,9 @@ function PatientProfile() {
           </GridItem>
 
           {/* Transcription / Summary (TranscriptionCard) */}
-          <GridItem id="transcription-card">
+          {/* <GridItem id="transcription-card">
             <TranscriptionCard />
-          </GridItem>
+          </GridItem> */}
         </Grid>
       </Flex>
     </ChakraProvider>
