@@ -12,7 +12,15 @@ import {
   Textarea,
   Divider,
   useBreakpointValue,
+  Grid,
+  InputGroup,
+  InputLeftElement,
+  Icon,
+  Tooltip,
+  Progress,
 } from '@chakra-ui/react';
+import { FaPhoneAlt, FaEnvelope, FaUser } from 'react-icons/fa';
+import { MdDateRange } from 'react-icons/md';
 
 const AddPatient = () => {
   const [formData, setFormData] = useState({
@@ -96,6 +104,7 @@ const AddPatient = () => {
       mt={24}  
       mb={12}
     >
+      <Progress hasStripe value={40} size="md" colorScheme="teal" mb={6} />
       <Box 
         bg="white" 
         p={{ base: 6, md: 10 }} 
@@ -110,78 +119,91 @@ const AddPatient = () => {
 
         <form onSubmit={handleSubmit}>
           <VStack spacing={6} align="stretch">
-            {/* Step 1: Personal Information */}
-            <Box mb={6}>
+
+            <Box mb={6} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 1: Personal Information</Heading>
               <Divider borderColor="gray.300" />
             </Box>
 
-            <FormControl id="name" isRequired>
-              <FormLabel>Full Name</FormLabel>
-              <Input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
+              <FormControl id="name" isRequired>
+                <FormLabel>Full Name</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={FaUser} />} />
+                  <Input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                  />
+                </InputGroup>
+              </FormControl>
 
-            <FormControl id="dob" isRequired>
-              <FormLabel>Date of Birth</FormLabel>
-              <Input
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+              <FormControl id="dob" isRequired>
+                <FormLabel>Date of Birth</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={MdDateRange} />} />
+                  <Input
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                  />
+                </InputGroup>
+              </FormControl>
 
-            <FormControl id="gender" isRequired>
-              <FormLabel>Gender</FormLabel>
-              <Select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-                placeholder="Select gender"
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </Select>
-            </FormControl>
+              <FormControl id="gender" isRequired>
+                <FormLabel>Gender</FormLabel>
+                <Select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                  placeholder="Select gender"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </Select>
+              </FormControl>
 
-            <FormControl id="phone" isRequired>
-              <FormLabel>Phone Number</FormLabel>
-              <Input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+              <FormControl id="phone" isRequired>
+                <FormLabel>Phone Number</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={FaPhoneAlt} />} />
+                  <Input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                  />
+                </InputGroup>
+              </FormControl>
 
-            <FormControl id="email" isRequired>
-              <FormLabel>Email Address</FormLabel>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+              <FormControl id="email" isRequired>
+                <FormLabel>Email Address</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={FaEnvelope} />} />
+                  <Input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                  />
+                </InputGroup>
+              </FormControl>
+            </Grid>
 
-            {/* Address Section */}
-            <Box mt={8}>
+            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Address</Heading>
               <Divider borderColor="gray.300" />
             </Box>
@@ -234,8 +256,7 @@ const AddPatient = () => {
               />
             </FormControl>
 
-            {/* Step 2: Insurance Details */}
-            <Box mt={8}>
+            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 2: Insurance Details</Heading>
               <Divider borderColor="gray.300" />
             </Box>
@@ -288,65 +309,65 @@ const AddPatient = () => {
               />
             </FormControl>
 
-            {/* Step 3: Emergency Contact */}
-            <Box mt={8}>
+            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 3: Emergency Contact</Heading>
               <Divider borderColor="gray.300" />
             </Box>
 
-            <FormControl id="emergencyContactName" isRequired>
-              <FormLabel>Emergency Contact Name</FormLabel>
-              <Input
-                type="text"
-                name="emergencyContactName"
-                value={formData.emergencyContact.name}
-                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
+              <FormControl id="emergencyContactName" isRequired>
+                <FormLabel>Emergency Contact Name</FormLabel>
+                <Input
+                  type="text"
+                  name="emergencyContactName"
+                  value={formData.emergencyContact.name}
+                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </FormControl>
 
-            <FormControl id="relationship" isRequired>
-              <FormLabel>Relationship to Patient</FormLabel>
-              <Select
-                name="relationship"
-                value={formData.emergencyContact.relationship}
-                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              >
-                <option value="mother">Mother</option>
-                <option value="father">Father</option>
-                <option value="other">Other</option>
-              </Select>
-            </FormControl>
+              <FormControl id="relationship" isRequired>
+                <FormLabel>Relationship to Patient</FormLabel>
+                <Select
+                  name="relationship"
+                  value={formData.emergencyContact.relationship}
+                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                >
+                  <option value="mother">Mother</option>
+                  <option value="father">Father</option>
+                  <option value="other">Other</option>
+                </Select>
+              </FormControl>
 
-            <FormControl id="emergencyPhone" isRequired>
-              <FormLabel>Emergency Phone Number</FormLabel>
-              <Input
-                type="tel"
-                name="emergencyPhone"
-                value={formData.emergencyContact.phone}
-                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+              <FormControl id="emergencyPhone" isRequired>
+                <FormLabel>Emergency Phone Number</FormLabel>
+                <Input
+                  type="tel"
+                  name="emergencyPhone"
+                  value={formData.emergencyContact.phone}
+                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </FormControl>
 
-            <FormControl id="emergencyEmail" isRequired>
-              <FormLabel>Emergency Email Address</FormLabel>
-              <Input
-                type="email"
-                name="emergencyEmail"
-                value={formData.emergencyContact.email}
-                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-              />
-            </FormControl>
+              <FormControl id="emergencyEmail" isRequired>
+                <FormLabel>Emergency Email Address</FormLabel>
+                <Input
+                  type="email"
+                  name="emergencyEmail"
+                  value={formData.emergencyContact.email}
+                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </FormControl>
+            </Grid>
 
-            {/* Step 4: Medical History */}
-            <Box mt={8}>
+            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 4: Medical History</Heading>
               <Divider borderColor="gray.300" />
             </Box>
@@ -395,94 +416,91 @@ const AddPatient = () => {
               />
             </FormControl>
 
-{/* Step 5: Lifestyle Information */}
-<Box mt={8}>
-  <Heading fontSize="lg" color="teal.500" mb={4}>Step 5: Lifestyle Information</Heading>
-  <Divider borderColor="gray.300" />
-</Box>
+            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
+              <Heading fontSize="lg" color="teal.500" mb={4}>Step 5: Lifestyle Information</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
 
-<FormControl id="lifestyle" isRequired>
-  <FormLabel>Lifestyle & Habits</FormLabel>
-  <Select
-    name="lifestyle"
-    value={formData.lifestyle}
-    onChange={handleChange}
-    focusBorderColor="teal.400"
-    borderRadius="md"
-    placeholder="Select lifestyle habit"
-  >
-    <option value="non-smoker">Non-smoker</option>
-    <option value="smoker">Smoker</option>
-    <option value="former-smoker">Former Smoker</option>
-  </Select>
-</FormControl>
+            <FormControl id="lifestyle" isRequired>
+              <FormLabel>Lifestyle & Habits</FormLabel>
+              <Select
+                name="lifestyle"
+                value={formData.lifestyle}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select lifestyle habit"
+              >
+                <option value="non-smoker">Non-smoker</option>
+                <option value="smoker">Smoker</option>
+                <option value="former-smoker">Former Smoker</option>
+              </Select>
+            </FormControl>
 
-<FormControl id="alcoholConsumption" isRequired>
-  <FormLabel>Alcohol Consumption</FormLabel>
-  <Select
-    name="alcoholConsumption"
-    value={formData.alcoholConsumption}
-    onChange={handleChange}
-    focusBorderColor="teal.400"
-    borderRadius="md"
-    placeholder="Select alcohol consumption"
-  >
-    <option value="none">None</option>
-    <option value="occasionally">Occasionally</option>
-    <option value="frequently">Frequently</option>
-  </Select>
-</FormControl>
+            <FormControl id="alcoholConsumption" isRequired>
+              <FormLabel>Alcohol Consumption</FormLabel>
+              <Select
+                name="alcoholConsumption"
+                value={formData.alcoholConsumption}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select alcohol consumption"
+              >
+                <option value="none">None</option>
+                <option value="occasionally">Occasionally</option>
+                <option value="frequently">Frequently</option>
+              </Select>
+            </FormControl>
 
-<FormControl id="physicalActivity" isRequired>
-  <FormLabel>Physical Activity Level</FormLabel>
-  <Select
-    name="physicalActivity"
-    value={formData.physicalActivity}
-    onChange={handleChange}
-    focusBorderColor="teal.400"
-    borderRadius="md"
-    placeholder="Select activity level"
-  >
-    <option value="sedentary">Sedentary</option>
-    <option value="moderatelyActive">Moderately Active</option>
-    <option value="active">Active</option>
-  </Select>
-</FormControl>
+            <FormControl id="physicalActivity" isRequired>
+              <FormLabel>Physical Activity Level</FormLabel>
+              <Select
+                name="physicalActivity"
+                value={formData.physicalActivity}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select activity level"
+              >
+                <option value="sedentary">Sedentary</option>
+                <option value="moderatelyActive">Moderately Active</option>
+                <option value="active">Active</option>
+              </Select>
+            </FormControl>
 
-<FormControl id="diet" isRequired>
-  <FormLabel>Dietary Habits</FormLabel>
-  <Select
-    name="diet"
-    value={formData.diet}
-    onChange={handleChange}
-    focusBorderColor="teal.400"
-    borderRadius="md"
-    placeholder="Select diet"
-  >
-    <option value="vegetarian">Vegetarian</option>
-    <option value="nonVegetarian">Non-Vegetarian</option>
-    <option value="vegan">Vegan</option>
-  </Select>
-</FormControl>
+            <FormControl id="diet" isRequired>
+              <FormLabel>Dietary Habits</FormLabel>
+              <Select
+                name="diet"
+                value={formData.diet}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select diet"
+              >
+                <option value="vegetarian">Vegetarian</option>
+                <option value="nonVegetarian">Non-Vegetarian</option>
+                <option value="vegan">Vegan</option>
+              </Select>
+            </FormControl>
 
-<FormControl id="sleep" isRequired>
-  <FormLabel>Sleep Quality</FormLabel>
-  <Select
-    name="sleep"
-    value={formData.sleep}
-    onChange={handleChange}
-    focusBorderColor="teal.400"
-    borderRadius="md"
-    placeholder="Select sleep quality"
-  >
-    <option value="poor">Poor</option>
-    <option value="average">Average</option>
-    <option value="good">Good</option>
-  </Select>
-</FormControl>
+            <FormControl id="sleep" isRequired>
+              <FormLabel>Sleep Quality</FormLabel>
+              <Select
+                name="sleep"
+                value={formData.sleep}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select sleep quality"
+              >
+                <option value="poor">Poor</option>
+                <option value="average">Average</option>
+                <option value="good">Good</option>
+              </Select>
+            </FormControl>
 
-
-            {/* Submit Button */}
             <Button
               type="submit"
               colorScheme="teal"
