@@ -187,7 +187,7 @@ const SidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/patient-health-records" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/overview" fontWeight="bold">
             Overview
           </ChakraLink>
         </HStack>
