@@ -482,6 +482,20 @@ const AddPatient = () => {
 </FormControl>
 
 
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              colorScheme="teal"
+              size="lg"
+              width="100%"
+              borderRadius="md"
+              bgGradient="linear(to-r, teal.400, teal.500)"
+              color="white"
+              _hover={{ bgGradient: 'linear(to-r, teal.500, teal.600)' }}
+              mt={8}
+            >
+              Submit
+            </Button>
           </VStack>
         </form>
       </Box>
