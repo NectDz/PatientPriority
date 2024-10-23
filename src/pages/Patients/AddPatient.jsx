@@ -124,7 +124,7 @@ const AddPatient = () => {
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 1: Personal Information</Heading>
               <Divider borderColor="gray.300" />
             </Box>
-
+                 {/* USED THE GRID TO MAKE IT LOOK CLEANER*/}
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
               <FormControl id="name" isRequired>
                 <FormLabel>Full Name</FormLabel>
