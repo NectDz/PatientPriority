@@ -140,3 +140,152 @@ const AddPatient = () => {
               />
             </FormControl>
 
+            <FormControl id="gender" isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select gender"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="phone" isRequired>
+              <FormLabel>Phone Number</FormLabel>
+              <Input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="email" isRequired>
+              <FormLabel>Email Address</FormLabel>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Address Section */}
+            <Box mt={8}>
+              <Heading fontSize="lg" color="teal.500" mb={4}>Address</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
+
+            <FormControl id="street" isRequired>
+              <FormLabel>Street</FormLabel>
+              <Input
+                type="text"
+                name="street"
+                value={formData.address.street}
+                onChange={(e) => handleNestedChange(e, 'address', 'street')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="city" isRequired>
+              <FormLabel>City</FormLabel>
+              <Input
+                type="text"
+                name="city"
+                value={formData.address.city}
+                onChange={(e) => handleNestedChange(e, 'address', 'city')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="state" isRequired>
+              <FormLabel>State</FormLabel>
+              <Input
+                type="text"
+                name="state"
+                value={formData.address.state}
+                onChange={(e) => handleNestedChange(e, 'address', 'state')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="zip" isRequired>
+              <FormLabel>Zip Code</FormLabel>
+              <Input
+                type="text"
+                name="zip"
+                value={formData.address.zip}
+                onChange={(e) => handleNestedChange(e, 'address', 'zip')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Step 2: Insurance Details */}
+            <Box mt={8}>
+              <Heading fontSize="lg" color="teal.500" mb={4}>Step 2: Insurance Details</Heading>
+              <Divider borderColor="gray.300" />
+            </Box>
+
+            <FormControl id="insuranceProvider" isRequired>
+              <FormLabel>Insurance Provider</FormLabel>
+              <Input
+                type="text"
+                name="insuranceProvider"
+                value={formData.insuranceProvider}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="policyNumber" isRequired>
+              <FormLabel>Policy Number</FormLabel>
+              <Input
+                type="text"
+                name="policyNumber"
+                value={formData.policyNumber}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="physicianName" isRequired>
+              <FormLabel>Primary Care Physician's Name</FormLabel>
+              <Input
+                type="text"
+                name="physicianName"
+                value={formData.physicianName}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="physicianPhone" isRequired>
+              <FormLabel>Physician's Phone Number</FormLabel>
+              <Input
+                type="tel"
+                name="physicianPhone"
+                value={formData.physicianPhone}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+         
