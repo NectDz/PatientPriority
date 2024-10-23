@@ -125,7 +125,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  IconButton,
   VStack,
   HStack,
   Text,
@@ -137,13 +136,11 @@ import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from re
 import { FaHome } from "react-icons/fa";
 
 import { Link as ReactRouterLink } from "react-router-dom";
-// import { Link as ChakraLink, LinkProps } from '@chakra-ui/react'
 
 const SidePanel = () => {
   return (
     <Box
       as="nav"
-      // width="225px"
       width="14rem"
       height="100vh"
       bg="#0B2545"
@@ -163,18 +160,17 @@ const SidePanel = () => {
       >
         <HStack
           spacing={4}
-          _hover={{ // hover is a chakra prop
-            bg: "#2A3B5C", // change background
-            // color: "white", // text turns black
-            transform: "scale(1.05)", // Slight scaling effect on hover
-            transition: "0.2s", // Smooth transition for the hover effect
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)",
+            transition: "0.2s",
           }}
           w="97.5%"
           h="3rem"
-          px={6} 
+          px={6}
         >
           <FaHome />
-          <ChakraLink as={ReactRouterLink} to="/patient-profile">
+          <ChakraLink as={ReactRouterLink} to="/patient-profile" fontWeight="bold">
             Home
           </ChakraLink>
         </HStack>
@@ -182,8 +178,7 @@ const SidePanel = () => {
         <HStack
           spacing={4}
           _hover={{
-            bg: "#2A3B5C", // change background
-            // color: "black", // text turns black
+            bg: "#2A3B5C",
             transform: "scale(1.05)", 
             transition: "0.2s",
           }}
@@ -192,16 +187,15 @@ const SidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/patient-health-records">
-            Health Records
+          <ChakraLink as={ReactRouterLink} to="/overview" fontWeight="bold">
+            Overview
           </ChakraLink>
         </HStack>
 
         <HStack
           spacing={4}
           _hover={{
-            bg: "#2A3B5C", // change background
-            // color: "black", // text turns black
+            bg: "#2A3B5C",
             transform: "scale(1.05)", 
             transition: "0.2s", 
           }}
@@ -210,16 +204,15 @@ const SidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/lab-test-results">
-            Lab Test Results
+          <ChakraLink as={ReactRouterLink} to="/reminders-and-appointments" fontWeight="bold" noOfLines={1}>
+            Reminders & Appointments
           </ChakraLink>
         </HStack>
 
         <HStack
          spacing={4}
          _hover={{
-          bg: "#2A3B5C", // change background
-          // color: "black", // text turns black
+          bg: "#2A3B5C",
            transform: "scale(1.05)", 
            transition: "0.2s", 
          }}
@@ -228,16 +221,15 @@ const SidePanel = () => {
          px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/care-team">
-            Care Team and Providers
+          <ChakraLink as={ReactRouterLink} to="/meeting-summaries" fontWeight="bold">
+            Meeting Summaries
           </ChakraLink>
         </HStack>
 
         <HStack
           spacing={4}
           _hover={{
-            bg: "#2A3B5C", // change background
-            // color: "black", // text turns black
+            bg: "#2A3B5C",
             transform: "scale(1.05)", 
             transition: "0.2s", 
           }}
@@ -246,8 +238,8 @@ const SidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/medical-history">
-            Medical History
+          <ChakraLink as={ReactRouterLink} to="/ai-insights" fontWeight="bold">
+            AI Insights
           </ChakraLink>
         </HStack>
 
@@ -257,8 +249,7 @@ const SidePanel = () => {
         <HStack
           spacing={4}
           _hover={{
-            bg: "#2A3B5C", // change background
-            // color: "black", // text turns black
+            bg: "#2A3B5C",
             transform: "scale(1.05)", 
             transition: "0.2s", 
           }}
@@ -267,15 +258,14 @@ const SidePanel = () => {
           px={6} 
         >
           <SettingsIcon />
-          <ChakraLink>Settings</ChakraLink>
+          <ChakraLink fontWeight="bold">Settings</ChakraLink>
         </HStack>
 
         {/* Log Out Section */}
         <HStack
           spacing={4}
           _hover={{
-            bg: "#FF2C2C75", // change background
-            // color: "red", // text turns black
+            bg: "#FF2C2C75",
             transform: "scale(1.05)",
             transition: "0.2s", 
           }}
@@ -284,7 +274,7 @@ const SidePanel = () => {
           px={6} 
         >
           <IoIosLogOut />
-          <ChakraLink as={ReactRouterLink} to="/">
+          <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
             Log Out
           </ChakraLink>
         </HStack>
