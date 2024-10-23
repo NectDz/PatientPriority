@@ -5,7 +5,7 @@ function HealthRecords() {
 
     return (
         <ChakraProvider>
-            <Text pt="100px"> HealthRecords </Text>
+            <Text pt="100px"> AI Insights </Text>
         </ChakraProvider>
     );
 }
