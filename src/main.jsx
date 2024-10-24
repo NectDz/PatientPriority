@@ -108,12 +108,10 @@ ReactDOM.createRoot(rootElement).render(
 
               {/* Nested protected route for adding a patient under /patients */}
               <Route
-                path="/patients/*"
+                path="/doctor-profile/patients/add-new-patient"
                 element={
                   <PrivateRoute>
-                    <Routes>
-                      <Route path="AddPatient" element={<AddPatient />} />
-                    </Routes>
+                    <AddPatient />
                   </PrivateRoute>
                 }
               />

@@ -91,7 +91,7 @@ const DoctorSidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/patients" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/doctor-profile/patients" fontWeight="bold">
             Patients
           </ChakraLink>
         </HStack>
