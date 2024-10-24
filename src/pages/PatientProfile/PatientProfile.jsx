@@ -101,7 +101,7 @@ function PatientProfile() {
 
   return (
     <ChakraProvider>
-      <Flex pt="50px" minH="100vh" bg="#EFF8F8">
+      <Flex pt="50px" minH="100vh" bg="#FAFAFA">
         {/* <SidePanel scrollToSection={scrollToSection} /> */}
         <SidePanel />
 
@@ -111,11 +111,12 @@ function PatientProfile() {
           pl="6"
           pr="6"
           pt="60px"
-          marginLeft="220px"  // Set fixed margin to account for side panel width
-          templateRows="repeat(8, 1fr)"
-          templateColumns="repeat(1, 1fr)"  // Only one column for full-width cards
-          gap={6}  // Increased gap for better spacing
-          width="100%"  // Set the grid to use full width of the container
+          marginBottom="30px"
+          marginLeft="220px"
+          templateRows="repeat(3, 1fr)"
+          templateColumns="repeat(1, 1fr)"
+          gap={6}
+          width="100%"
         >
           {/* Profile Card */}
           <GridItem id="profile-card"> 
@@ -133,9 +134,9 @@ function PatientProfile() {
           </GridItem>
 
           {/* Transcription / Summary (TranscriptionCard) */}
-          <GridItem id="transcription-card">
+          {/* <GridItem id="transcription-card">
             <TranscriptionCard />
-          </GridItem>
+          </GridItem> */}
         </Grid>
       </Flex>
     </ChakraProvider>

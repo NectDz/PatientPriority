@@ -2,19 +2,21 @@ import { Card, CardHeader, CardBody, Box, Text, UnorderedList, ListItem } from "
 
 function OverviewCard() {
   return (
-    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="md">
+    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="8px">
       <CardHeader
         p="4"
         fontWeight="bold"
         textAlign="center"
         fontSize="xl"
         textDecoration="underline"
-        bg="gray.100"
+        bg="#134074"
+        borderRadius="8px 8px 0px 0px"
+        color="white"
       >
         Overview
       </CardHeader>
 
-      <CardBody p={6}>
+      <CardBody p={6} bg="#F0F0EE">
         <Box display="flex" justifyContent="space-around">
           <Box>
             <Text fontWeight="bold">Current Health Information:</Text>
@@ -32,10 +34,10 @@ function OverviewCard() {
             </UnorderedList>
           </Box>
 
-          <Box>
+          {/* <Box>
             <Text fontWeight="bold">Meeting Summaries:</Text>
             <UnorderedList></UnorderedList>
-          </Box>
+          </Box> */}
         </Box>
       </CardBody>
     </Card>

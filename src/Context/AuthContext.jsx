@@ -1,79 +1,52 @@
-// src/context/AuthContext.js
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { initializeApp } from "firebase/app";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "../firebase-config"; // Import Firebase auth
 import {
-  getAuth,
   onAuthStateChanged,
-  signInWithPopup,
+  signInWithEmailAndPassword,
   signOut,
-  GoogleAuthProvider,
 } from "firebase/auth";
-import { firebaseConfig } from "../firebase-config"; // Ensure you have this config file set up
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const AuthContext = createContext();
 
-// Create the AuthContext
-const AuthContext = createContext(undefined);
+//hook
+export const useAuth = () => useContext(AuthContext);
 
-// Custom hook to use the AuthContext
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-
-// AuthProvider component to provide authentication state and actions
+//AuthProvider component to wrap and provide authentication state
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null); // Initially, no user is signed in
-  const [loading, setLoading] = useState(true); // Loading state to manage the auth state check
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Listen to auth state changes
+  //firebase listener for authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user); // Set the current user in the state
-      setLoading(false); // Stop loading when we have the user state
+      setCurrentUser(user);
+      setLoading(false); 
     });
 
-    return unsubscribe; // Cleanup subscription on unmount
+    
+    return () => unsubscribe();
   }, []);
 
-  // Sign in with Google
-  const signInWithGoogle = async () => {
-    setLoading(true); // Set loading to true when signing in
-    try {
-      await signInWithPopup(auth, provider); // Sign in using a popup
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false); // Stop loading after sign-in attempt
-    }
+  //login
+  const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Sign out the current user
-  const signOutUser = async () => {
-    try {
-      await signOut(auth); // Sign out the current user
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
+  //logout
+  const logout = () => {
+    return signOut(auth);
   };
 
-  // Value object containing the auth state and actions
+  //currentUser, login, and logout functions to all components
   const value = {
     currentUser,
-    loading,
-    signInWithGoogle,
-    signOut: signOutUser,
+    login,
+    logout,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children} {/* Render children only when not loading */}
+      {!loading && children} {/* Only render app if not loading */}
     </AuthContext.Provider>
   );
 };

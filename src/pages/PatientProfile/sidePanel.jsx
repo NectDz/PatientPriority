@@ -122,135 +122,169 @@
 
 // export default SidePanel;
 
-import React, { useState } from "react";
-import { Box, IconButton, VStack, HStack, Text, Link as ChakraLink } from "@chakra-ui/react";
-import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
-import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
-
-import { Link as ReactRouterLink } from 'react-router-dom'
-// import { Link as ChakraLink, LinkProps } from '@chakra-ui/react'
-
+import React from "react";
+import {
+  Box,
+  VStack,
+  HStack,
+  Link as ChakraLink,
+  Spacer,
+} from "@chakra-ui/react";
+import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import { IoIosLogOut } from "react-icons/io";
+import { FaHome } from "react-icons/fa";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 const SidePanel = () => {
   return (
     <Box
       as="nav"
-      width="225px"
+      width="14rem"
       height="100vh"
-      bg="gray.800"
+      bg="#0B2545"
       color="white"
       display="flex"
       flexDirection="column"
       alignItems="flex-start"
-      paddingLeft="17px"
       position="fixed"
-      left="0px"
     >
-      <VStack pt="60px" spacing={4} align="start">
-        <Box width="70px" align="center">
-          <Text>Panel</Text>
-        </Box>
+      <VStack
+        pt="30%"
+        spacing={5}
+        align="start"
+        flexGrow={1}
+        w="100%"
+      >
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)",
+            transition: "0.2s",
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6}
+        >
+          <FaHome />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile" fontWeight="bold">
+            Home
+          </ChakraLink>
+        </HStack>
 
-        {/* <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Profile"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <Link>
-            Profile
-          </Link>
-        </HStack> */}
-
-        {/* <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Overview"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <Link >
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s",
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/overview" fontWeight="bold">
             Overview
-          </Link>
-        </HStack> */}
-
-        <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Lab Test Results"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink as={ReactRouterLink} to='/patient-health-records'>
-            Health Records
           </ChakraLink>
         </HStack>
 
-        <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Care Team"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink as={ReactRouterLink} to='/lab-test-results'>
-            Lab Test Results
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/reminders-and-appointments" fontWeight="bold" noOfLines={1}>
+            Reminders & Appointments
           </ChakraLink>
         </HStack>
 
-        <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Calendar"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink as={ReactRouterLink} to='/care-team'>
-            Care Team and Providers
+        <HStack
+         spacing={4}
+         _hover={{
+          bg: "#2A3B5C",
+           transform: "scale(1.05)", 
+           transition: "0.2s", 
+         }}
+         w="97.5%"
+         h="3rem"
+         px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/meeting-summaries" fontWeight="bold">
+            Meeting Summaries
           </ChakraLink>
         </HStack>
 
-        <HStack spacing={2}>
-          <IconButton
-            icon={<HamburgerIcon />}
-            aria-label="Medical History"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink as={ReactRouterLink} to='/medical-history'>
-            Medical History
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/ai-insights" fontWeight="bold">
+            AI Insights
           </ChakraLink>
         </HStack>
 
+        <Spacer />
+      </VStack>
 
-        {/* Settings Section */}
-        <HStack spacing={2}>
-          <IconButton
-            icon={<SettingsIcon />}  // Use SettingsIcon here
-            aria-label="Settings"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink >
+      <Box
+        border="1px"
+        borderColor="whiteAlpha.300"
+        w="100%"
+        p={4}
+        mt={6}
+        marginBottom="4vh"
+      >
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <SettingsIcon />
+          <ChakraLink as={ReactRouterLink} to="/settings" fontWeight="bold">
             Settings
           </ChakraLink>
         </HStack>
 
-        {/* Log Out Section */}
-        <HStack spacing={2}>
-          <IconButton
-            icon={<IoIosLogOut />}  // Use IoIosLogOut here
-            aria-label="Log Out"
-            variant="ghost"
-            colorScheme="whiteAlpha"
-          />
-          <ChakraLink as={ReactRouterLink} to='/'>
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#FF2C2C75",
+            transform: "scale(1.05)",
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <IoIosLogOut />
+          <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
             Log Out
           </ChakraLink>
         </HStack>
-
-      </VStack>
+      </Box>
     </Box>
   );
 };
