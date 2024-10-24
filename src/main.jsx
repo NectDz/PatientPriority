@@ -25,6 +25,7 @@ import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
 import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCreation.jsx";
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
+import PatientsPage from "./pages/DoctorProfile/PatientsPage/PatientsPage.jsx";
 
 // wrapper for the protected route
 function PrivateRoute({ children }) {
@@ -96,6 +97,7 @@ ReactDOM.createRoot(rootElement).render(
                   path="appointments/:id"
                   element={<AppointmentDetail />}
                 />
+                <Route path="patients" element={<PatientsPage />} />
               </Route>
 
               <Route path="/doctor-login" element={<DoctorLogin />} />
