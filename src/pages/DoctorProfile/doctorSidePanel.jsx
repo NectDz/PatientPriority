@@ -9,9 +9,22 @@ import {
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 
 const DoctorSidePanel = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to log out", error);
+    }
+  };
+
   return (
     <Box
       as="nav"
@@ -31,7 +44,6 @@ const DoctorSidePanel = () => {
         flexGrow={1}
         w="100%"
       >
-        {/* Home */}
         <HStack
           spacing={4}
           _hover={{
@@ -49,7 +61,6 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        {/* Overview */}
         <HStack
           spacing={4}
           _hover={{
@@ -67,7 +78,6 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        {/* Appointments */}
         <HStack
           spacing={4}
           _hover={{
@@ -85,7 +95,6 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        {/* Patients */}
         <HStack
           spacing={4}
           _hover={{
@@ -103,18 +112,16 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        <Spacer /> {/* Pushes the items below to the bottom */}
+        <Spacer />
       </VStack>
 
-      {/* Grouped Box for Settings and Log Out */}
       <Box
         border="1px"
         borderColor="whiteAlpha.300"
         w="100%"
         p={4}
-        mt={6} // Adds padding on top
+        mt={6}
       >
-        {/* Settings */}
         <HStack
           spacing={4}
           _hover={{
@@ -132,7 +139,6 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        {/* Log Out */}
         <HStack
           spacing={4}
           _hover={{
@@ -142,7 +148,8 @@ const DoctorSidePanel = () => {
           }}
           w="97.5%"
           h="3rem"
-          px={6} 
+          px={6}
+          onClick={handleLogout} // Adding logout functionality
         >
           <IoIosLogOut />
           <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
