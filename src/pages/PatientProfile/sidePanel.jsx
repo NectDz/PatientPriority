@@ -122,19 +122,17 @@
 
 // export default SidePanel;
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   VStack,
   HStack,
-  Text,
   Link as ChakraLink,
   Spacer,
 } from "@chakra-ui/react";
-import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
-import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
+import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
-
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const SidePanel = () => {
@@ -155,7 +153,6 @@ const SidePanel = () => {
         spacing={5}
         align="start"
         flexGrow={1}
-        marginBottom="8vh"
         w="100%"
       >
         <HStack
@@ -244,8 +241,16 @@ const SidePanel = () => {
         </HStack>
 
         <Spacer />
+      </VStack>
 
-        {/* Settings Section */}
+      <Box
+        border="1px"
+        borderColor="whiteAlpha.300"
+        w="100%"
+        p={4}
+        mt={6}
+        marginBottom="4vh"
+      >
         <HStack
           spacing={4}
           _hover={{
@@ -258,10 +263,11 @@ const SidePanel = () => {
           px={6} 
         >
           <SettingsIcon />
-          <ChakraLink fontWeight="bold">Settings</ChakraLink>
+          <ChakraLink as={ReactRouterLink} to="/settings" fontWeight="bold">
+            Settings
+          </ChakraLink>
         </HStack>
 
-        {/* Log Out Section */}
         <HStack
           spacing={4}
           _hover={{
@@ -278,7 +284,7 @@ const SidePanel = () => {
             Log Out
           </ChakraLink>
         </HStack>
-      </VStack>
+      </Box>
     </Box>
   );
 };
