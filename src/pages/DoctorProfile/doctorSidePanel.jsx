@@ -1,77 +1,148 @@
-// doctorSidePanel.js
 import React from "react";
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { FaSignOutAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../Context/AuthContext";
+import {
+  Box,
+  VStack,
+  HStack,
+  Text,
+  Link as ChakraLink,
+  Spacer,
+} from "@chakra-ui/react";
+import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
+import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
+import { FaHome } from "react-icons/fa";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 const DoctorSidePanel = () => {
-  const { logout } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      window.location.href = "/";
-    } catch (error) {
-      console.error("Failed to log out", error);
-    }
-  };
-
   return (
     <Box
-      bg="gray.800"
-      color="white"
-      width="220px"
-      p="8"
-      pt="60px"
+      as="nav"
+      width="14rem"
       height="100vh"
-      position="fixed"
+      bg="#0B2545"
+      color="white"
       display="flex"
       flexDirection="column"
-      justifyContent="space-between"
+      alignItems="flex-start"
+      position="fixed"
     >
-      <Flex flexDirection="column" gap={8} align="start">
-        <Link to="/">
-          <Box as="button" display="flex" alignItems="center" gap="4">
-            <Icon as={HamburgerIcon} />
-            <Text>Home</Text>
-          </Box>
-        </Link>
-
-        <Link to="/patients">
-          <Box as="button" display="flex" alignItems="center" gap="4">
-            <Icon as={HamburgerIcon} />
-            <Text>Patients</Text>
-          </Box>
-        </Link>
-
-        <Link to="/doctor-profile/appointments">
-          <Box as="button" display="flex" alignItems="center" gap="4">
-            <Icon as={HamburgerIcon} />
-            <Text>Appointments</Text>
-          </Box>
-        </Link>
-
-        <Link to="/calendar">
-          <Box as="button" display="flex" alignItems="center" gap="4">
-            <Icon as={HamburgerIcon} />
-            <Text>Calendar</Text>
-          </Box>
-        </Link>
-      </Flex>
-
-      {/* Bottom Signout Button */}
-      <Box
-        as="button"
-        display="flex"
-        alignItems="center"
-        gap="4"
-        onClick={handleLogout}
+      <VStack
+        pt="30%"
+        spacing={5}
+        align="start"
+        flexGrow={1}
+        marginBottom="8vh"
+        w="100%"
       >
-        <Icon as={FaSignOutAlt} />
-        <Text>Sign Out</Text>
-      </Box>
+        {/* Home */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)",
+            transition: "0.2s",
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6}
+        >
+          <FaHome />
+          <ChakraLink as={ReactRouterLink} to="/doctor-home" fontWeight="bold">
+            Home
+          </ChakraLink>
+        </HStack>
+
+        {/* Overview */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s",
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/doctor-overview" fontWeight="bold">
+            Overview
+          </ChakraLink>
+        </HStack>
+
+        {/* Appointments */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/doctor-appointments" fontWeight="bold">
+            Appointments
+          </ChakraLink>
+        </HStack>
+
+        {/* Patients */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <HamburgerIcon />
+          <ChakraLink as={ReactRouterLink} to="/doctor-patients" fontWeight="bold">
+            Patients
+          </ChakraLink>
+        </HStack>
+
+        <Spacer />
+
+        {/* Settings */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <SettingsIcon />
+          <ChakraLink as={ReactRouterLink} to="/doctor-settings" fontWeight="bold">
+            Settings
+          </ChakraLink>
+        </HStack>
+
+        {/* Log Out */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#FF2C2C75",
+            transform: "scale(1.05)",
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6} 
+        >
+          <IoIosLogOut />
+          <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
+            Log Out
+          </ChakraLink>
+        </HStack>
+      </VStack>
     </Box>
   );
 };
