@@ -3,12 +3,11 @@ import {
   Box,
   VStack,
   HStack,
-  Text,
   Link as ChakraLink,
   Spacer,
 } from "@chakra-ui/react";
-import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons"; // Chakra icons
-import { IoIosLogOut } from "react-icons/io"; // Import the Log Out icon from react-icons
+import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
+import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 import { Link as ReactRouterLink } from "react-router-dom";
 
@@ -26,11 +25,10 @@ const DoctorSidePanel = () => {
       position="fixed"
     >
       <VStack
-        pt="30%"
+        pt="45%"
         spacing={5}
         align="start"
         flexGrow={1}
-        marginBottom="8vh"
         w="100%"
       >
         {/* Home */}
@@ -105,8 +103,17 @@ const DoctorSidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        <Spacer />
+        <Spacer /> {/* Pushes the items below to the bottom */}
+      </VStack>
 
+      {/* Grouped Box for Settings and Log Out */}
+      <Box
+        border="1px"
+        borderColor="whiteAlpha.300"
+        w="100%"
+        p={4}
+        mt={6} // Adds padding on top
+      >
         {/* Settings */}
         <HStack
           spacing={4}
@@ -142,7 +149,7 @@ const DoctorSidePanel = () => {
             Log Out
           </ChakraLink>
         </HStack>
-      </VStack>
+      </Box>
     </Box>
   );
 };
