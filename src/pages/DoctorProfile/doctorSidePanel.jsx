@@ -44,6 +44,7 @@ const DoctorSidePanel = () => {
         flexGrow={1}
         w="100%"
       >
+        {/* Updated Home Link */}
         <HStack
           spacing={4}
           _hover={{
@@ -56,25 +57,8 @@ const DoctorSidePanel = () => {
           px={6}
         >
           <FaHome />
-          <ChakraLink as={ReactRouterLink} to="/doctor-home" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/doctor-profile" fontWeight="bold">
             Home
-          </ChakraLink>
-        </HStack>
-
-        <HStack
-          spacing={4}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)", 
-            transition: "0.2s",
-          }}
-          w="97.5%"
-          h="3rem"
-          px={6} 
-        >
-          <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/doctor-overview" fontWeight="bold">
-            Overview
           </ChakraLink>
         </HStack>
 
@@ -90,7 +74,7 @@ const DoctorSidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/doctor-appointments" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/doctor-profile/appointments" fontWeight="bold">
             Appointments
           </ChakraLink>
         </HStack>
@@ -107,7 +91,7 @@ const DoctorSidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/doctor-patients" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/patients" fontWeight="bold">
             Patients
           </ChakraLink>
         </HStack>
