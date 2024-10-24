@@ -26,6 +26,7 @@ import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCr
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 import PatientsPage from "./pages/DoctorProfile/PatientsPage/PatientsPage.jsx";
+import DoctorHomePage from "./pages/DoctorProfile/doctorHomePage.jsx";
 
 import AddPatient from "./pages/Patients/AddPatient"; //need to update after kazi's patient tab is added
 
@@ -100,6 +101,7 @@ ReactDOM.createRoot(rootElement).render(
                   element={<AppointmentDetail />}
                 />
                 <Route path="patients" element={<PatientsPage />} />
+                <Route path="home" element={<DoctorHomePage />}/>
               </Route>
 
               {/* Doctor Routes */}
