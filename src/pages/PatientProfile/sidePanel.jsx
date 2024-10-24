@@ -201,7 +201,7 @@ const SidePanel = () => {
           px={6} 
         >
           <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/reminders-and-appointments" fontWeight="bold" noOfLines={1}>
+          <ChakraLink as={ReactRouterLink} to="/reminders-and-appointments" fontWeight="bold">
             Reminders & Appointments
           </ChakraLink>
         </HStack>
@@ -247,7 +247,7 @@ const SidePanel = () => {
         border="1px"
         borderColor="whiteAlpha.300"
         w="100%"
-        p={4}
+        // p={4}
         mt={6}
         marginBottom="4vh"
       >
@@ -261,6 +261,7 @@ const SidePanel = () => {
           w="97.5%"
           h="3rem"
           px={6} 
+          // mt={2}
         >
           <SettingsIcon />
           <ChakraLink as={ReactRouterLink} to="/settings" fontWeight="bold">
@@ -278,6 +279,7 @@ const SidePanel = () => {
           w="97.5%"
           h="3rem"
           px={6} 
+          mb={3}
         >
           <IoIosLogOut />
           <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
