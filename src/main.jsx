@@ -27,9 +27,11 @@ import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDeta
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 import PatientsPage from "./pages/DoctorProfile/PatientsPage/PatientsPage.jsx";
 
-// wrapper for the protected route
+import AddPatient from "./pages/Patients/AddPatient"; //need to update after kazi's patient tab is added
+
+//a wrapper for the protected route
 function PrivateRoute({ children }) {
-  const { currentUser } = useAuth(); //get current user from AuthContext
+  const { currentUser } = useAuth(); //get current user from the AuthContext
 
   return currentUser ? children : <Navigate to="/doctor-login" />;
 }
@@ -53,7 +55,7 @@ ReactDOM.createRoot(rootElement).render(
     <ChakraProvider>
       <AuthProvider>
         <Layout>
-          <BrowserRouter>
+        <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomeRoute />} />
               <Route path="/team" element={<Team />} />
@@ -100,8 +102,22 @@ ReactDOM.createRoot(rootElement).render(
                 <Route path="patients" element={<PatientsPage />} />
               </Route>
 
+              {/* Doctor Routes */}
               <Route path="/doctor-login" element={<DoctorLogin />} />
               <Route path="/doctor-signup" element={<DoctorSignUp />} />
+
+              {/* Nested protected route for adding a patient under /patients */}
+              <Route
+                path="/patients/*"
+                element={
+                  <PrivateRoute>
+                    <Routes>
+                      <Route path="AddPatient" element={<AddPatient />} />
+                    </Routes>
+                  </PrivateRoute>
+                }
+              />
+
             </Routes>
           </BrowserRouter>
         </Layout>
