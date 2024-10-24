@@ -36,7 +36,7 @@ const DoctorLogin = () => {
         duration: 4000,
         isClosable: true,
       });
-      navigate("/doctor-profile"); //redirect to doctor profile after login
+      navigate("/doctor-profile/home"); //redirect to doctor profile after login
     } catch (error) {
       console.error("Error logging in:", error);
       toast({
