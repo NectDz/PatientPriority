@@ -3,6 +3,7 @@ import {
     ChakraProvider,
     Box,
     VStack,
+    HStack,
     Heading,
     Text,
     Divider,
@@ -19,8 +20,9 @@ function AIInsights() {
     const [formData, setFormData] = useState({
         age: '',
         gender: '',
-        height: '',
-        weight: '',
+        heightFeet: '',
+        heightInches: '',
+        weightLbs: '',
         ethnicity: '',
         location: '',
         conditions: '',
@@ -193,25 +195,37 @@ function AIInsights() {
                             </FormControl>
                             {/* Height */}
                             <FormControl id="height" isRequired>
-                                <FormLabel>Height (in cm)</FormLabel>
-                                <Input
-                                    type="number"
-                                    name="height"
-                                    value={formData.height}
-                                    onChange={handleChange}
-                                />
+                                <FormLabel>Height</FormLabel>
+                                <HStack>
+                                    <Input
+                                        type="number"
+                                        name="heightFeet"
+                                        value={formData.heightFeet}
+                                        onChange={handleChange}
+                                        placeholder="Feet"
+                                    />
+                                    <Input
+                                        type="number"
+                                        name="heightInches"
+                                        value={formData.heightInches}
+                                        onChange={handleChange}
+                                        placeholder="Inches"
+                                    />
+                                </HStack>
                             </FormControl>
 
                             {/* Weight */}
-                            <FormControl id="weight" isRequired>
-                                <FormLabel>Weight (in kg)</FormLabel>
+                            <FormControl id="weightLbs" isRequired>
+                                <FormLabel>Weight (in lbs)</FormLabel>
                                 <Input
                                     type="number"
-                                    name="weight"
-                                    value={formData.weight}
+                                    name="weightLbs"
+                                    value={formData.weightLbs}
                                     onChange={handleChange}
+                                    placeholder="Enter your weight in lbs"
                                 />
                             </FormControl>
+
                             {/* Ethnicity/Race */}
                             <FormControl id="ethnicity" isRequired>
                                 <FormLabel>Ethnicity/Race</FormLabel>
