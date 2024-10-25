@@ -52,89 +52,79 @@ function AIInsights() {
         e.preventDefault();
 
         // Construct the prompt from the form data
-        const prompt = `Based on the patient's demographic information, medical history, lifestyle, family medical history, and vital signs, provide insights and advice in the following structured format:
+        const prompt = `
+        Based on the patient's demographic information, medical history, lifestyle, family medical history, and vital signs, provide insights and advice. Use the following structured format and Use markdown to make section headers and key points **bold**:
         
-        Instructions:
-        Simpler Words: Use straightforward language, avoiding complex medical terms to make the information easier to understand.
-        Better Formatting: Organize the response with clear headers and bullet points for easy reading.
-        Structured Response: Arrange information logically, so each section follows a clear, consistent flow.
-        Concise Information: Provide only the key points without unnecessary detail, ensuring the response is brief and to the point.
-        Risk Assessment
-        Identify possible health risks based on patient data, including:
+        **Instructions:**
+        - Respond in JSON format.
+        - Use straightforward language, avoiding complex medical terms.
+        - Organize the response with clear sections, headers, and bullet points.
+        - Provide only key points without unnecessary detail.
         
-        Obesity: Explain how the patient’s BMI indicates obesity and related health problems.
-        Heart Disease: Highlight risk factors such as high blood pressure, high cholesterol, and family history.
-        Diabetes: Describe the impact of high blood sugar and obesity on diabetes risk.
-        Mental Health: Outline potential mental health risks based on self-reported issues and family background.
-        Respiratory Problems: Evaluate how smoking increases the risk of lung conditions.
-        Significant Health Risks
-        Summarize major health concerns, such as:
+        **Expected Output Format:**
+        {
+          "Risk Assessment": {
+            "Obesity": "Explanation of obesity risks based on patient's height and weight...",
+            "Heart Disease": "Explanation of heart disease risks based on family history, conditions, etc...",
+            "Diabetes": "Explanation of diabetes risks based on blood sugar levels, weight, and lifestyle...",
+            "Mental Health": "Potential mental health concerns based on patient-reported data...",
+            "Respiratory Problems": "Risks related to respiratory issues due to smoking or environmental factors..."
+          },
+          "Health Trends": [
+            "Observed health trend 1 (e.g., risk of chronic illnesses)...",
+            "Observed health trend 2 (e.g., age-related changes)..."
+          ],
+          "Preventive Measures": {
+            "Diet": "Suggestions for maintaining a balanced diet...",
+            "Exercise": "Recommendations for regular physical activity...",
+            "Mental Health Care": "Suggestions for improving mental health...",
+            "Sleep": "Advice on sleep habits and routines..."
+          },
+          "Customized Care Plans": {
+            "Check-ups": "Importance of regular check-ups...",
+            "Screening Tests": "Recommendations for screenings (e.g., diabetes, cholesterol)...",
+            "Medication Review": "Guidance on managing medications effectively...",
+            "Weight Control": "Tips for achieving and maintaining a healthy weight..."
+          },
+          "Medication Optimization": {
+            "Blood Pressure": "Medication suggestions for managing blood pressure...",
+            "Cholesterol": "Recommendations for cholesterol management...",
+            "Mental Health": "Suggestions for mental health medication options...",
+            "Quit Smoking Aids": "Advice on using aids to quit smoking..."
+          }
+        }
         
-        Heart Attacks and Strokes: Explain how combined factors like obesity, high blood pressure, and smoking raise these risks.
-        Diabetes Complications: Discuss how unmanaged diabetes can lead to other issues, such as nerve damage or kidney problems.
-        Mental Health Issues: Note the risk of worsening mental health without proper care.
-        Cancer: Highlight how smoking raises the risk of cancer, especially lung cancer.
-        Health Trends
-        Provide an overview of health patterns observed, including:
+        **Patient Information:**
+        - Age: ${formData.age}
+        - Gender: ${formData.gender}
+        - Height: ${formData.heightFeet} ft ${formData.heightInches} in
+        - Weight: ${formData.weightLbs} lbs
+        - Ethnicity: ${formData.ethnicity}
+        - Location: ${formData.location}
         
-        Age-Related Changes: Consider health decline due to aging.
-        Chronic Disease Risks: Address the likelihood of chronic illnesses from lifestyle factors.
-        Mental Health Outlook: Discuss the potential for declining mental health without intervention.
-        Effects of Smoking: Summarize the long-term impact of continued smoking.
-        Preventive Measures
-        Recommend steps to improve overall health, such as:
+        **Medical History:**
+        - Existing Conditions: ${formData.conditions}
+        - Previous Illnesses/Injuries: ${formData.illnesses}
+        - Surgeries: ${formData.surgeries}
+        - Medications: ${formData.medications}
         
-        Healthy Diet: Suggest a balanced diet rich in fruits, vegetables, lean proteins, and whole grains. Limit processed foods and sugary drinks.
-        Exercise: Encourage regular physical activity (at least 30 minutes daily) and consulting a doctor before starting.
-        Quit Smoking: Stress the importance of quitting and suggest methods like therapy or support groups.
-        Mental Health Care: Recommend seeking help from a therapist or counselor.
-        Better Sleep: Provide tips on creating a sleep-friendly routine and when to seek help.
-        Customized Care Plans
-        Develop personalized care strategies, covering:
+        **Lifestyle Information:**
+        - Dietary Habits: ${formData.diet}
+        - Physical Activity: ${formData.physicalActivity}
+        - Smoking & Alcohol Use: ${formData.smokingAlcohol}
+        - Sleep Patterns: ${formData.sleep}
+        - Mental Health: ${formData.mentalHealth}
         
-        Regular Check-ups: Emphasize the importance of routine health monitoring.
-        Screening Tests: Recommend screenings for conditions like diabetes and cancer.
-        Medication Review: Guide patients on managing medications effectively for conditions like hypertension and mental health.
-        Weight Control: Offer plans to achieve and maintain a healthy weight.
-        Support Groups: Suggest joining groups for issues like smoking cessation or mental health support.
-        Medication Optimization
-        Provide advice on optimizing medication for health management:
+        **Family Medical History:**
+        - Genetic Predispositions: ${formData.geneticPredispositions}
+        - Family Mental Health: ${formData.familyMentalHealth}
         
-        Blood Pressure: Discuss medication options for maintaining healthy blood pressure.
-        Cholesterol: Suggest consulting about medications like statins to manage cholesterol.
-        Mental Health: Consider possible mental health medications for better mood management.
-        Quit Smoking Aids: Advise on using aids like nicotine patches or gum to help quit smoking.
-        Note: This information is for general guidance only. Please consult a healthcare provider for personalized advice.
-
-        Patient Information:
-        Age: ${formData.age}
-        Gender: ${formData.gender}
-        Height: ${formData.height} cm
-        Weight: ${formData.weight} kg
-        Ethnicity: ${formData.ethnicity}
-        Location: ${formData.location}
-
-        Medical History:
-        Existing Conditions: ${formData.conditions}
-        Previous Illnesses/Injuries: ${formData.illnesses}
-        Surgeries: ${formData.surgeries}
-        Medications: ${formData.medications}
-
-        Lifestyle Information:
-        Dietary Habits: ${formData.diet}
-        Physical Activity: ${formData.physicalActivity}
-        Smoking & Alcohol Use: ${formData.smokingAlcohol}
-        Sleep Patterns: ${formData.sleep}
-        Mental Health: ${formData.mentalHealth}
-
-        Family Medical History:
-        Genetic Predispositions: ${formData.geneticPredispositions}
-        Family Mental Health: ${formData.familyMentalHealth}
-
-        Vital Signs & Lab Results:
-        Blood Pressure: ${formData.bloodPressure}
-        Blood Sugar Levels: ${formData.bloodSugar}
-        Cholesterol Levels: ${formData.cholesterol}`;
+        **Vital Signs & Lab Results:**
+        - Blood Pressure: ${formData.bloodPressure}
+        - Blood Sugar Levels: ${formData.bloodSugar}
+        - Cholesterol Levels: ${formData.cholesterol}
+        `;
+        
 
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
