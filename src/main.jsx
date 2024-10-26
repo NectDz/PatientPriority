@@ -64,7 +64,7 @@ ReactDOM.createRoot(rootElement).render(
               <Route path="/team" element={<Team />} />
               <Route path="/login" element={<Login />} />
               <Route path="/patient-profile" element={<PatientProfile />} />
-              <Route path="/patientLogin" element={<PatientLogin />} />
+              <Route path="/patient-login" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
               <Route path="/signUp" element={<SignUp />} />
 

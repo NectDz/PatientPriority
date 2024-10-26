@@ -26,7 +26,7 @@ const Home = () => {
     navigate("/doctor-login");
   }; //handlers to show form
   const handlePatientLogin = () => {
-    setVisibleForm("patient");
+    navigate("/patient-login");
   };
   const handleCreateAccount = () => {
     navigate("/signUp");
@@ -40,7 +40,7 @@ const Home = () => {
       if (formType === "doctor") {
         navigate("/doctor-login");
       } else if (formType === "patient") {
-        navigate("/patientLogin");
+        navigate("/patient-login");
       }
     }, 2000); //authentication delay llmao, when database is in play it will actually have a delay
   };
@@ -180,9 +180,9 @@ const Home = () => {
               onMouseEnter={handleMouseEnter} // trigger animation and sound on hover
               onMouseLeave={handleMouseLeave} // stop sound when hover ends
             />
+          </Box>
         </Box>
-        </Box>
-        
+
         <Box
           position="absolute" //doctor login form
           top="0"
