@@ -17,6 +17,7 @@ import {
   where,
   collection,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 
 const db = getFirestore();
