@@ -29,6 +29,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import emailjs from "emailjs-com";
 
 const db = getFirestore();
 
@@ -150,11 +151,30 @@ function AddPatient() {
     };
 
     try {
-      // Push data to Firebase
       await addDoc(collection(db, "patient_codes"), patientCodeData);
       console.log("Patient Code Added:", patientCodeData);
+
+      emailjs
+        .send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          {
+            recipient_email: formData.email,
+            firstName: formData.firstName,
+            verificationCode: code,
+          },
+          import.meta.env.VITE_EMAILJS_USER_ID
+        )
+        .then(
+          (result) => {
+            console.log("Email sent successfully!", result.text);
+          },
+          (error) => {
+            console.error("Error sending email:", error.text);
+          }
+        );
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error adding document or sending email:", error);
     }
   };
 
