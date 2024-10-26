@@ -20,6 +20,7 @@ import {
   getDocs,
   addDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -34,6 +35,7 @@ function PatientSignUp() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [verificationDocRef, setVerificationDocRef] = useState(null); // New state for storing the document reference
   const toast = useToast();
 
   const handleChange = (e) => {
@@ -66,6 +68,9 @@ function PatientSignUp() {
         setLoading(false);
         return;
       }
+
+      // Store the document reference for deletion later
+      setVerificationDocRef(patientSnapshot.docs[0].ref);
 
       // If successful, move to the next step
       toast({
@@ -122,6 +127,11 @@ function PatientSignUp() {
           email: patientInfo.email,
           accountCreatedDate: new Date(),
         });
+      }
+
+      // Delete the patient_codes document after successful signup
+      if (verificationDocRef) {
+        await deleteDoc(verificationDocRef);
       }
 
       toast({
