@@ -98,16 +98,16 @@ function AddPatient() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleNestedChange = (e, section, field) => {
-    const { value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: value,
-      },
-    }));
-  };
+  const handleNestedChange = (e, parentField, childField) => {
+  setFormData((prevData) => ({
+    ...prevData,
+    [parentField]: {
+      ...prevData[parentField],
+      [childField]: e.target.value
+    }
+  }));
+};
+
 
   const calculateProgress = () => {
     const totalFields = Object.keys(formData).length;
