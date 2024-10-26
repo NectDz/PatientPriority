@@ -16,7 +16,7 @@ import {
   Divider,
   Select,
   Spinner,
-  Textarea,
+  Textarea, //without correct import screen turns white
 } from "@chakra-ui/react";
 import { FaUser, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
@@ -96,18 +96,22 @@ function AddPatient() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value }); //handles form data change for each field
   };
 
-  const handleNestedChange = (e, parentField, childField) => {
+  const handleNestedChange = (e, parentField, childField) => { //  //update specific nested field in the for,
     setFormData((prevData) => ({
+      
+      //keep all existing field
       ...prevData,
+      //target specific parentField like 'contactInfo'
       [parentField]: {
-        ...prevData[parentField],
-        [childField]: e.target.value
+        ...prevData[parentField], //keep all existing fields within the parentField to preserve the current data
+        [childField]: e.target.value //update specific childField within parentField with the new value
       }
     }));
   };
+
   
 
   const calculateProgress = () => {
@@ -164,7 +168,7 @@ function AddPatient() {
                 <InputLeftElement children={<Icon as={FaUser} />} />
                 <Input
                   type="text"
-                  name="firstName" // Corrected from "name"
+                  name="firstName" //when it was "name" it game me an error
                   value={formData.firstName}
                   onChange={handleChange}
                   focusBorderColor="teal.400"
@@ -200,7 +204,7 @@ function AddPatient() {
               >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="other">Other</option> 
               </Select>
             </FormControl>
 
