@@ -26,6 +26,7 @@ import AppointmentCreation from "./pages/DoctorProfile/Appointment/AppointmentCr
 import AppointmentDetail from "./pages/DoctorProfile/Appointment/AppointmentDetail.jsx";
 import DoctorSignUp from "./pages/DoctorSignup/DoctorSignUp.jsx";
 import PatientsPage from "./pages/DoctorProfile/PatientsPage/PatientsPage.jsx";
+import PatientSignUp from "./pages/PatientSignup/PatientSignUp.jsx";
 import PatientDetails from "./pages/DoctorProfile/PatientsPage/PatientDetails.jsx";
 import DoctorHomePage from "./pages/DoctorProfile/doctorHomePage.jsx";
 
@@ -57,30 +58,24 @@ ReactDOM.createRoot(rootElement).render(
     <ChakraProvider>
       <AuthProvider>
         <Layout>
-        <BrowserRouter>
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomeRoute />} />
               <Route path="/team" element={<Team />} />
               <Route path="/login" element={<Login />} />
               <Route path="/patient-profile" element={<PatientProfile />} />
-              <Route path="/patientLogin" element={<PatientLogin />} />
+              <Route path="/patient-login" element={<PatientLogin />} />
               <Route path="/audio-test" element={<AudioTest />} />
               <Route path="/signUp" element={<SignUp />} />
 
               {/* PatientProfile SidePanel Routes */}
-              <Route
-                path="/overview"
-                element={<Overview />} 
-              />
+              <Route path="/overview" element={<Overview />} />
               <Route
                 path="/reminders-and-appointments"
                 element={<RemindersAndAppointments />}
               />
               <Route path="/meeting-summaries" element={<MeetingSummaries />} />
-              <Route
-                path="/ai-insights"
-                element={<AIInsights />}
-              />
+              <Route path="/ai-insights" element={<AIInsights />} />
 
               {/*protect doctor profile route */}
               <Route
@@ -104,8 +99,10 @@ ReactDOM.createRoot(rootElement).render(
                 <Route path="patients" element={<PatientsPage />} />
                 <Route path="patients/:id" element={<PatientDetails />} />
 
-                <Route path="home" element={<DoctorHomePage />}/>
+                <Route path="home" element={<DoctorHomePage />} />
               </Route>
+
+              <Route path="/patient-signup" element={<PatientSignUp />} />
 
               {/* Doctor Routes */}
               <Route path="/doctor-login" element={<DoctorLogin />} />
@@ -120,7 +117,6 @@ ReactDOM.createRoot(rootElement).render(
                   </PrivateRoute>
                 }
               />
-
             </Routes>
           </BrowserRouter>
         </Layout>

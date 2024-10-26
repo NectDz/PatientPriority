@@ -13,7 +13,7 @@ const SignUp = () => {
   };
 
   const handlePatientSignUp = () => {
-    navigate("/patientSignUp"); //not sure, probably nav to rahats questionnaire
+    navigate("/patient-signup"); //not sure, probably nav to rahats questionnaire
   };
 
   return (
