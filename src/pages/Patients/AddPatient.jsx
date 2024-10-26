@@ -16,6 +16,7 @@ import {
   Divider,
   Select,
   Spinner,
+  Textarea,
 } from "@chakra-ui/react";
 import { FaUser, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 import { MdDateRange } from "react-icons/md";
