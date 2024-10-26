@@ -1,236 +1,244 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
   VStack,
   Heading,
   Input,
-  Select,
   FormControl,
   FormLabel,
   Container,
-  Textarea,
-  Divider,
-  useBreakpointValue,
   Grid,
+  Progress,
+  Icon,
   InputGroup,
   InputLeftElement,
-  Icon,
-  Tooltip,
-  Progress,
-} from '@chakra-ui/react';
-import { FaPhoneAlt, FaEnvelope, FaUser } from 'react-icons/fa';
-import { MdDateRange } from 'react-icons/md';
+  Divider,
+  Select,
+  Spinner,
+  Textarea, //without correct import screen turns white
+} from "@chakra-ui/react";
+import { FaUser, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+import { MdDateRange } from "react-icons/md";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-const AddPatient = () => {
+const db = getFirestore();
+
+function AddPatient() {
   const [formData, setFormData] = useState({
-    name: '',
-    dob: '',
-    gender: '',
-    phone: '',
-    email: '',
+    firstName: "",
+    lastName: "",
+    dob: "",
+    gender: "",
+    phone: "",
+    email: "",
     address: {
-      street: '',
-      city: '',
-      state: '',
-      zip: '',
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
     },
-    insuranceProvider: '',
-    policyNumber: '',
-    physicianName: '',
-    physicianAddress: {
-      street: '',
-      city: '',
-      state: '',
-      zip: '',
-    },
-    physicianPhone: '',
+    insuranceProvider: "",
+    policyNumber: "",
+    physicianName: "",
+    physicianPhone: "",
     emergencyContact: {
-      name: '',
-      relationship: '',
-      phone: '',
-      email: '',
-      address: {
-        street: '',
-        city: '',
-        state: '',
-        zip: '',
-      },
+      name: "",
+      relationship: "",
+      phone: "",
+      email: "",
     },
-    conditions: '',
-    medications: '',
-    surgeries: '',
-    allergies: '',
-    lifestyle: '',
-    alcoholConsumption: '',
-    physicalActivity: '',
-    diet: '',
-    sleep: '',
-    vaccination: '',
-    mentalHealth: '',
+    conditions: "",
+    medications: "",
+    allergies: "",
   });
 
-  const requiredFields = [
-    'name', 'dob', 'gender', 'phone', 'email',
-    'address.street', 'address.city', 'address.state', 'address.zip',
-    'insuranceProvider', 'policyNumber',
-    'physicianName', 'physicianPhone',
-    'emergencyContact.name', 'emergencyContact.relationship', 'emergencyContact.phone', 'emergencyContact.email'
-  ];
+  const [loading, setLoading] = useState(true);
+  const [doctorId, setDoctorId] = useState(null);
 
-  // Function to calculate the progress of filled fields
-  const calculateProgress = () => {
-    const totalFields = requiredFields.length;
-    let filledFields = 0;
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-    requiredFields.forEach((field) => {
-      const value = field.split('.').reduce((obj, key) => obj[key], formData);
-      if (value) filledFields += 1;
-    });
+  useEffect(() => {
+    const fetchDoctorId = async () => {
+      if (user) {
+        try {
+          const doctorEmail = user.email;
+          const doctorQuery = query(
+            collection(db, "doctor"),
+            where("email", "==", doctorEmail)
+          );
+          const doctorSnapshot = await getDocs(doctorQuery);
 
-    return (filledFields / totalFields) * 100;
-  };
+          if (!doctorSnapshot.empty) {
+            const doctorData = doctorSnapshot.docs[0].data();
+            setDoctorId(doctorData.id);
+          } else {
+            console.error("Doctor not found in database");
+          }
+        } catch (error) {
+          console.error("Error fetching doctor ID:", error);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchDoctorId();
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: value }); //handles form data change for each field
   };
 
-  const handleNestedChange = (e, section, field) => {
-    const { value } = e.target;
+  const handleNestedChange = (e, parentField, childField) => { //  //update specific nested field in the for,
     setFormData((prevData) => ({
+      
+      //keep all existing field
       ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: value,
-      },
+      //target specific parentField like 'contactInfo'
+      [parentField]: {
+        ...prevData[parentField], //keep all existing fields within the parentField to preserve the current data
+        [childField]: e.target.value //update specific childField within parentField with the new value
+      }
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Submitted Patient Data:', formData);
+  
+
+  const calculateProgress = () => {
+    const totalFields = Object.keys(formData).length;
+    const filledFields = Object.values(formData).filter(Boolean).length;
+    return (filledFields / totalFields) * 100;
   };
 
-  const containerMaxWidth = useBreakpointValue({ base: "xl", md: "2xl", lg: "3xl" });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!doctorId) {
+      alert("Doctor ID not found. Please try again.");
+      return;
+    }
+
+    try {
+      const newPatientData = { ...formData, doctor_id: doctorId };
+      await addDoc(collection(db, "patients"), newPatientData);
+      console.log("Patient data saved successfully!", newPatientData);
+    } catch (error) {
+      console.error("Error saving patient data:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minH="100vh">
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
 
   return (
-    <Container 
-      maxW={containerMaxWidth}  
-      py={10} 
-      bg="gray.50" 
-      borderRadius="lg" 
-      boxShadow="lg" 
-      px={{ base: 6, md: 10 }}  
-      mt={24}  
-      mb={12}
-    >
-      {/* Calculate progress dynamically */}
+    <Container maxW="xl" py={10}>
       <Progress hasStripe value={calculateProgress()} size="md" colorScheme="teal" mb={6} />
       
-      <Box 
-        bg="white" 
-        p={{ base: 6, md: 10 }} 
-        borderRadius="lg" 
-        boxShadow="lg"
-        transition="all 0.3s ease" 
-        _hover={{ boxShadow: "xl", transform: "translateY(-2px)" }}
-      >
+      <Box bg="white" p={8} borderRadius="lg" boxShadow="lg">
         <Heading mb={8} textAlign="center" fontSize="2xl" color="teal.600">
           Add New Patient
         </Heading>
 
         <form onSubmit={handleSubmit}>
           <VStack spacing={6} align="stretch">
-
             <Box mb={6} bg="gray.100" p={4} borderRadius="md">
               <Heading fontSize="lg" color="teal.500" mb={4}>Step 1: Personal Information</Heading>
               <Divider borderColor="gray.300" />
             </Box>
 
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-              <FormControl id="name" isRequired>
-                <FormLabel>Full Name</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaUser} />} />
-                  <Input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-
-              <FormControl id="dob" isRequired>
-                <FormLabel>Date of Birth</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={MdDateRange} />} />
-                  <Input
-                    type="date"
-                    name="dob"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-
-              <FormControl id="gender" isRequired>
-                <FormLabel>Gender</FormLabel>
-                <Select
-                  name="gender"
-                  value={formData.gender}
+            <FormControl id="name" isRequired>
+              <FormLabel>Full Name</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaUser} />} />
+                <Input
+                  type="text"
+                  name="firstName" //when it was "name" it game me an error
+                  value={formData.firstName}
                   onChange={handleChange}
                   focusBorderColor="teal.400"
                   borderRadius="md"
-                  placeholder="Select gender"
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </Select>
-              </FormControl>
+                />
+              </InputGroup>
+            </FormControl>
 
-              <FormControl id="phone" isRequired>
-                <FormLabel>Phone Number</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaPhoneAlt} />} />
-                  <Input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
+            <FormControl id="dob" isRequired>
+              <FormLabel>Date of Birth</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={MdDateRange} />} />
+                <Input
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
 
-              <FormControl id="email" isRequired>
-                <FormLabel>Email Address</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaEnvelope} />} />
-                  <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-            </Grid>
+            <FormControl id="gender" isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select gender"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option> 
+              </Select>
+            </FormControl>
 
-            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>Address</Heading>
-              <Divider borderColor="gray.300" />
-            </Box>
+            <FormControl id="phone" isRequired>
+              <FormLabel>Phone Number</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaPhoneAlt} />} />
+                <Input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
 
+            <FormControl id="email" isRequired>
+              <FormLabel>Email Address</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaEnvelope} />} />
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
+            {/* Address Section */}
             <FormControl id="street" isRequired>
               <FormLabel>Street</FormLabel>
               <Input
@@ -279,11 +287,7 @@ const AddPatient = () => {
               />
             </FormControl>
 
-            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>Step 2: Insurance Details</Heading>
-              <Divider borderColor="gray.300" />
-            </Box>
-
+            {/* Insurance Details */}
             <FormControl id="insuranceProvider" isRequired>
               <FormLabel>Insurance Provider</FormLabel>
               <Input
@@ -308,93 +312,59 @@ const AddPatient = () => {
               />
             </FormControl>
 
-            <FormControl id="physicianName" isRequired>
-              <FormLabel>Primary Care Physician's Name</FormLabel>
+            {/* Emergency Contact */}
+            <FormControl id="emergencyContactName" isRequired>
+              <FormLabel>Emergency Contact Name</FormLabel>
               <Input
                 type="text"
-                name="physicianName"
-                value={formData.physicianName}
-                onChange={handleChange}
+                name="emergencyContactName"
+                value={formData.emergencyContact.name}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
                 focusBorderColor="teal.400"
                 borderRadius="md"
               />
             </FormControl>
 
-            <FormControl id="physicianPhone" isRequired>
-              <FormLabel>Physician's Phone Number</FormLabel>
+            <FormControl id="relationship" isRequired>
+              <FormLabel>Relationship to Patient</FormLabel>
+              <Select
+                name="relationship"
+                value={formData.emergencyContact.relationship}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              >
+                <option value="mother">Mother</option>
+                <option value="father">Father</option>
+                <option value="other">Other</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="emergencyPhone" isRequired>
+              <FormLabel>Emergency Phone Number</FormLabel>
               <Input
                 type="tel"
-                name="physicianPhone"
-                value={formData.physicianPhone}
-                onChange={handleChange}
+                name="emergencyPhone"
+                value={formData.emergencyContact.phone}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
                 focusBorderColor="teal.400"
                 borderRadius="md"
               />
             </FormControl>
 
-            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>Step 3: Emergency Contact</Heading>
-              <Divider borderColor="gray.300" />
-            </Box>
+            <FormControl id="emergencyEmail" isRequired>
+              <FormLabel>Emergency Email Address</FormLabel>
+              <Input
+                type="email"
+                name="emergencyEmail"
+                value={formData.emergencyContact.email}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
 
-            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-              <FormControl id="emergencyContactName" isRequired>
-                <FormLabel>Emergency Contact Name</FormLabel>
-                <Input
-                  type="text"
-                  name="emergencyContactName"
-                  value={formData.emergencyContact.name}
-                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                />
-              </FormControl>
-
-              <FormControl id="relationship" isRequired>
-                <FormLabel>Relationship to Patient</FormLabel>
-                <Select
-                  name="relationship"
-                  value={formData.emergencyContact.relationship}
-                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                >
-                  <option value="mother">Mother</option>
-                  <option value="father">Father</option>
-                  <option value="other">Other</option>
-                </Select>
-              </FormControl>
-
-              <FormControl id="emergencyPhone" isRequired>
-                <FormLabel>Emergency Phone Number</FormLabel>
-                <Input
-                  type="tel"
-                  name="emergencyPhone"
-                  value={formData.emergencyContact.phone}
-                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                />
-              </FormControl>
-
-              <FormControl id="emergencyEmail" isRequired>
-                <FormLabel>Emergency Email Address</FormLabel>
-                <Input
-                  type="email"
-                  name="emergencyEmail"
-                  value={formData.emergencyContact.email}
-                  onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                />
-              </FormControl>
-            </Grid>
-
-            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>Step 4: Medical History</Heading>
-              <Divider borderColor="gray.300" />
-            </Box>
-
+            {/* Medical History */}
             <FormControl id="conditions">
               <FormLabel>Known Medical Conditions</FormLabel>
               <Textarea
@@ -439,11 +409,7 @@ const AddPatient = () => {
               />
             </FormControl>
 
-            <Box mt={8} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>Step 5: Lifestyle Information</Heading>
-              <Divider borderColor="gray.300" />
-            </Box>
-
+            {/* Lifestyle Information */}
             <FormControl id="lifestyle" isRequired>
               <FormLabel>Lifestyle & Habits</FormLabel>
               <Select
@@ -500,41 +466,19 @@ const AddPatient = () => {
                 onChange={handleChange}
                 focusBorderColor="teal.400"
                 borderRadius="md"
-                placeholder="Select diet"
+                placeholder="Select dietary habits"
               >
+                <option value="balanced">Balanced</option>
                 <option value="vegetarian">Vegetarian</option>
-                <option value="nonVegetarian">Non-Vegetarian</option>
                 <option value="vegan">Vegan</option>
+                <option value="keto">Keto</option>
+                <option value="paleo">Paleo</option>
+                <option value="low-carb">Low Carb</option>
               </Select>
             </FormControl>
+            </Grid>
 
-            <FormControl id="sleep" isRequired>
-              <FormLabel>Sleep Quality</FormLabel>
-              <Select
-                name="sleep"
-                value={formData.sleep}
-                onChange={handleChange}
-                focusBorderColor="teal.400"
-                borderRadius="md"
-                placeholder="Select sleep quality"
-              >
-                <option value="poor">Poor</option>
-                <option value="average">Average</option>
-                <option value="good">Good</option>
-              </Select>
-            </FormControl>
-
-            <Button
-              type="submit"
-              colorScheme="teal"
-              size="lg"
-              width="100%"
-              borderRadius="md"
-              bgGradient="linear(to-r, teal.400, teal.500)"
-              color="white"
-              _hover={{ bgGradient: 'linear(to-r, teal.500, teal.600)' }}
-              mt={8}
-            >
+            <Button type="submit" colorScheme="teal" size="lg" borderRadius="md" mt={8}>
               Submit
             </Button>
           </VStack>
@@ -542,6 +486,6 @@ const AddPatient = () => {
       </Box>
     </Container>
   );
-};
+}
 
 export default AddPatient;
