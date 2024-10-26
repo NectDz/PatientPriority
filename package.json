@@ -16,6 +16,7 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "firebase": "^10.13.2",
