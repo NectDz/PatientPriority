@@ -99,15 +99,15 @@ function AddPatient() {
   };
 
   const handleNestedChange = (e, parentField, childField) => {
-  setFormData((prevData) => ({
-    ...prevData,
-    [parentField]: {
-      ...prevData[parentField],
-      [childField]: e.target.value
-    }
-  }));
-};
-
+    setFormData((prevData) => ({
+      ...prevData,
+      [parentField]: {
+        ...prevData[parentField],
+        [childField]: e.target.value
+      }
+    }));
+  };
+  
 
   const calculateProgress = () => {
     const totalFields = Object.keys(formData).length;
@@ -157,64 +157,320 @@ function AddPatient() {
             </Box>
 
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
-              <FormControl id="firstName" isRequired>
-                <FormLabel>First Name</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaUser} />} />
-                  <Input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl id="lastName" isRequired>
-                <FormLabel>Last Name</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaUser} />} />
-                  <Input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl id="dob" isRequired>
-                <FormLabel>Date of Birth</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={MdDateRange} />} />
-                  <Input
-                    type="date"
-                    name="dob"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl id="gender" isRequired>
-                <FormLabel>Gender</FormLabel>
-                <Select
-                  name="gender"
-                  value={formData.gender}
+            <FormControl id="name" isRequired>
+              <FormLabel>Full Name</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaUser} />} />
+                <Input
+                  type="text"
+                  name="firstName" // Corrected from "name"
+                  value={formData.firstName}
                   onChange={handleChange}
                   focusBorderColor="teal.400"
                   borderRadius="md"
-                  placeholder="Select gender"
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </Select>
-              </FormControl>
-              {/* Add remaining fields here as needed */}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl id="dob" isRequired>
+              <FormLabel>Date of Birth</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={MdDateRange} />} />
+                <Input
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl id="gender" isRequired>
+              <FormLabel>Gender</FormLabel>
+              <Select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select gender"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="phone" isRequired>
+              <FormLabel>Phone Number</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaPhoneAlt} />} />
+                <Input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl id="email" isRequired>
+              <FormLabel>Email Address</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaEnvelope} />} />
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
+            {/* Address Section */}
+            <FormControl id="street" isRequired>
+              <FormLabel>Street</FormLabel>
+              <Input
+                type="text"
+                name="street"
+                value={formData.address.street}
+                onChange={(e) => handleNestedChange(e, 'address', 'street')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="city" isRequired>
+              <FormLabel>City</FormLabel>
+              <Input
+                type="text"
+                name="city"
+                value={formData.address.city}
+                onChange={(e) => handleNestedChange(e, 'address', 'city')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="state" isRequired>
+              <FormLabel>State</FormLabel>
+              <Input
+                type="text"
+                name="state"
+                value={formData.address.state}
+                onChange={(e) => handleNestedChange(e, 'address', 'state')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="zip" isRequired>
+              <FormLabel>Zip Code</FormLabel>
+              <Input
+                type="text"
+                name="zip"
+                value={formData.address.zip}
+                onChange={(e) => handleNestedChange(e, 'address', 'zip')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Insurance Details */}
+            <FormControl id="insuranceProvider" isRequired>
+              <FormLabel>Insurance Provider</FormLabel>
+              <Input
+                type="text"
+                name="insuranceProvider"
+                value={formData.insuranceProvider}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="policyNumber" isRequired>
+              <FormLabel>Policy Number</FormLabel>
+              <Input
+                type="text"
+                name="policyNumber"
+                value={formData.policyNumber}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Emergency Contact */}
+            <FormControl id="emergencyContactName" isRequired>
+              <FormLabel>Emergency Contact Name</FormLabel>
+              <Input
+                type="text"
+                name="emergencyContactName"
+                value={formData.emergencyContact.name}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'name')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="relationship" isRequired>
+              <FormLabel>Relationship to Patient</FormLabel>
+              <Select
+                name="relationship"
+                value={formData.emergencyContact.relationship}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'relationship')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              >
+                <option value="mother">Mother</option>
+                <option value="father">Father</option>
+                <option value="other">Other</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="emergencyPhone" isRequired>
+              <FormLabel>Emergency Phone Number</FormLabel>
+              <Input
+                type="tel"
+                name="emergencyPhone"
+                value={formData.emergencyContact.phone}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'phone')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="emergencyEmail" isRequired>
+              <FormLabel>Emergency Email Address</FormLabel>
+              <Input
+                type="email"
+                name="emergencyEmail"
+                value={formData.emergencyContact.email}
+                onChange={(e) => handleNestedChange(e, 'emergencyContact', 'email')}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Medical History */}
+            <FormControl id="conditions">
+              <FormLabel>Known Medical Conditions</FormLabel>
+              <Textarea
+                name="conditions"
+                value={formData.conditions}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="medications">
+              <FormLabel>Current Medications</FormLabel>
+              <Textarea
+                name="medications"
+                value={formData.medications}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="surgeries">
+              <FormLabel>Past Surgeries</FormLabel>
+              <Textarea
+                name="surgeries"
+                value={formData.surgeries}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            <FormControl id="allergies">
+              <FormLabel>Known Allergies</FormLabel>
+              <Textarea
+                name="allergies"
+                value={formData.allergies}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+              />
+            </FormControl>
+
+            {/* Lifestyle Information */}
+            <FormControl id="lifestyle" isRequired>
+              <FormLabel>Lifestyle & Habits</FormLabel>
+              <Select
+                name="lifestyle"
+                value={formData.lifestyle}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select lifestyle habit"
+              >
+                <option value="non-smoker">Non-smoker</option>
+                <option value="smoker">Smoker</option>
+                <option value="former-smoker">Former Smoker</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="alcoholConsumption" isRequired>
+              <FormLabel>Alcohol Consumption</FormLabel>
+              <Select
+                name="alcoholConsumption"
+                value={formData.alcoholConsumption}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select alcohol consumption"
+              >
+                <option value="none">None</option>
+                <option value="occasionally">Occasionally</option>
+                <option value="frequently">Frequently</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="physicalActivity" isRequired>
+              <FormLabel>Physical Activity Level</FormLabel>
+              <Select
+                name="physicalActivity"
+                value={formData.physicalActivity}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select activity level"
+              >
+                <option value="sedentary">Sedentary</option>
+                <option value="moderatelyActive">Moderately Active</option>
+                <option value="active">Active</option>
+              </Select>
+            </FormControl>
+
+            <FormControl id="diet" isRequired>
+              <FormLabel>Dietary Habits</FormLabel>
+              <Select
+                name="diet"
+                value={formData.diet}
+                onChange={handleChange}
+                focusBorderColor="teal.400"
+                borderRadius="md"
+                placeholder="Select dietary habits"
+              >
+                <option value="balanced">Balanced</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="vegan">Vegan</option>
+                <option value="keto">Keto</option>
+                <option value="paleo">Paleo</option>
+                <option value="low-carb">Low Carb</option>
+              </Select>
+            </FormControl>
             </Grid>
 
             <Button type="submit" colorScheme="teal" size="lg" borderRadius="md" mt={8}>
