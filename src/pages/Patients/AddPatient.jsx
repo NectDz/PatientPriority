@@ -215,7 +215,7 @@ function AddPatient() {
               <Divider borderColor="gray.300" />
             </Box>
 
-            <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
+            {/* <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}> */}
               <FormControl id="name" isRequired>
                 <FormLabel>Full Name</FormLabel>
                 <InputGroup>
@@ -538,7 +538,7 @@ function AddPatient() {
                   <option value="low-carb">Low Carb</option>
                 </Select>
               </FormControl>
-            </Grid>
+            {/* </Grid> */}
 
             <Button
               type="submit"
