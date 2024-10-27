@@ -146,8 +146,8 @@ function AddPatient() {
       code,
       doctor_id: doctorId, // or any unique ID for the doctor
       email: formData.email,
-      firstName: formData.firstName.split(" ")[0] || "", // assumes first part is first name
-      lastName: formData.firstName.split(" ")[1] || "", // assumes second part is last name
+      firstName: formData.firstName.firstName, 
+      lastName: formData.firstName.lastName || "",
     };
 
     try {
@@ -216,20 +216,36 @@ function AddPatient() {
             </Box>
 
             {/* <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}> */}
-              <FormControl id="name" isRequired>
-                <FormLabel>Full Name</FormLabel>
-                <InputGroup>
-                  <InputLeftElement children={<Icon as={FaUser} />} />
-                  <Input
-                    type="text"
-                    name="firstName" //when it was "name" it game me an error
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    focusBorderColor="teal.400"
-                    borderRadius="md"
-                  />
-                </InputGroup>
-              </FormControl>
+            <FormControl id="firstName" isRequired>
+              <FormLabel>First Name</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaUser} />} />
+                <Input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl id="lastName" isRequired>
+              <FormLabel>Last Name</FormLabel>
+              <InputGroup>
+                <InputLeftElement children={<Icon as={FaUser} />} />
+                <Input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  focusBorderColor="teal.400"
+                  borderRadius="md"
+                />
+              </InputGroup>
+            </FormControl>
+
 
               <FormControl id="dob" isRequired>
                 <FormLabel>Date of Birth</FormLabel>
