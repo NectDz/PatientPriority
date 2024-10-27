@@ -273,7 +273,7 @@ function AddPatient() {
                 )}
               </FormControl>
 
-              <FormControl id="gender" isRequired>
+              <FormControl id="gender" isRequired isInvalid={!formData.gender}>
                 <FormLabel>Gender</FormLabel>
                 <Select
                   name="gender"
@@ -287,8 +287,11 @@ function AddPatient() {
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </Select>
+                {!formData.gender && (
+                  <FormErrorMessage>Please select a gender.</FormErrorMessage>
+                )}
               </FormControl>
-
+              
               <FormControl id="phone" isRequired isInvalid={formData.phone && !/^\d{10}$/.test(formData.phone)}>
                 <FormLabel>Phone Number</FormLabel>
                 <InputGroup>
@@ -314,7 +317,14 @@ function AddPatient() {
               </FormControl>
 
 
-              <FormControl id="email" isRequired>
+              <FormControl
+                id="email"
+                isRequired
+                isInvalid={
+                  formData.email &&
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+                }
+              >
                 <FormLabel>Email Address</FormLabel>
                 <InputGroup>
                   <InputLeftElement children={<Icon as={FaEnvelope} />} />
@@ -325,9 +335,20 @@ function AddPatient() {
                     onChange={handleChange}
                     focusBorderColor="teal.400"
                     borderRadius="md"
+                    placeholder="Enter your email"
                   />
                 </InputGroup>
+                {formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) && (
+                  <FormErrorMessage>Invalid email format.</FormErrorMessage>
+                )}
               </FormControl>
+
+              <Box mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Heading fontSize="lg" color="teal.500" mb={4}>
+                  Step 2: Address Section
+                </Heading>
+                <Divider borderColor="gray.300" />
+              </Box>
 
               {/* Address Section */}
               <FormControl id="street" isRequired isInvalid={formData.address.street && !/^[a-zA-Z0-9\s,.#-]{2,50}$/.test(formData.address.street)}>
@@ -443,6 +464,12 @@ function AddPatient() {
               </FormControl>
 
               {/* Insurance Details */}
+              <Box mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Heading fontSize="lg" color="teal.500" mb={4}>
+                  Step 3: Insurance Details
+                </Heading>
+                <Divider borderColor="gray.300" />
+              </Box>
               <FormControl id="insuranceProvider" isRequired isInvalid={formData.insuranceProvider && !/^[a-zA-Z\s]+$/.test(formData.insuranceProvider)}>
                 <FormLabel>Insurance Provider</FormLabel>
                 <Input
@@ -477,7 +504,20 @@ function AddPatient() {
 
 
               {/* Emergency Contact */}
-              <FormControl id="emergencyContactName" isRequired>
+              <Box mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Heading fontSize="lg" color="teal.500" mb={4}>
+                  Step 4: Emergency Contact
+                </Heading>
+                <Divider borderColor="gray.300" />
+              </Box>
+              <FormControl
+                id="emergencyContactName"
+                isRequired
+                isInvalid={
+                  formData.emergencyContact.name &&
+                  !/^[a-zA-Z\s]{2,50}$/.test(formData.emergencyContact.name)
+                }
+              >
                 <FormLabel>Emergency Contact Name</FormLabel>
                 <Input
                   type="text"
@@ -488,10 +528,19 @@ function AddPatient() {
                   }
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter contact name"
                 />
+                {formData.emergencyContact.name &&
+                  !/^[a-zA-Z\s]{2,50}$/.test(formData.emergencyContact.name) && (
+                    <FormErrorMessage>Name must be 2-50 letters.</FormErrorMessage>
+                  )}
               </FormControl>
 
-              <FormControl id="relationship" isRequired>
+              <FormControl
+                id="relationship"
+                isRequired
+                isInvalid={!formData.emergencyContact.relationship}
+              >
                 <FormLabel>Relationship to Patient</FormLabel>
                 <Select
                   name="relationship"
@@ -507,9 +556,19 @@ function AddPatient() {
                   <option value="father">Father</option>
                   <option value="other">Other</option>
                 </Select>
+                {!formData.emergencyContact.relationship && (
+                  <FormErrorMessage>Please select a relationship.</FormErrorMessage>
+                )}
               </FormControl>
 
-              <FormControl id="emergencyPhone" isRequired>
+              <FormControl
+                id="emergencyPhone"
+                isRequired
+                isInvalid={
+                  formData.emergencyContact.phone &&
+                  !/^\d{10}$/.test(formData.emergencyContact.phone)
+                }
+              >
                 <FormLabel>Emergency Phone Number</FormLabel>
                 <Input
                   type="tel"
@@ -520,10 +579,22 @@ function AddPatient() {
                   }
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter phone number"
                 />
+                {formData.emergencyContact.phone &&
+                  !/^\d{10}$/.test(formData.emergencyContact.phone) && (
+                    <FormErrorMessage>Phone number must be 10 digits.</FormErrorMessage>
+                  )}
               </FormControl>
 
-              <FormControl id="emergencyEmail" isRequired>
+              <FormControl
+                id="emergencyEmail"
+                isRequired
+                isInvalid={
+                  formData.emergencyContact.email &&
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emergencyContact.email)
+                }
+              >
                 <FormLabel>Emergency Email Address</FormLabel>
                 <Input
                   type="email"
@@ -534,10 +605,21 @@ function AddPatient() {
                   }
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter email address"
                 />
+                {formData.emergencyContact.email &&
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emergencyContact.email) && (
+                    <FormErrorMessage>Invalid email format.</FormErrorMessage>
+                  )}
               </FormControl>
 
               {/* Medical History */}
+              <Box mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Heading fontSize="lg" color="teal.500" mb={4}>
+                  Step 5: Medical History
+                </Heading>
+                <Divider borderColor="gray.300" />
+              </Box>
               <FormControl id="conditions">
                 <FormLabel>Known Medical Conditions</FormLabel>
                 <Textarea
@@ -583,6 +665,12 @@ function AddPatient() {
               </FormControl>
 
               {/* Lifestyle Information */}
+              <Box mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Heading fontSize="lg" color="teal.500" mb={4}>
+                  Step 6: Lifestyle Information
+                </Heading>
+                <Divider borderColor="gray.300" />
+              </Box>
               <FormControl id="lifestyle" isRequired>
                 <FormLabel>Lifestyle & Habits</FormLabel>
                 <Select
