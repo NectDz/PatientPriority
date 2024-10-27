@@ -8,6 +8,7 @@ import {
   FormControl,
   FormLabel,
   Container,
+  FormErrorMessage,
   Grid,
   Progress,
   Icon,
@@ -216,38 +217,45 @@ function AddPatient() {
             </Box>
 
             {/* <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}> */}
-            <FormControl id="firstName" isRequired>
-              <FormLabel>First Name</FormLabel>
-              <InputGroup>
-                <InputLeftElement children={<Icon as={FaUser} />} />
-                <Input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                />
-              </InputGroup>
-            </FormControl>
+              <FormControl id="firstName" isRequired isInvalid={formData.firstName && !/^[a-zA-Z]{2,50}$/.test(formData.firstName)}>
+                <FormLabel>First Name</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={FaUser} />} />
+                  <Input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                    placeholder="Enter first name"
+                  />
+                </InputGroup>
+                {formData.firstName && !/^[a-zA-Z]{2,50}$/.test(formData.firstName) && (
+                  <FormErrorMessage>First name must be 2-50 letters.</FormErrorMessage>
+                )}
+              </FormControl>
 
-            <FormControl id="lastName" isRequired>
-              <FormLabel>Last Name</FormLabel>
-              <InputGroup>
-                <InputLeftElement children={<Icon as={FaUser} />} />
-                <Input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  focusBorderColor="teal.400"
-                  borderRadius="md"
-                />
-              </InputGroup>
-            </FormControl>
+              <FormControl id="lastName" isRequired isInvalid={formData.lastName && !/^[a-zA-Z]{2,50}$/.test(formData.lastName)}>
+                <FormLabel>Last Name</FormLabel>
+                <InputGroup>
+                  <InputLeftElement children={<Icon as={FaUser} />} />
+                  <Input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    focusBorderColor="teal.400"
+                    borderRadius="md"
+                    placeholder="Enter last name"
+                  />
+                </InputGroup>
+                {formData.lastName && !/^[a-zA-Z]{2,50}$/.test(formData.lastName) && (
+                  <FormErrorMessage>Last name must be 2-50 letters.</FormErrorMessage>
+                )}
+              </FormControl>
 
-
-              <FormControl id="dob" isRequired>
+              <FormControl id="dob" isRequired isInvalid={formData.dob && (new Date(formData.dob) >= new Date())}>
                 <FormLabel>Date of Birth</FormLabel>
                 <InputGroup>
                   <InputLeftElement children={<Icon as={MdDateRange} />} />
@@ -260,6 +268,9 @@ function AddPatient() {
                     borderRadius="md"
                   />
                 </InputGroup>
+                {formData.dob && new Date(formData.dob) >= new Date() && (
+                  <FormErrorMessage>Date of birth must be in the past.</FormErrorMessage>
+                )}
               </FormControl>
 
               <FormControl id="gender" isRequired>
@@ -278,7 +289,7 @@ function AddPatient() {
                 </Select>
               </FormControl>
 
-              <FormControl id="phone" isRequired>
+              <FormControl id="phone" isRequired isInvalid={formData.phone && !/^\d{10}$/.test(formData.phone)}>
                 <FormLabel>Phone Number</FormLabel>
                 <InputGroup>
                   <InputLeftElement children={<Icon as={FaPhoneAlt} />} />
@@ -286,12 +297,22 @@ function AddPatient() {
                     type="tel"
                     name="phone"
                     value={formData.phone}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const formattedPhone = e.target.value.replace(/\D/g, ""); // removes non-numeric characters
+                      if (formattedPhone.length <= 10) {
+                        setFormData({ ...formData, phone: formattedPhone });
+                      }
+                    }}
+                    placeholder="(123) 456-7890"
                     focusBorderColor="teal.400"
                     borderRadius="md"
                   />
                 </InputGroup>
+                {formData.phone && !/^\d{10}$/.test(formData.phone) && (
+                  <FormErrorMessage>Phone number must be 10 digits long.</FormErrorMessage>
+                )}
               </FormControl>
+
 
               <FormControl id="email" isRequired>
                 <FormLabel>Email Address</FormLabel>
@@ -309,7 +330,7 @@ function AddPatient() {
               </FormControl>
 
               {/* Address Section */}
-              <FormControl id="street" isRequired>
+              <FormControl id="street" isRequired isInvalid={formData.address.street && !/^[a-zA-Z0-9\s,.#-]{2,50}$/.test(formData.address.street)}>
                 <FormLabel>Street</FormLabel>
                 <Input
                   type="text"
@@ -318,10 +339,14 @@ function AddPatient() {
                   onChange={(e) => handleNestedChange(e, "address", "street")}
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter street address"
                 />
+                {formData.address.street && !/^[a-zA-Z0-9\s,.#-]{2,50}$/.test(formData.address.street) && (
+                  <FormErrorMessage>Invalid street address format.</FormErrorMessage>
+                )}
               </FormControl>
 
-              <FormControl id="city" isRequired>
+              <FormControl id="city" isRequired isInvalid={formData.address.city && !/^[a-zA-Z\s]+$/.test(formData.address.city)}>
                 <FormLabel>City</FormLabel>
                 <Input
                   type="text"
@@ -330,22 +355,78 @@ function AddPatient() {
                   onChange={(e) => handleNestedChange(e, "address", "city")}
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter city"
                 />
+                {formData.address.city && !/^[a-zA-Z\s]+$/.test(formData.address.city) && (
+                  <FormErrorMessage>City name should only contain letters.</FormErrorMessage>
+                )}
               </FormControl>
 
               <FormControl id="state" isRequired>
                 <FormLabel>State</FormLabel>
-                <Input
-                  type="text"
+                <Select
                   name="state"
                   value={formData.address.state}
                   onChange={(e) => handleNestedChange(e, "address", "state")}
                   focusBorderColor="teal.400"
                   borderRadius="md"
-                />
+                  placeholder="Select a state"
+                >
+                  <option value="AL">Alabama</option>
+                  <option value="AK">Alaska</option>
+                  <option value="AZ">Arizona</option>
+                  <option value="AR">Arkansas</option>
+                  <option value="CA">California</option>
+                  <option value="CO">Colorado</option>
+                  <option value="CT">Connecticut</option>
+                  <option value="DE">Delaware</option>
+                  <option value="FL">Florida</option>
+                  <option value="GA">Georgia</option>
+                  <option value="HI">Hawaii</option>
+                  <option value="ID">Idaho</option>
+                  <option value="IL">Illinois</option>
+                  <option value="IN">Indiana</option>
+                  <option value="IA">Iowa</option>
+                  <option value="KS">Kansas</option>
+                  <option value="KY">Kentucky</option>
+                  <option value="LA">Louisiana</option>
+                  <option value="ME">Maine</option>
+                  <option value="MD">Maryland</option>
+                  <option value="MA">Massachusetts</option>
+                  <option value="MI">Michigan</option>
+                  <option value="MN">Minnesota</option>
+                  <option value="MS">Mississippi</option>
+                  <option value="MO">Missouri</option>
+                  <option value="MT">Montana</option>
+                  <option value="NE">Nebraska</option>
+                  <option value="NV">Nevada</option>
+                  <option value="NH">New Hampshire</option>
+                  <option value="NJ">New Jersey</option>
+                  <option value="NM">New Mexico</option>
+                  <option value="NY">New York</option>
+                  <option value="NC">North Carolina</option>
+                  <option value="ND">North Dakota</option>
+                  <option value="OH">Ohio</option>
+                  <option value="OK">Oklahoma</option>
+                  <option value="OR">Oregon</option>
+                  <option value="PA">Pennsylvania</option>
+                  <option value="RI">Rhode Island</option>
+                  <option value="SC">South Carolina</option>
+                  <option value="SD">South Dakota</option>
+                  <option value="TN">Tennessee</option>
+                  <option value="TX">Texas</option>
+                  <option value="UT">Utah</option>
+                  <option value="VT">Vermont</option>
+                  <option value="VA">Virginia</option>
+                  <option value="WA">Washington</option>
+                  <option value="WV">West Virginia</option>
+                  <option value="WI">Wisconsin</option>
+                  <option value="WY">Wyoming</option>
+                </Select>
               </FormControl>
 
-              <FormControl id="zip" isRequired>
+
+              <FormControl id="zip" isRequired isInvalid={formData.address.zip && !/^\d{5}(-\d{4})?$/.test(formData.address.zip)}>
                 <FormLabel>Zip Code</FormLabel>
                 <Input
                   type="text"
@@ -354,33 +435,46 @@ function AddPatient() {
                   onChange={(e) => handleNestedChange(e, "address", "zip")}
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Enter zip code"
                 />
+                {formData.address.zip && !/^\d{5}(-\d{4})?$/.test(formData.address.zip) && (
+                  <FormErrorMessage>Zip code must be 5 digits.</FormErrorMessage>
+                )}
               </FormControl>
 
               {/* Insurance Details */}
-              <FormControl id="insuranceProvider" isRequired>
+              <FormControl id="insuranceProvider" isRequired isInvalid={formData.insuranceProvider && !/^[a-zA-Z\s]+$/.test(formData.insuranceProvider)}>
                 <FormLabel>Insurance Provider</FormLabel>
                 <Input
                   type="text"
                   name="insuranceProvider"
                   value={formData.insuranceProvider}
                   onChange={handleChange}
+                  placeholder="e.g., Aetna, Blue Cross"
                   focusBorderColor="teal.400"
                   borderRadius="md"
                 />
+                {formData.insuranceProvider && !/^[a-zA-Z\s]+$/.test(formData.insuranceProvider) && (
+                  <FormErrorMessage>Only letters and spaces are allowed.</FormErrorMessage>
+                )}
               </FormControl>
 
-              <FormControl id="policyNumber" isRequired>
+              <FormControl id="policyNumber" isRequired isInvalid={formData.policyNumber && !/^[a-zA-Z0-9]{6,20}$/.test(formData.policyNumber)}>
                 <FormLabel>Policy Number</FormLabel>
                 <Input
                   type="text"
                   name="policyNumber"
                   value={formData.policyNumber}
                   onChange={handleChange}
+                  placeholder="6-20 alphanumeric characters"
                   focusBorderColor="teal.400"
                   borderRadius="md"
                 />
+                {formData.policyNumber && !/^[a-zA-Z0-9]{6,20}$/.test(formData.policyNumber) && (
+                  <FormErrorMessage>Policy number must be 6-20 alphanumeric characters.</FormErrorMessage>
+                )}
               </FormControl>
+
 
               {/* Emergency Contact */}
               <FormControl id="emergencyContactName" isRequired>
@@ -407,6 +501,7 @@ function AddPatient() {
                   }
                   focusBorderColor="teal.400"
                   borderRadius="md"
+                  placeholder="Select an option"
                 >
                   <option value="mother">Mother</option>
                   <option value="father">Father</option>
