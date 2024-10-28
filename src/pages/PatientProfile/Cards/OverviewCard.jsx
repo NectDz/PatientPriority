@@ -2,21 +2,19 @@ import { Card, CardHeader, CardBody, Box, Text, UnorderedList, ListItem } from "
 
 function OverviewCard() {
   return (
-    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="8px">
+    <Card width="100%" height="100%" bg="#ffffff" shadow="md" borderRadius="12px">
       <CardHeader
         p="4"
         fontWeight="bold"
         textAlign="center"
         fontSize="xl"
-        textDecoration="underline"
-        bg="#134074"
-        borderRadius="8px 8px 0px 0px"
+        bg="#3A506B"
         color="white"
+        borderRadius="12px 12px 0px 0px"
       >
         Overview
       </CardHeader>
-
-      <CardBody p={6} bg="#F0F0EE">
+      <CardBody p={6}>
         <Box display="flex" justifyContent="space-around">
           <Box>
             <Text fontWeight="bold">Current Health Information:</Text>
@@ -26,18 +24,12 @@ function OverviewCard() {
               <ListItem>Hints of delulu is not the solulu</ListItem>
             </UnorderedList>
           </Box>
-
           <Box>
             <Text fontWeight="bold">Current Medications:</Text>
             <UnorderedList>
               <ListItem>Percocet</ListItem>
             </UnorderedList>
           </Box>
-
-          {/* <Box>
-            <Text fontWeight="bold">Meeting Summaries:</Text>
-            <UnorderedList></UnorderedList>
-          </Box> */}
         </Box>
       </CardBody>
     </Card>
@@ -45,4 +37,3 @@ function OverviewCard() {
 }
 
 export default OverviewCard;
-
