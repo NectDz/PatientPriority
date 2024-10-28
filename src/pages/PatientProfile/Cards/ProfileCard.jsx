@@ -1,32 +1,30 @@
 import { Card, CardHeader, CardBody, Image, Box, Text } from "@chakra-ui/react";
-import profilePic from "../../../assets/profile pic.png";
+import profilePic from "../../../assets/profile_pic.png";
 
 function ProfileCard() {
   return (
-    <Card width="100%" height="100%" border="1px solid" borderColor="gray.300" shadow="lg" borderRadius="8px">
+    <Card width="100%" height="100%" bg="#ffffff" shadow="md" borderRadius="12px">
       <CardHeader
         p="4"
         fontWeight="bold"
         textAlign="center"
         fontSize="xl"
-        textDecoration="underline"
-        bg="#134074"
-        borderRadius="8px 8px 0px 0px"
+        bg="#3A506B"
         color="white"
+        borderRadius="12px 12px 0px 0px"
       >
         Profile
       </CardHeader>
-
-      <CardBody p={6} bg="#F0F0EE" >
+      <CardBody p={6}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Image
             src={profilePic}
             alt="Profile Image"
-            boxSize="120px"
+            boxSize="100px"
             borderRadius="full"
-            mb={4}  // Adds margin below the image
+            mb={4}
           />
-          <Box>
+          <Box textAlign="center">
             <Text><strong>Name:</strong> Princess Lulu</Text>
             <Text><strong>Height:</strong> 4'11</Text>
             <Text><strong>Weight:</strong> 120 lbs</Text>
