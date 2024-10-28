@@ -215,6 +215,16 @@ function PatientProfile() {
     <Progress value={60} colorScheme="teal" borderRadius="md" />
   </Box>
 
+  {/* Recent Medications History */}
+  <Heading fontSize="xl" color="#252B42" mt={8} mb={4} textAlign="center">Recent Medications History</Heading>
+  <List spacing={3} color="gray.500">
+    {profile.recentMedications.map((med, index) => (
+      <ListItem key={index}>
+        {med.name} - Last taken: {med.time}
+      </ListItem>
+    ))}
+  </List>
+</Box>
 
         {/* Update Profile Modal */}
         <Modal isOpen={isOpen} onClose={closeModal}>
