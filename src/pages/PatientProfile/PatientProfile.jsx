@@ -1,5 +1,7 @@
 import React from "react";
-import { ChakraProvider, Box } from "@chakra-ui/react";
+import { ChakraProvider, Box, Heading, Image, Flex, Text, Icon, Stack } from "@chakra-ui/react";
+import { FaUserAlt } from "react-icons/fa";
+import { BiMap } from "react-icons/bi";
 
 function PatientProfile() {
   return (
@@ -7,7 +9,17 @@ function PatientProfile() {
       <Box bg="#EEF4ED" minH="100vh" p={10} pt={24}>
         {/* Patient Info Section */}
         <Box bg="white" borderRadius="xl" shadow="xl" p={8} mb={8} maxW="3xl" mx="auto" textAlign="center">
-          {/* Placeholder for Patient Info */}
+          <Image borderRadius="full" boxSize="120px" src="https://via.placeholder.com/120" alt="Profile" mx="auto" mb={4} />
+          <Heading fontSize="2xl" color="#252B42">John Doe</Heading>
+          <Flex justify="center" align="center" color="gray.500" mt={2}>
+            <Icon as={FaUserAlt} mr={2} />
+            <Text fontSize="lg">Age: 45</Text>
+          </Flex>
+          <Flex justify="center" align="center" color="gray.500" mt={2}>
+            <Icon as={BiMap} mr={2} />
+            <Text fontSize="md">Address: 1234 Elm Street, Springfield</Text>
+          </Flex>
+          <Text fontSize="md" color="gray.500">Phone: (555) 123-4567</Text>
         </Box>
 
         {/* Health Overview Section */}
