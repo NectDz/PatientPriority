@@ -1,6 +1,7 @@
 import React from "react";
-import { ChakraProvider, Box, Heading, Image, Flex, Text, Icon, Stack } from "@chakra-ui/react";
-import { FaUserAlt } from "react-icons/fa";
+import { ChakraProvider, Box, Heading, Image, Flex, Text, Icon, Stack, List, ListItem } from "@chakra-ui/react";
+import { FaUserAlt, FaCapsules } from "react-icons/fa";
+import { MdHealthAndSafety } from "react-icons/md";
 import { BiMap } from "react-icons/bi";
 
 function PatientProfile() {
@@ -24,7 +25,30 @@ function PatientProfile() {
 
         {/* Health Overview Section */}
         <Box bg="white" borderRadius="xl" shadow="xl" p={8} mb={8} maxW="3xl" mx="auto">
-          {/* Placeholder for Health Overview */}
+          <Heading fontSize="xl" color="#252B42" mb={4} textAlign="center">Health Overview</Heading>
+          <Stack direction="row" spacing={10} justify="space-around">
+            <Box>
+              <Flex align="center" color="gray.600" mb={2}>
+                <Icon as={MdHealthAndSafety} mr={2} />
+                <Text fontWeight="bold">Current Health Information:</Text>
+              </Flex>
+              <List spacing={1} color="gray.500">
+                <ListItem>Blood Pressure: 120/80</ListItem>
+                <ListItem>Heart Rate: 72 bpm</ListItem>
+                <ListItem>Blood Sugar Level: Normal</ListItem>
+              </List>
+            </Box>
+            <Box>
+              <Flex align="center" color="gray.600" mb={2}>
+                <Icon as={FaCapsules} mr={2} />
+                <Text fontWeight="bold">Current Medications:</Text>
+              </Flex>
+              <List spacing={1} color="gray.500">
+                <ListItem>Amlodipine 10mg</ListItem>
+                <ListItem>Metformin 500mg</ListItem>
+              </List>
+            </Box>
+          </Stack>
         </Box>
 
         {/* Reminders & Appointments Section */}
