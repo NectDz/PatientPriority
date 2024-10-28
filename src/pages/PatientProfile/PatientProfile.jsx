@@ -200,6 +200,21 @@ function PatientProfile() {
     ></iframe>
   </Box>
 
+  {/* Health Goals Tracker */}
+  <Heading fontSize="xl" color="#252B42" mt={8} mb={4} textAlign="center">Health Goals</Heading>
+  <Box mb={4}>
+    <Text>Steps per Day</Text>
+    <Progress value={70} colorScheme="teal" borderRadius="md" />
+  </Box>
+  <Box mb={4}>
+    <Text>Hours of Sleep</Text>
+    <Progress value={80} colorScheme="teal" borderRadius="md" />
+  </Box>
+  <Box>
+    <Text>Water Intake</Text>
+    <Progress value={60} colorScheme="teal" borderRadius="md" />
+  </Box>
+
 
         {/* Update Profile Modal */}
         <Modal isOpen={isOpen} onClose={closeModal}>
