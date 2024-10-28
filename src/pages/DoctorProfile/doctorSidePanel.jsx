@@ -119,7 +119,7 @@ const DoctorSidePanel = () => {
           mt={2}
         >
           <SettingsIcon />
-          <ChakraLink as={ReactRouterLink} to="/doctor-settings" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/doctor-profile/doctor-settings" fontWeight="bold">
             Settings
           </ChakraLink>
         </HStack>
