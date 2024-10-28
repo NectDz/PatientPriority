@@ -59,33 +59,48 @@ function PatientProfile() {
     closeModal();
   };
 
+  // Download profile as a text file
+  const downloadProfile = () => {
+    const profileText = `
+      Patient Profile:
+      Name: ${profile.name}
+      Age: ${profile.age}
+      Address: ${profile.address}
+      Phone: ${profile.phone}
+      
+      Health Overview:
+      Blood Pressure: ${profile.bloodPressure}
+      Heart Rate: ${profile.heartRate}
+      Blood Sugar Level: ${profile.bloodSugar}
+      
+      Current Medications:
+      ${profile.medications.join(", ")}
+
+      Reminders & Appointments:
+      - Oct 20, 2024: General Checkup
+      - Nov 1, 2024: Blood Test Follow-up
+      - Dec 5, 2024: Vaccination
+    `;
+    
+    // Create a blob and a download link
+    const blob = new Blob([profileText], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'PatientProfile.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <ChakraProvider>
       <Box bg="#EEF4ED" minH="100vh" p={10} pt={24}>
         {/* Patient Info Section */}
-        <Box
-          bg="white"
-          borderRadius="xl"
-          shadow="xl"
-          p={8}
-          mb={8}
-          maxW="3xl"
-          mx="auto"
-          textAlign="center"
-        >
-          <Image
-            borderRadius="full"
-            boxSize="120px"
-            src="https://via.placeholder.com/120"
-            alt="Profile"
-            mx="auto"
-            mb={4}
-            border="4px solid"
-            borderColor="teal.300"
-          />
-          <Heading fontSize="2xl" color="#252B42">
-            {profile.name}
-          </Heading>
+        <Box bg="white" borderRadius="xl" shadow="xl" p={8} mb={8} maxW="3xl" mx="auto" textAlign="center">
+          <Image borderRadius="full" boxSize="120px" src="https://via.placeholder.com/120" alt="Profile" mx="auto" mb={4} border="4px solid" borderColor="teal.300" />
+          <Heading fontSize="2xl" color="#252B42">{profile.name}</Heading>
           <Flex justify="center" align="center" color="gray.500" mt={2}>
             <Icon as={FaUserAlt} mr={2} />
             <Text fontSize="lg">Age: {profile.age}</Text>
@@ -94,34 +109,18 @@ function PatientProfile() {
             <Icon as={BiMap} mr={2} />
             <Text fontSize="md">Address: {profile.address}</Text>
           </Flex>
-          <Text fontSize="md" color="gray.500">
-            Phone: {profile.phone}
-          </Text>
-
+          <Text fontSize="md" color="gray.500">Phone: {profile.phone}</Text>
+          
           {/* Action buttons */}
           <Stack direction="row" spacing={4} mt={6} justify="center">
-            <Button colorScheme="teal" variant="solid" onClick={openModal}>
-              Update Profile
-            </Button>
-            <Button colorScheme="teal" variant="outline">
-              Share with Doctor
-            </Button>
+            <Button colorScheme="teal" variant="solid" onClick={openModal}>Update Profile</Button>
+            <Button colorScheme="teal" variant="outline" onClick={downloadProfile}>Share with Family</Button>
           </Stack>
         </Box>
 
         {/* Health Overview Section */}
-        <Box
-          bg="white"
-          borderRadius="xl"
-          shadow="xl"
-          p={8}
-          mb={8}
-          maxW="3xl"
-          mx="auto"
-        >
-          <Heading fontSize="xl" color="#252B42" mb={4} textAlign="center">
-            Health Overview
-          </Heading>
+        <Box bg="white" borderRadius="xl" shadow="xl" p={8} mb={8} maxW="3xl" mx="auto">
+          <Heading fontSize="xl" color="#252B42" mb={4} textAlign="center">Health Overview</Heading>
           <Stack direction="row" spacing={10} justify="space-around">
             <Box>
               <Flex align="center" color="gray.600" mb={2}>
@@ -149,32 +148,15 @@ function PatientProfile() {
         </Box>
 
         {/* Reminders & Appointments Section */}
-        <Box
-          bg="white"
-          borderRadius="xl"
-          shadow="xl"
-          p={8}
-          maxW="3xl"
-          mx="auto"
-        >
-          <Heading fontSize="xl" color="#252B42" mb={4} textAlign="center">
-            Reminders & Appointments
-          </Heading>
+        <Box bg="white" borderRadius="xl" shadow="xl" p={8} maxW="3xl" mx="auto">
+          <Heading fontSize="xl" color="#252B42" mb={4} textAlign="center">Reminders & Appointments</Heading>
           <List spacing={3} color="gray.500">
             <ListItem>
               <Flex align="center">
                 <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                <Badge colorScheme="teal" mr={2}>
-                  Oct 20, 2024
-                </Badge>
+                <Badge colorScheme="teal" mr={2}>Oct 20, 2024</Badge>
                 <Tooltip label="Add to Google Calendar" placement="top">
-                  <Link
-                    href="https://calendar.google.com/calendar/r/eventedit"
-                    isExternal
-                    color="teal.600"
-                    fontWeight="bold"
-                    _hover={{ color: "teal.800" }}
-                  >
+                  <Link href="https://calendar.google.com/calendar/r/eventedit" isExternal color="teal.600" fontWeight="bold" _hover={{ color: "teal.800" }}>
                     General Checkup
                   </Link>
                 </Tooltip>
@@ -183,17 +165,9 @@ function PatientProfile() {
             <ListItem>
               <Flex align="center">
                 <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                <Badge colorScheme="teal" mr={2}>
-                  Nov 1, 2024
-                </Badge>
+                <Badge colorScheme="teal" mr={2}>Nov 1, 2024</Badge>
                 <Tooltip label="Add to Google Calendar" placement="top">
-                  <Link
-                    href="https://calendar.google.com/calendar/r/eventedit"
-                    isExternal
-                    color="teal.600"
-                    fontWeight="bold"
-                    _hover={{ color: "teal.800" }}
-                  >
+                  <Link href="https://calendar.google.com/calendar/r/eventedit" isExternal color="teal.600" fontWeight="bold" _hover={{ color: "teal.800" }}>
                     Blood Test Follow-up
                   </Link>
                 </Tooltip>
@@ -202,17 +176,9 @@ function PatientProfile() {
             <ListItem>
               <Flex align="center">
                 <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                <Badge colorScheme="teal" mr={2}>
-                  Dec 5, 2024
-                </Badge>
+                <Badge colorScheme="teal" mr={2}>Dec 5, 2024</Badge>
                 <Tooltip label="Add to Google Calendar" placement="top">
-                  <Link
-                    href="https://calendar.google.com/calendar/r/eventedit"
-                    isExternal
-                    color="teal.600"
-                    fontWeight="bold"
-                    _hover={{ color: "teal.800" }}
-                  >
+                  <Link href="https://calendar.google.com/calendar/r/eventedit" isExternal color="teal.600" fontWeight="bold" _hover={{ color: "teal.800" }}>
                     Vaccination
                   </Link>
                 </Tooltip>
@@ -228,63 +194,17 @@ function PatientProfile() {
             <ModalHeader>Update Profile</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Input
-                placeholder="Name"
-                mb={4}
-                name="name"
-                value={newProfile.name}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Age"
-                mb={4}
-                name="age"
-                value={newProfile.age}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Address"
-                mb={4}
-                name="address"
-                value={newProfile.address}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Phone"
-                mb={4}
-                name="phone"
-                value={newProfile.phone}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Blood Pressure"
-                mb={4}
-                name="bloodPressure"
-                value={newProfile.bloodPressure}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Heart Rate"
-                mb={4}
-                name="heartRate"
-                value={newProfile.heartRate}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Blood Sugar Level"
-                mb={4}
-                name="bloodSugar"
-                value={newProfile.bloodSugar}
-                onChange={handleChange}
-              />
+              <Input placeholder="Name" mb={4} name="name" value={newProfile.name} onChange={handleChange} />
+              <Input placeholder="Age" mb={4} name="age" value={newProfile.age} onChange={handleChange} />
+              <Input placeholder="Address" mb={4} name="address" value={newProfile.address} onChange={handleChange} />
+              <Input placeholder="Phone" mb={4} name="phone" value={newProfile.phone} onChange={handleChange} />
+              <Input placeholder="Blood Pressure" mb={4} name="bloodPressure" value={newProfile.bloodPressure} onChange={handleChange} />
+              <Input placeholder="Heart Rate" mb={4} name="heartRate" value={newProfile.heartRate} onChange={handleChange} />
+              <Input placeholder="Blood Sugar Level" mb={4} name="bloodSugar" value={newProfile.bloodSugar} onChange={handleChange} />
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="teal" mr={3} onClick={saveChanges}>
-                Save
-              </Button>
-              <Button variant="ghost" onClick={closeModal}>
-                Cancel
-              </Button>
+              <Button colorScheme="teal" mr={3} onClick={saveChanges}>Save</Button>
+              <Button variant="ghost" onClick={closeModal}>Cancel</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
