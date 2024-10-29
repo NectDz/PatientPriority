@@ -113,7 +113,7 @@ function PatientProfile() {
 
   return (
     <ChakraProvider>
-      <Flex bg="#EEF4ED" minH="100vh" p={10} pt={24}>
+      <Flex bg="#EEF4ED" minH="100vh" p={10} pt={24} pr={100}>
         <Button
           position="fixed"
           top="4"

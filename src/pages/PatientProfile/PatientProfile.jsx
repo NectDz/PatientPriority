@@ -14,9 +14,9 @@ function PatientProfile() {
           gap={6}
           marginLeft="220px"
           width="calc(100% - 220px)"
-          pt="11vh"
-          px="16"
-          pb="8"
+          // pt="11vh"
+          // px="16"
+          // pb="8"
         >
           {/* Outlet for nested routes */}
           <Outlet />
