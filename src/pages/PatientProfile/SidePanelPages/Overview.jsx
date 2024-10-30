@@ -108,6 +108,19 @@ function Overview() {
 
                     <Divider />
 
+                    {/* Address Info */}
+                    <Box>
+                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                            Address
+                        </Heading>
+                        <Text><strong>Street:</strong> {patient.address.street}</Text>
+                        <Text><strong>City:</strong> {patient.address.city}</Text>
+                        <Text><strong>State:</strong> {patient.address.state}</Text>
+                        <Text><strong>ZIP:</strong> {patient.address.zip}</Text>
+                    </Box>
+
+                    <Divider />
+
                     
                 </VStack>
             </Box>
