@@ -121,6 +121,22 @@ function Overview() {
 
                     <Divider />
 
+                    {/* Health Info */}
+                    <Box>
+                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                            Health Information
+                        </Heading>
+                        <Text><strong>Diet:</strong> {patient.diet}</Text>
+                        <Text><strong>Physical Activity:</strong> {patient.physicalActivity}</Text>
+                        <Text><strong>Lifestyle:</strong> {patient.lifestyle}</Text>
+                        <Text><strong>Alcohol Consumption:</strong> {patient.alcoholConsumption}</Text>
+                        <Text><strong>Conditions:</strong> {patient.conditions || "None reported"}</Text>
+                        <Text><strong>Allergies:</strong> {patient.allergies || "None reported"}</Text>
+                        <Text><strong>Medications:</strong> {patient.medications || "None reported"}</Text>
+                    </Box>
+
+                    <Divider />
+
                     
                 </VStack>
             </Box>
