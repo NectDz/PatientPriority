@@ -137,6 +137,19 @@ function Overview() {
 
                     <Divider />
 
+                    {/* Emergency Info */}
+                    <Box>
+                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                            Emergency Contact
+                        </Heading>
+                        <Text><strong>Name:</strong> {patient.emergencyContact.name}</Text>
+                        <Text><strong>Relationship:</strong> {patient.emergencyContact.relationship}</Text>
+                        <Text><strong>Phone:</strong> {patient.emergencyContact.phone}</Text>
+                        <Text><strong>Email:</strong> {patient.emergencyContact.email}</Text>
+                    </Box>
+
+                    <Divider />
+
                     
                 </VStack>
             </Box>
