@@ -150,7 +150,14 @@ function Overview() {
 
                     <Divider />
 
-                    
+                    {/* Insurance Info */}
+                    <Box>
+                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                            Insurance Information
+                        </Heading>
+                        <Text><strong>Provider:</strong> {patient.insuranceProvider}</Text>
+                        <Text><strong>Policy Number:</strong> {patient.policyNumber}</Text>
+                    </Box>
                 </VStack>
             </Box>
         </ChakraProvider>
