@@ -68,7 +68,12 @@ function Overview() {
         );
     }
 
-    
+    if (!patient) { //if you are here then you didnt find a patient
+        return (
+            <Box p={8}>
+                <Text>No patient data available. Please make sure you are logged in with the correct account.</Text>
+            </Box>
+        );
     }
 
     return (
