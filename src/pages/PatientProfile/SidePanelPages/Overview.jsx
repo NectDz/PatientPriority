@@ -79,7 +79,37 @@ function Overview() {
     return (
         <ChakraProvider>
             <Box bg="#F4F4F9" minHeight="100vh" padding="2rem" color="#333" display="flex" justifyContent="center" alignItems="center">
-                
+                <VStack
+                    spacing={8}
+                    align="stretch"
+                    width="80%"
+                    maxWidth="1200px"
+                    boxShadow="lg"
+                    bg="white"
+                    borderRadius="md"
+                    padding="2rem"
+                >
+                    {/* <Heading as="h1" size="lg" textAlign="center" color="#0B2545">
+                        Patient Overview
+                    </Heading>
+                    <Divider /> idk -- this looks off center to me*/}
+
+                    {/* Patient Info */}
+                    <Box>
+                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                            Patient Information
+                        </Heading>
+                        <Text><strong>Name:</strong> {patient.firstName} {patient.lastName}</Text>
+                        <Text><strong>Age:</strong> {patient.age}</Text>
+                        <Text><strong>Gender:</strong> {patient.gender}</Text>
+                        <Text><strong>Phone:</strong> {patient.phone}</Text>
+                        <Text><strong>Email:</strong> {patient.email}</Text>
+                    </Box>
+
+                    <Divider />
+
+                    
+                </VStack>
             </Box>
         </ChakraProvider>
     );
