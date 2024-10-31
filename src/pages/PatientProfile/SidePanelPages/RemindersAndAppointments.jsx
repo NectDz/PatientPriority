@@ -4,25 +4,25 @@ import { ChakraProvider, Box, VStack, Heading, Text, Divider } from "@chakra-ui/
 function RemindersAndAppointments() {
     return (
         <ChakraProvider>
-            <Box bg="#F4F4F9" minHeight="100vh" padding="2rem" color="#333" display="flex" justifyContent="center" alignItems="center">
-                <VStack
+            <Box bg="#EFF8F8" minHeight="100vh" padding="2rem" color="#00366d" display="flex" justifyContent="center" alignItems="center">
+            <VStack
                     spacing={8}
                     align="stretch"
                     width="80%"
                     maxWidth="1200px"
-                    boxShadow="lg"
-                    bg="white"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    bg="rgba(255, 255, 255, 0.6)"
                     borderRadius="md"
                     padding="2rem"
                 >
-                    <Heading as="h1" size="lg" textAlign="center" color="#0B2545">
+                    <Heading as="h1" size="lg" textAlign="center" color="#256c69">
                         Reminders and Appointments
                     </Heading>
                     <Divider />
 
                     {/* Reminders */}
                     <Box>
-                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                        <Heading as="h2" size="md" color="#00366d" mb={2}>
                             Reminders
                         </Heading>
                         <Text>- Take medication (Metformin) at 8:00 AM</Text>
@@ -34,7 +34,7 @@ function RemindersAndAppointments() {
 
                     {/* Upcoming Appointments */}
                     <Box>
-                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                        <Heading as="h2" size="md" color="#00366d" mb={2}>
                             Upcoming Appointments
                         </Heading>
                         <Text>- Dental Check-up: October 30, 2024 at 2:00 PM</Text>
@@ -46,7 +46,7 @@ function RemindersAndAppointments() {
 
                     {/* Past Appointments */}
                     <Box>
-                        <Heading as="h2" size="md" color="#0B2545" mb={2}>
+                        <Heading as="h2" size="md" color="#00366d" mb={2}>
                             Past Appointments
                         </Heading>
                         <Text>- Annual Physical: October 10, 2024</Text>

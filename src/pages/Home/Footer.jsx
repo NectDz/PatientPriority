@@ -13,7 +13,7 @@ const Footer = () => {
       />
 
       <Box
-        backgroundColor="#F0F5EE" // Set the background color to #F0F5EE
+        backgroundColor="#EFF8F8" // Set the background color to #EFF8F8
         color="#00366d"
         py={4}
       >
