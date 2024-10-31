@@ -12,7 +12,9 @@ import {
     Input,
     Select,
     Textarea,
-    Button
+    Button,
+    UnorderedList,
+    ListItem
 } from "@chakra-ui/react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -58,17 +60,17 @@ function AIInsights() {
         1. 5 Common Diagnoses/Conditions
         - List five health conditions most common for someone with this profile (considering their age, lifestyle, and family history), with a short, clear description for each.
         
-        2. Top 3 Preventive Tips
+        Top 3 Preventive Tips
         
         - Diet: Provide one suggestion for improving nutrition specific to this patient's needs.
         - Activity: Recommend a type or amount of exercise suited to the patient's lifestyle and physical condition.
         - Health Monitoring: Suggest one key check-up or screening the patient should prioritize (e.g., blood pressure, cholesterol).
         
 
-        3. One Health Goal
+        One Health Goal
         - Provide a simple, realistic health goal for the patient to work toward based on their current profile, such as walk 15 minutes a day or add a vegetable to each meal.
         
-        4. Health Horoscope
+        Health Horoscope
         Generate a playful, funny, and health-related "Health Horoscope" to add a bit of humor.
         Create a light-hearted, fortune-cookie-style line that’s related to health or wellness but adds humor. Examples could include:
         - Health Horoscope: A salad is in your future; don’t be afraid to add a sprinkle of cheese for excitement.
@@ -499,26 +501,26 @@ function AIInsights() {
                     {insights && (
                         <Box mt={10}>
                             <Divider mb={5} />
-                            <Heading as="h2" size="md" mb={4}>AI-Generated Health Insights</Heading>
+                            <Heading as="h2" size="lg" mb={4}>AI-Generated Health Insights</Heading>
                             <Box style={styles.responseContainer}>
                                 <Box style={styles.section}>
                                     <Text style={styles.sectionTitle}>1. 5 Common Diagnoses/Conditions</Text>
-                                    <Text>{insightsSections.diagnoses}</Text>
+                                    <Text fontSize="lg">{insightsSections.diagnoses}</Text> {/* Added fontSize */}
                                 </Box>
                                 
                                 <Box style={styles.section}>
                                     <Text style={styles.sectionTitle}>2. Top 3 Preventive Tips</Text>
-                                    <Text>{insightsSections.tips}</Text>
+                                    <Text fontSize="lg">{insightsSections.tips}</Text> {/* Added fontSize */}
                                 </Box>
                                 
                                 <Box style={styles.section}>
                                     <Text style={styles.sectionTitle}>3. One Health Goal</Text>
-                                    <Text>{insightsSections.healthGoal}</Text>
+                                    <Text fontSize="lg">{insightsSections.healthGoal}</Text> {/* Added fontSize */}
                                 </Box>
                                 
                                 <Box style={styles.section}>
                                     <Text style={styles.sectionTitle}>4. Health Horoscope</Text>
-                                    <Text>{insightsSections.healthHoroscope}</Text>
+                                    <Text fontSize="lg">{insightsSections.healthHoroscope}</Text> {/* Added fontSize */}
                                 </Box>
                             </Box>
                         </Box>
