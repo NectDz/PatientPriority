@@ -53,47 +53,44 @@ function AIInsights() {
 
         // Construct the prompt from the form data
         const prompt = `
-        Based on the patient's demographic information, medical history, lifestyle, family medical history, and vital signs, provide insights and advice. Use the following structured format and Use markdown to make section headers and key points **bold**:
+        Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary. The response should be structured in the following format:
+
+        1. 5 Common Diagnoses/Conditions
         
-        **Instructions:**
-        - Respond in JSON format.
-        - Use straightforward language, avoiding complex medical terms.
-        - Organize the response with clear sections, headers, and bullet points.
-        - Provide only key points without unnecessary detail.
+        Use a Markdown header for the title of each section and make key terms bold.
+        - List five health conditions most common for someone with this profile (considering their age, lifestyle, and family history), with a short, clear description for each.
         
-        **Expected Output Format:**
-        {
-          "Risk Assessment": {
-            "Obesity": "Explanation of obesity risks based on patient's height and weight...",
-            "Heart Disease": "Explanation of heart disease risks based on family history, conditions, etc...",
-            "Diabetes": "Explanation of diabetes risks based on blood sugar levels, weight, and lifestyle...",
-            "Mental Health": "Potential mental health concerns based on patient-reported data...",
-            "Respiratory Problems": "Risks related to respiratory issues due to smoking or environmental factors..."
-          },
-          "Health Trends": [
-            "Observed health trend 1 (e.g., risk of chronic illnesses)...",
-            "Observed health trend 2 (e.g., age-related changes)..."
-          ],
-          "Preventive Measures": {
-            "Diet": "Suggestions for maintaining a balanced diet...",
-            "Exercise": "Recommendations for regular physical activity...",
-            "Mental Health Care": "Suggestions for improving mental health...",
-            "Sleep": "Advice on sleep habits and routines..."
-          },
-          "Customized Care Plans": {
-            "Check-ups": "Importance of regular check-ups...",
-            "Screening Tests": "Recommendations for screenings (e.g., diabetes, cholesterol)...",
-            "Medication Review": "Guidance on managing medications effectively...",
-            "Weight Control": "Tips for achieving and maintaining a healthy weight..."
-          },
-          "Medication Optimization": {
-            "Blood Pressure": "Medication suggestions for managing blood pressure...",
-            "Cholesterol": "Recommendations for cholesterol management...",
-            "Mental Health": "Suggestions for mental health medication options...",
-            "Quit Smoking Aids": "Advice on using aids to quit smoking..."
-          }
-        }
+        2. Top 3 Preventive Tips
         
+        - Diet: Provide one suggestion for improving nutrition specific to this patient's needs.
+        - Activity: Recommend a type or amount of exercise suited to the patient's lifestyle and physical condition.
+        - Health Monitoring: Suggest one key check-up or screening the patient should prioritize (e.g., blood pressure, cholesterol).
+        
+        3. Red Flags to Watch
+        
+        Make the text clear and bold for symptoms to monitor.
+        
+        - List any specific signs or symptoms that may require immediate attention, tailored to this patient’s profile (e.g., chest pain, persistent fatigue).
+        
+        4. One Health Goal
+        - Provide a simple, realistic health goal for the patient to work toward based on their current profile, such as walk 15 minutes a day or add a vegetable to each meal.
+        
+        5. Health Horoscope
+        
+        Generate a playful, funny, and health-related "Health Horoscope" to add a bit of humor.
+        Create a light-hearted, fortune-cookie-style line that’s related to health or wellness but adds humor. Examples could include:
+        
+        - Health Horoscope: A salad is in your future; don’t be afraid to add a sprinkle of cheese for excitement.
+        - Health Horoscope: Today’s exercise forecast predicts light stretching with a high chance of couch time.
+        - Health Horoscope: The stars suggest more vegetables on your plate—no, French fries don’t count.
+        
+        Additional Instructions:
+        
+        - Use plain, straightforward language that is easy to understand, especially for older patients.
+        - Avoid complex medical jargon, and focus on actionable insights that are immediately useful to the patient.
+        - Do not use stars (*) or quotation marks (" ") in the response.
+        - Organize the response clearly with headers and bolded key points for easy readability.
+
         **Patient Information:**
         - Age: ${formData.age}
         - Gender: ${formData.gender}
