@@ -9,11 +9,11 @@
   
   /* For the doctor side */
   .doctor-hover-effect:hover .image-hover-effect {
-    filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.5)); /* blue tint = doctor? */
+    filter: drop-shadow(0 0 15px rgb(0, 148, 221)); /* blue tint = doctor? */
   }
   
   /* For the patient side */
   .patient-hover-effect:hover .image-hover-effect {
-    filter: drop-shadow(0 0 15px rgb(200, 22, 22)); /* red = patient?*/
+    filter: drop-shadow(0 0 15px rgb(0, 148, 221)); /* red = patient?*/
   }
   

@@ -12,47 +12,55 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db, auth } from "../../firebase-config"; // import both auth and db
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth"; // firebase Authentication
+import { db, auth } from "../../firebase-config";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-function DoctorSignUp() {
+function PatientSignUp() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [doctorInfo, setDoctorInfo] = useState({
+  const [patientInfo, setPatientInfo] = useState({
+    verificationCode: "",
     firstName: "",
     lastName: "",
-    credentials: "",
-    hospital: "",
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [verificationDocRef, setVerificationDocRef] = useState(null); // New state for storing the document reference
   const toast = useToast();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setDoctorInfo((prev) => ({ ...prev, [name]: value }));
+    setPatientInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const verifyCredentials = async () => {
+  const verifyPatientInfo = async () => {
     setLoading(true);
     try {
-      //verify the credentials in the 'credentials'
-      const credentialsQuery = query(
-        collection(db, "credentials"),
-        where("credential_id", "==", doctorInfo.credentials),
-        where("firstName", "==", doctorInfo.firstName),
-        where("lastName", "==", doctorInfo.lastName),
-        where("hospital", "==", doctorInfo.hospital)
+      // Check the "patient_codes" collection for matching patient info
+      const patientQuery = query(
+        collection(db, "patient_codes"),
+        where("code", "==", patientInfo.verificationCode),
+        where("firstName", "==", patientInfo.firstName),
+        where("lastName", "==", patientInfo.lastName),
+        where("email", "==", patientInfo.email)
       );
 
-      const credentialsSnapshot = await getDocs(credentialsQuery);
+      const patientSnapshot = await getDocs(patientQuery);
 
-      if (credentialsSnapshot.empty) {
+      if (patientSnapshot.empty) {
         toast({
           title: "Verification Failed",
-          description: "The provided credentials do not match our records.",
+          description: "The provided information does not match our records.",
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -61,44 +69,23 @@ function DoctorSignUp() {
         return;
       }
 
-      //check if the doctor already exists in the 'doctor'
-      const doctorQuery = query(
-        collection(db, "doctor"),
-        where("credential_id", "==", doctorInfo.credentials),
-        where("firstName", "==", doctorInfo.firstName),
-        where("lastName", "==", doctorInfo.lastName),
-        where("hospitalName", "==", doctorInfo.hospital)
-      );
+      // Store the document reference for deletion later
+      setVerificationDocRef(patientSnapshot.docs[0].ref);
 
-      const doctorSnapshot = await getDocs(doctorQuery);
-
-      if (!doctorSnapshot.empty) {
-        toast({
-          title: "Doctor Already Exists",
-          description:
-            "A doctor with the same credentials is already registered.",
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
-        setLoading(false);
-        return;
-      }
-
-      //if both checks pass, proceed
+      // If successful, move to the next step
       toast({
         title: "Verification Successful",
-        description: "Credentials verified. Proceeding to the next step.",
+        description: "Information verified. Proceeding to account setup.",
         status: "success",
         duration: 4000,
         isClosable: true,
       });
       setStep(2);
     } catch (error) {
-      console.error("Error verifying credentials: ", error);
+      console.error("Error verifying patient information: ", error);
       toast({
         title: "Error",
-        description: "An error occurred while verifying credentials.",
+        description: "An error occurred while verifying information.",
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -111,37 +98,51 @@ function DoctorSignUp() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      //create user in Firebase Auth
+      // Create the user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        doctorInfo.email,
-        doctorInfo.password
+        patientInfo.email,
+        patientInfo.password
       );
 
       const user = userCredential.user;
 
-      //add doctor info to Firestore, including email
-      await addDoc(collection(db, "doctor"), {
-        id: user.uid, //use the user's unique Firebase ID
-        firstName: doctorInfo.firstName,
-        lastName: doctorInfo.lastName,
-        hospitalName: doctorInfo.hospital,
-        credential_id: doctorInfo.credentials,
-        email: doctorInfo.email, //add the doctor's email here
-        accountCreatedDate: new Date(), //set current date as the account creation date
-      });
+      // Find the patient in "patients" collection by email and add the UID
+      const patientQuery = query(
+        collection(db, "patients"),
+        where("email", "==", patientInfo.email)
+      );
+
+      const patientSnapshot = await getDocs(patientQuery);
+
+      if (!patientSnapshot.empty) {
+        const patientDoc = patientSnapshot.docs[0];
+        await updateDoc(patientDoc.ref, { id: user.uid });
+      } else {
+        // If patient doesn't exist in patients collection, add a new entry
+        await addDoc(collection(db, "patients"), {
+          id: user.uid,
+          firstName: patientInfo.firstName,
+          lastName: patientInfo.lastName,
+          email: patientInfo.email,
+          accountCreatedDate: new Date(),
+        });
+      }
+
+      // Delete the patient_codes document after successful signup
+      if (verificationDocRef) {
+        await deleteDoc(verificationDocRef);
+      }
 
       toast({
         title: "Sign Up Successful",
-        description: "Doctor account created successfully!",
+        description: "Patient account created successfully!",
         status: "success",
         duration: 4000,
         isClosable: true,
       });
 
-      console.log("User created:", userCredential.user);
-      navigate("/doctor-login");
-      
+      navigate("/patient-login");
     } catch (error) {
       console.error("Error signing up:", error);
       toast({
@@ -158,7 +159,7 @@ function DoctorSignUp() {
 
   return (
     <ChakraProvider>
-      <Flex justify="center" align="center" height="100vh" bg="#f1f8ff">
+      <Flex justify="center" align="center" height="100vh" bg="#f1f8ff" >
         <Box bg="white" p={6} rounded="md" shadow="md" w={["90%", "400px"]}
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
@@ -168,13 +169,22 @@ function DoctorSignUp() {
           {step === 1 ? (
             <Grid gap={4}>
               <Heading as="h2" size="lg" textAlign="center" color="#00366d">
-                Doctor Credentials
+                Patient Verification
               </Heading>
+              <FormControl isRequired>
+                <FormLabel color="#335d8f">Verification Code</FormLabel>
+                <Input
+                  name="verificationCode"
+                  value={patientInfo.verificationCode}
+                  onChange={handleChange}
+                  placeholder="Enter Verification Code"
+                />
+              </FormControl>
               <FormControl isRequired>
                 <FormLabel color="#335d8f">First Name</FormLabel>
                 <Input
                   name="firstName"
-                  value={doctorInfo.firstName}
+                  value={patientInfo.firstName}
                   onChange={handleChange}
                   placeholder="First Name"
                 />
@@ -183,37 +193,32 @@ function DoctorSignUp() {
                 <FormLabel color="#335d8f">Last Name</FormLabel>
                 <Input
                   name="lastName"
-                  value={doctorInfo.lastName}
+                  value={patientInfo.lastName}
                   onChange={handleChange}
                   placeholder="Last Name"
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel color="#335d8f">Credentials</FormLabel>
+                <FormLabel color="#335d8f">Email</FormLabel>
                 <Input
-                  name="credentials"
-                  value={doctorInfo.credentials}
+                  name="email"
+                  type="email"
+                  value={patientInfo.email}
                   onChange={handleChange}
-                  placeholder="Credential ID"
-                />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel color="#335d8f">Hospital Name</FormLabel>
-                <Input
-                  name="hospital"
-                  value={doctorInfo.hospital}
-                  onChange={handleChange}
-                  placeholder="Hospital Name"
+                  placeholder="Email Address"
                 />
               </FormControl>
               <Button
-                _hover={{ bg: "#4d7098" }}
+                //_hover={{ bg: "#4d7098" }}
                 color="#f1f8ff"
                 bg="#335d8f"
-                onClick={verifyCredentials}
+                onClick={verifyPatientInfo}
                 isLoading={loading}
+                borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
               >
-                Verify Credentials
+                Verify Information
               </Button>
             </Grid>
           ) : (
@@ -226,7 +231,7 @@ function DoctorSignUp() {
                 <Input
                   name="email"
                   type="email"
-                  value={doctorInfo.email}
+                  value={patientInfo.email}
                   onChange={handleChange}
                   placeholder="Email Address"
                 />
@@ -236,16 +241,17 @@ function DoctorSignUp() {
                 <Input
                   name="password"
                   type="password"
-                  value={doctorInfo.password}
+                  value={patientInfo.password}
                   onChange={handleChange}
                   placeholder="Password"
                 />
               </FormControl>
               <Button
+                //_hover={{ bg: "#4d7098" }}
+                color="#f1f8ff"
                 bg="#335d8f"
-                color="white"
                 onClick={handleSubmit}
-                isLoading={loading} //show loading state while creating
+                isLoading={loading}
                 borderColor="#f1f8ff"
                borderWidth="2px"
                _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
@@ -261,4 +267,4 @@ function DoctorSignUp() {
   );
 }
 
-export default DoctorSignUp;
+export default PatientSignUp;

@@ -133,9 +133,27 @@ import {
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate} from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+import { FaCalendarAlt, FaFileAlt, FaUserCircle } from 'react-icons/fa'; // Icons
+import { FaRegNoteSticky } from "react-icons/fa6";
+import { GrOverview } from "react-icons/gr";
+import { FaBrain } from "react-icons/fa";
 
 const SidePanel = () => {
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to log out", error);
+    }
+  };
+
   return (
     <Box
       as="nav"
@@ -167,7 +185,7 @@ const SidePanel = () => {
           px={6}
         >
           <FaHome />
-          <ChakraLink as={ReactRouterLink} to="/patient-profile" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/home" fontWeight="bold">
             Home
           </ChakraLink>
         </HStack>
@@ -183,8 +201,8 @@ const SidePanel = () => {
           h="3rem"
           px={6} 
         >
-          <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/overview" fontWeight="bold">
+          <GrOverview />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/overview" fontWeight="bold">
             Overview
           </ChakraLink>
         </HStack>
@@ -200,8 +218,8 @@ const SidePanel = () => {
           h="3rem"
           px={6} 
         >
-          <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/reminders-and-appointments" fontWeight="bold" noOfLines={1}>
+          <FaCalendarAlt />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/reminders-and-appointments" fontWeight="bold">
             Reminders & Appointments
           </ChakraLink>
         </HStack>
@@ -217,8 +235,8 @@ const SidePanel = () => {
          h="3rem"
          px={6} 
         >
-          <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/meeting-summaries" fontWeight="bold">
+          <FaRegNoteSticky />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/meeting-summaries" fontWeight="bold">
             Meeting Summaries
           </ChakraLink>
         </HStack>
@@ -234,8 +252,8 @@ const SidePanel = () => {
           h="3rem"
           px={6} 
         >
-          <HamburgerIcon />
-          <ChakraLink as={ReactRouterLink} to="/ai-insights" fontWeight="bold">
+          <FaBrain />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/ai-insights" fontWeight="bold">
             AI Insights
           </ChakraLink>
         </HStack>
@@ -247,7 +265,7 @@ const SidePanel = () => {
         border="1px"
         borderColor="whiteAlpha.300"
         w="100%"
-        p={4}
+        // p={4}
         mt={6}
         marginBottom="4vh"
       >
@@ -261,9 +279,10 @@ const SidePanel = () => {
           w="97.5%"
           h="3rem"
           px={6} 
+          // mt={2}
         >
           <SettingsIcon />
-          <ChakraLink as={ReactRouterLink} to="/settings" fontWeight="bold">
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/settings" fontWeight="bold">
             Settings
           </ChakraLink>
         </HStack>
@@ -278,6 +297,8 @@ const SidePanel = () => {
           w="97.5%"
           h="3rem"
           px={6} 
+          mb={3}
+          onClick={handleLogout}
         >
           <IoIosLogOut />
           <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">

@@ -17,6 +17,7 @@ import {
   where,
   collection,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 
 const db = getFirestore();
@@ -119,6 +120,7 @@ function AppointmentDetail() {
         justifyContent="center"
         alignItems="center"
         minH="100vh"
+
       >
         <Spinner size="xl" />
       </Box>
@@ -132,6 +134,7 @@ function AppointmentDetail() {
         justifyContent="center"
         alignItems="center"
         minH="100vh"
+
       >
         <Heading>Appointment not found</Heading>
       </Box>
@@ -140,10 +143,15 @@ function AppointmentDetail() {
 
   return (
     <Box p={8}>
-      <Heading as="h1" size="xl" mb={6}>
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
         Appointment Details
       </Heading>
-      <Box p={6} bg="white" borderRadius="md" boxShadow="md">
+      <Box p={6} bg="white" borderRadius="md"
+      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "2xl" }}
+      >
         <Text>
           <strong>Patient Name:</strong> {patientName}
         </Text>
@@ -166,10 +174,16 @@ function AppointmentDetail() {
       <Divider my={6} />{" "}
       
       {/* Transcript Section */}
-      <Box p={6} bg="gray.50" borderRadius="md" boxShadow="md">
-        <Heading as="h2" size="lg" mb={4}>
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
           Appointment Transcript
         </Heading>
+      <Box p={6} bg="gray.50" borderRadius="md" 
+      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "2xl" }}
+      >
+        
 
         {appointment.appointmentTranscript ? (
           <Box
@@ -198,14 +212,23 @@ function AppointmentDetail() {
             display="none"
             id="audio-upload"
           />
-          <Button as="label" htmlFor="audio-upload" colorScheme="blue" mt={4}>
+          <Button as="label" htmlFor="audio-upload" mt={4}
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+          marginRight={3}
+          color="#f1f8ff"
+          bg="#335d8f">
             Select Audio
           </Button>
           <Button
             onClick={handleUpload}
-            colorScheme="green"
+            // colorScheme="green"
             mt={4}
             isLoading={uploading}
+            _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+          color="#f1f8ff"
+          bg="#335d8f"
           >
             Upload and Transcribe
           </Button>

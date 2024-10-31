@@ -137,7 +137,7 @@ function AppointmentCreation() {
 
   return (
     <Box p={8}>
-      <Heading as="h1" size="xl" mb={6}>
+      <Heading as="h1" size="xl" mb={6} color="#00366d" >
         Create New Appointment
       </Heading>
       <form onSubmit={handleSubmit}>
@@ -180,7 +180,11 @@ function AppointmentCreation() {
           />
         </FormControl>
 
-        <Button type="submit" colorScheme="teal" width="full">
+        <Button type="submit" width="full"
+        _hover={{ bg: "#4d7098" }}
+        color="#f1f8ff"
+        bg="#335d8f"
+        >
           Create Appointment
         </Button>
       </form>
