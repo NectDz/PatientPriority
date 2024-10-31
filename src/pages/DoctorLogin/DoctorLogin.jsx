@@ -171,7 +171,12 @@ const DoctorLogin = () => {
   return (
     <ChakraProvider>
       <Flex justify="center" align="center" height="100vh" bg="#f1f8ff">
-        <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} border="1px solid rgba(0, 0, 0, 0.1)" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)">
+        <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} 
+        border="1px solid rgba(0, 0, 0, 0.1)" 
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                    transition="all 0.3s"
+                    _hover={{ boxShadow: "2xl" }}>
           <Grid gap={4}>
             <Heading as="h2" size="lg" textAlign="center" color="#00366d">
               Doctor Login
@@ -198,10 +203,14 @@ const DoctorLogin = () => {
             </FormControl>
 
             <Button
-              _hover={{ bg: "#4d7098" }}
+              //_hover={{ bg: "#4d7098" }}
               color="#f1f8ff"
               bg="#335d8f"
               onClick={handleLogin}
+              borderColor="#f1f8ff"
+               borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
               isLoading={loading} //loading spinner while logging in
             >
               Log In

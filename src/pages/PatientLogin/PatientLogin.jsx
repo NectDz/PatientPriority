@@ -205,10 +205,14 @@ const PatientLogin = () => {
             </FormControl>
 
             <Button
-              _hover={{ bg: "#4d7098" }}
+              //_hover={{ bg: "#4d7098" }}
               color="#f1f8ff"
               bg="#335d8f"
               onClick={handleLogin}
+              borderColor="#f1f8ff"
+               borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
               isLoading={loading} //loading spinner while logging in
             >
               Log In
