@@ -9,11 +9,11 @@ function Navbar() {
        <Flex as="nav" justify="center" py={2} px={8} align="center">
          <Stack direction="row" spacing={8} align="center">
            <Link href="/" _hover={{ textDecoration: "none", color: "teal.500" }} display="flex" alignItems="center">
-             <Icon as={MdLocalHospital} w={8} h={8} color="#08367f" mr={2} /> {/* Icon on the left */}
+             <Icon as={MdLocalHospital} w={8} h={8} color="#00366d" mr={2} /> {/* Icon on the left */}
              <Text
                fontSize="4xl"
                fontWeight="bold"
-               color="#08367f"
+               color="#00366d"
                sx={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)" }}
              >
                PatientPriority

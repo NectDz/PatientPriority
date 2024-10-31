@@ -88,7 +88,7 @@
 //             display="flex"
 //             justifyContent="center"
 //             alignItems="center"
-//             backgroundColor="#EFF8F8"
+//             backgroundColor="#f1f8ff"
 //             zIndex="999"
 //           >
 //             <Text fontSize="4xl" color="#252B42">
@@ -113,7 +113,7 @@
 //           alignItems="center" //vertically center
 //           width="100%"
 //           height="100%"
-//           backgroundColor="#EFF8F8"
+//           backgroundColor="#f1f8ff"
 //           // p={8}
 //           pl="4%"
 //           transition="left 0.5s ease-in-out" //slide transition
@@ -135,7 +135,7 @@
 //                 color="white"
 //                 size="md"
 //                 _hover={{ bg: "#4D9A94" }} //not visible if not hovering?
-//                 borderColor="#EFF8F8"
+//                 borderColor="#f1f8ff"
 //                 borderWidth="2px"
 //               >
 //                 Login as Doctor
@@ -144,11 +144,11 @@
 //               <Button
 //                 colorScheme="teal"
 //                 onClick={handlePatientLogin}
-//                 bg="#EFF8F8"
+//                 bg="#f1f8ff"
 //                 color="#5AACA8"
 //                 size="md"
 //                 _hover={{ bg: "#D9E7E7" }}
-//                 borderColor="#EFF8F8"
+//                 borderColor="#f1f8ff"
 //                 borderWidth="2px"
 //               >
 //                 Login as Patient
@@ -193,7 +193,7 @@
 //           alignItems="center"
 //           width="100%"
 //           height="100%"
-//           backgroundColor="#EFF8F8"
+//           backgroundColor="#f1f8ff"
 //           p={8}
 //           transition="left 0.5s ease-in-out"
 //         >
@@ -239,7 +239,7 @@
 //           alignItems="center"
 //           width="100%"
 //           height="100%"
-//           backgroundColor="#EFF8F8"
+//           backgroundColor="#f1f8ff"
 //           p={8}
 //           transition="left 0.5s ease-in-out"
 //         >
@@ -466,7 +466,7 @@ const Home = () => {
        position="relative"
        minHeight="100vh"
        width="100vw"
-       backgroundColor="#EFF8F8"
+       backgroundColor="#f1f8ff"
        overflowY="auto" 
      >
        {isAuthenticating && (
@@ -479,7 +479,7 @@ const Home = () => {
            display="flex"
            justifyContent="center"
            alignItems="center"
-           backgroundColor="#EFF8F8"
+           backgroundColor="#f1f8ff"
            zIndex="999"
          >
            <Text fontSize="4xl" color="#00366d">
@@ -496,7 +496,7 @@ const Home = () => {
          alignItems="center"
          width="100%"
          minHeight="100vh" 
-         backgroundColor="#EFF8F8"
+         backgroundColor="#f1f8ff"
          pl="4%"
        >
          <Box display="flex" flexDirection="column" p={8}>
@@ -518,7 +518,7 @@ const Home = () => {
                color="white"
                size="md"
                _hover={{ bg: "#4D9A94" }}
-               borderColor="#EFF8F8"
+               borderColor="#f1f8ff"
                borderWidth="2px"
              >
                Login as Doctor
@@ -528,11 +528,11 @@ const Home = () => {
              <Button
                colorScheme="teal"
                onClick={handlePatientLogin}
-               bg="#EFF8F8"
+               bg="#f1f8ff"
                color="#5AACA8"
                size="md"
                _hover={{ bg: "#D9E7E7" }}
-               borderColor="#EFF8F8"
+               borderColor="#f1f8ff"
                borderWidth="2px"
              >
                Login as Patient
