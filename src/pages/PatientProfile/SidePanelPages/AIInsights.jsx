@@ -53,30 +53,28 @@ function AIInsights() {
 
         // Construct the prompt from the form data
         const prompt = `
-        Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary. The response should be structured in the following format:
+        Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary. If some of these infromation are missing or not applicable, ignore them while generating the insight. The response should be structured in the following format:
 
         1. 5 Common Diagnoses/Conditions
         
         Use a Markdown header for the title of each section and make key terms bold.
+
         - List five health conditions most common for someone with this profile (considering their age, lifestyle, and family history), with a short, clear description for each.
         
         2. Top 3 Preventive Tips
         
         - Diet: Provide one suggestion for improving nutrition specific to this patient's needs.
+
         - Activity: Recommend a type or amount of exercise suited to the patient's lifestyle and physical condition.
+
         - Health Monitoring: Suggest one key check-up or screening the patient should prioritize (e.g., blood pressure, cholesterol).
         
-        3. Red Flags to Watch
-        
-        Make the text clear and bold for symptoms to monitor.
-        
-        - List any specific signs or symptoms that may require immediate attention, tailored to this patient’s profile (e.g., chest pain, persistent fatigue).
-        
-        4. One Health Goal
+
+        3. One Health Goal
+
         - Provide a simple, realistic health goal for the patient to work toward based on their current profile, such as walk 15 minutes a day or add a vegetable to each meal.
         
-        5. Health Horoscope
-        
+        4. Health Horoscope
         Generate a playful, funny, and health-related "Health Horoscope" to add a bit of humor.
         Create a light-hearted, fortune-cookie-style line that’s related to health or wellness but adds humor. Examples could include:
         
