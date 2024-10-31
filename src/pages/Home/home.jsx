@@ -646,8 +646,8 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
             <TeamMember
               name="Sadab Hafiz"
               description="Principal Investor"
-              link="#"
-              imageUrl="/api/placeholder/400/400"  // You'll need to replace this with actual image URL
+              link="https://www.linkedin.com/in/sadab-hafiz/"
+              imageUrl="https://media.licdn.com/dms/image/v2/C4E03AQEfZKo3QMkBYw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1659294786553?e=1735776000&v=beta&t=FvZ750DbKdygLSWN6qNaK9cxbF8Qoyxo8lqQZR4BwW8"  // You'll need to replace this with actual image URL
             />
           </Box>
        </Box>
