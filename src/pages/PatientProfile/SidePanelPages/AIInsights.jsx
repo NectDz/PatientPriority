@@ -169,7 +169,7 @@ function AIInsights() {
                     transition="all 0.3s"
                     _hover={{ boxShadow: "2xl" }}
                 >
-                    <Heading as="h1" size="lg" textAlign="center" color="#0B2545">
+                    <Heading as="h1" size="lg" textAlign="center" color="#00366d">
                         AI Insights
                     </Heading>
                     <Divider />
@@ -503,7 +503,7 @@ function AIInsights() {
                             </FormControl>
 
                             <Button
-                                bg="#1E3A8A" // Default color - lighter blue
+                                bg="#335d8f"  // Default color - lighter blue
                                 color="white"
                                 _hover={{ bg: "#0B2545" }} // Darker shade for hover
                                 fontSize="lg" // Increase font size
@@ -512,6 +512,7 @@ function AIInsights() {
                                 borderRadius="md"
                                 type="submit"
                                 width="full"
+                                
                             >
                                 Generate Insights
                             </Button>
