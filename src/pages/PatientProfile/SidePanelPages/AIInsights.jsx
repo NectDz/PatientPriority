@@ -494,7 +494,20 @@ function AIInsights() {
                                 </Select>
                             </FormControl>
 
-                            <Button colorScheme="blue" type="submit" width="full">Generate Insights</Button>
+                            <Button
+                                bg="#1E3A8A" // Default color - lighter blue
+                                color="white"
+                                _hover={{ bg: "#0B2545" }} // Darker shade for hover
+                                fontSize="lg" // Increase font size
+                                paddingX="2rem" // Increase padding for a larger button
+                                paddingY="1.5rem"
+                                borderRadius="md"
+                                type="submit"
+                                width="full"
+                            >
+                                Generate Insights
+                            </Button>
+
                         </VStack>
                     </form>
 
