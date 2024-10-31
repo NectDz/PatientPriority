@@ -383,81 +383,90 @@ const Home = () => {
 
  
  const ServiceBox = ({ title, description, icon }) => {
-   const { ref, inView } = useInView({ threshold: 0.1 }); 
+  const { ref, inView } = useInView({ threshold: 0.1 }); 
 
-
-   return (
-     <Box
-       ref={ref}
-       display="flex"
-       flexDirection="column"
-       alignItems="center"
-       justifyContent="center"
-       width="300px"
-       height="300px"
-       backgroundColor="rgba(255, 255, 255, 0.6)"
-       boxShadow="lg"
-       borderRadius="md"
-       transition="transform 0.6s ease, box-shadow 0.6s ease"
-       transform={inView ? 'scale(1)' : 'scale(0.8)'}
-       opacity={inView ? 1 : 0}
-       _hover={{ transform: "scale(1.1)", boxShadow: "xl" }} 
-       p={4}
-       m={4}
-       textAlign="center"
-     >
-       <Box fontSize="6xl" color="#5AACA8" mb={2}>
-         {icon} {/* Icon goes here */}
-       </Box>
-       <Heading fontSize="3xl" color="#00366d">
-         {title}
-       </Heading>
-       <Text fontSize="lg" color="#00366d" mt={2}>
-         {description}
-       </Text>
-     </Box>
-   );
- };
+  return (
+    <Box
+      ref={ref}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      width="300px"
+      height="300px"
+      backgroundColor="rgba(255, 255, 255, 0.6)"
+      boxShadow="lg"
+      borderRadius="md"
+      transition="transform 0.6s ease, box-shadow 0.6s ease"
+      transform={inView ? 'scale(1)' : 'scale(0.8)'}
+      opacity={inView ? 1 : 0}
+      _hover={{ transform: "scale(1.1)", boxShadow: "xl" }} 
+      p={4}
+      m={4}
+      textAlign="center"
+    >
+      <Box fontSize="6xl" color="#4d7098" mb={2}>  {/* Lighter blue for icons */}
+        {icon}
+      </Box>
+      <Heading fontSize="3xl" color="#00366d" mb={2}>  
+        {title}
+      </Heading>
+      <Text fontSize="lg" color="#335d8f" mt={2}>  
+        {description}
+      </Text>
+    </Box>
+  );
+};
 
 
    
-   const TeamMember = ({ name, description, link, imageUrl }) => {
-     const { ref, inView } = useInView({ threshold: 0.1 }); 
-      return (
-       <Box
-         ref={ref}
-         display="flex"
-         flexDirection="column"
-         alignItems="center"
-         justifyContent="center"
-         width="300px"
-         backgroundColor="rgba(255, 255, 255, 0.6)"
-         boxShadow="lg"
-         borderRadius="md"
-         transition="transform 0.6s ease, box-shadow 0.6s ease"
-         transform={inView ? 'scale(1)' : 'scale(0.8)'}
-         opacity={inView ? 1 : 0}
-         _hover={{ transform: "scale(1.05)", boxShadow: "xl" }} 
-         p={4}
-         m={4}
-         textAlign="center"
-       >
-         <Image
-           src={imageUrl} 
-           alt={name}
-           borderRadius="full" 
-           boxSize="100px" 
-           mb="3" 
-         />
-         <Link href={link} isExternal fontSize="xl" color="#5AACA8">
-           {name}
-         </Link>
-         <Text fontSize="md" color="#00366d" mt="2">
-           {description}
-         </Text>
-       </Box>
-     );
-   };
+const TeamMember = ({ name, description, link, imageUrl }) => {
+  const { ref, inView } = useInView({ threshold: 0.1 }); 
+  return (
+    <Box
+      ref={ref}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      width="300px"
+      backgroundColor="rgba(255, 255, 255, 0.6)"
+      boxShadow="lg"
+      borderRadius="md"
+      transition="transform 0.6s ease, box-shadow 0.6s ease"
+      transform={inView ? 'scale(1)' : 'scale(0.8)'}
+      opacity={inView ? 1 : 0}
+      _hover={{ transform: "scale(1.05)", boxShadow: "xl" }} 
+      p={4}
+      m={4}
+      textAlign="center"
+    >
+      <Image
+        src={imageUrl} 
+        alt={name}
+        borderRadius="full" 
+        boxSize="100px" 
+        mb="3" 
+      />
+      <Link 
+        href={link} 
+        isExternal 
+        fontSize="2xl" 
+        color="#00366d"
+        fontWeight="bold"
+      >
+        {name}
+      </Link>
+      <Text 
+        fontSize="lg" 
+        color="#335d8f" 
+        mt="2"
+      >
+        {description}
+      </Text>
+    </Box>
+  );
+};
 
 
  return (
@@ -505,8 +514,8 @@ const Home = () => {
            </Heading>
 
 
-           <Text fontSize="2xl" color="#00366d" mt="4">
-             Patient Priority is most focused on helping you organize and observe your health in the most efficient way...
+           <Text fontSize="2xl" color="#335d8f" mt="4">
+            Helping doctors and patients stay informed and proactive.
            </Text>
 
 
@@ -514,10 +523,10 @@ const Home = () => {
              <Button
                colorScheme="teal"
                onClick={handleDoctorLogin}
-               bg="#5AACA8"
+               bg="#335d8f"
                color="white"
                size="md"
-               _hover={{ bg: "#4D9A94" }}
+               _hover={{ bg: "#4d7098" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
              >
@@ -529,9 +538,9 @@ const Home = () => {
                colorScheme="teal"
                onClick={handlePatientLogin}
                bg="#f1f8ff"
-               color="#5AACA8"
+               color="#00366d"
                size="md"
-               _hover={{ bg: "#D9E7E7" }}
+               _hover={{ bg: "#e6eef7", color: "#335d8f" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
              >
@@ -542,7 +551,7 @@ const Home = () => {
 
            <Text
              fontSize="xl"
-             color="#00366d"
+             color="#4d7098"
              cursor="pointer"
              textDecoration="underline"
              mt="4"
@@ -598,43 +607,49 @@ const Home = () => {
            Our Team
          </Heading>
          <Box display="flex" flexWrap="wrap" justifyContent="center" mt="4" px={8}>
-           <TeamMember
-             name= "Abir Banik"
-             description= "Front-end Developer"
-             link= "https://www.linkedin.com/in/abir-banik12918/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/D4E03AQFEi2kYFWQOdw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718255233434?e=1735776000&v=beta&t=DxY2_upAqChOXGTLmifJ5RnQ8eXjSCUjBiCYbK-InZM"}
-           />
-           <TeamMember
-             name= "Rahat Khandokar"
-             description= "Back-end Developer"
-             link= "https://www.linkedin.com/in/rahatkhandokar/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/D4E03AQH9Uk2venhT5A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1722221338570?e=1735776000&v=beta&t=YUK0C-qi1jUvGD3B0rnSG-u2FSL7pc4-v5oI1UtUF1A"}
-           />
-           <TeamMember
-             name= "Kevin Granados"
-             description= "UI/UX Designer"
-             link= "https://www.linkedin.com/in/kevingranados1/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/D4E03AQExAIjNg_8Y1w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1728161486472?e=1735776000&v=beta&t=f9Nt1L14CPe2vlfOByjRhKG9LenplnWk8sIvUb5AjzU"}
-           />
-           <TeamMember
-             name= "Lubna Asha"
-             description= "Project Manager"
-             link= "https://www.linkedin.com/in/lubna-asha/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/D4E03AQG9534zuvJJvw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726032453358?e=1735776000&v=beta&t=6ibeHSvS30Jcq_wHTSHTmzee2PvKQVER5WSjFz9mPVw"}
-           />
-           <TeamMember
-             name= "Kazi Anwar"
-             description= "Database Administrator"
-             link= "https://www.linkedin.com/in/kazisanwar/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/D4E03AQFti8pIui5RWg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1703020953252?e=1735776000&v=beta&t=yDe7U69HCSQzftVQCHXjF4krPmmL2XbfNpi54MXU4ms"}
-           />
-           <TeamMember
-             name= "Ahmad Deedat"
-             description= "Full Stack Developer"
-             link= "https://www.linkedin.com/in/ahmad-deedat-118355198/"
-             imageUrl={"https://media.licdn.com/dms/image/v2/C5603AQGEFJr_uOs1VA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1661483882026?e=1735776000&v=beta&t=IUjYnaWO0nnfe4rIx0MmLEo1SYT7B1dTIShrjK0UgeQ"}
-           />
-         </Box>
+            <TeamMember
+              name="Abir Banik"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/abir-banik12918/"
+              imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQFEi2kYFWQOdw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718255233434?e=1735776000&v=beta&t=DxY2_upAqChOXGTLmifJ5RnQ8eXjSCUjBiCYbK-InZM"
+            />
+            <TeamMember
+              name="Rahat Khandokar"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/rahatkhandokar/"
+              imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQH9Uk2venhT5A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1722221338570?e=1735776000&v=beta&t=YUK0C-qi1jUvGD3B0rnSG-u2FSL7pc4-v5oI1UtUF1A"
+            />
+            <TeamMember
+              name="Kevin Granados"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/kevingranados1/"
+              imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQExAIjNg_8Y1w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1728161486472?e=1735776000&v=beta&t=f9Nt1L14CPe2vlfOByjRhKG9LenplnWk8sIvUb5AjzU"
+            />
+            <TeamMember
+              name="Lubna Asha"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/lubna-asha/"
+              imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQG9534zuvJJvw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1726032453358?e=1735776000&v=beta&t=6ibeHSvS30Jcq_wHTSHTmzee2PvKQVER5WSjFz9mPVw"
+            />
+            <TeamMember
+              name="Kazi Anwar"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/kazisanwar/"
+              imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQFti8pIui5RWg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1703020953252?e=1735776000&v=beta&t=yDe7U69HCSQzftVQCHXjF4krPmmL2XbfNpi54MXU4ms"
+            />
+            <TeamMember
+              name="Ahmad Deedat"
+              description="Co-founder"
+              link="https://www.linkedin.com/in/ahmad-deedat-118355198/"
+              imageUrl="https://media.licdn.com/dms/image/v2/C5603AQGEFJr_uOs1VA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1661483882026?e=1735776000&v=beta&t=IUjYnaWO0nnfe4rIx0MmLEo1SYT7B1dTIShrjK0UgeQ"
+            />
+            <TeamMember
+              name="Sadab Hafiz"
+              description="Principal Investor"
+              link="#"
+              imageUrl="/api/placeholder/400/400"  // You'll need to replace this with actual image URL
+            />
+          </Box>
        </Box>
 
 
