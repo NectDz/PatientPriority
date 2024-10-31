@@ -56,34 +56,26 @@ function AIInsights() {
         Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary. If some of these infromation are missing or not applicable, ignore them while generating the insight. The response should be structured in the following format:
 
         1. 5 Common Diagnoses/Conditions
-        
-        Use a Markdown header for the title of each section and make key terms bold.
-
         - List five health conditions most common for someone with this profile (considering their age, lifestyle, and family history), with a short, clear description for each.
         
         2. Top 3 Preventive Tips
         
         - Diet: Provide one suggestion for improving nutrition specific to this patient's needs.
-
         - Activity: Recommend a type or amount of exercise suited to the patient's lifestyle and physical condition.
-
         - Health Monitoring: Suggest one key check-up or screening the patient should prioritize (e.g., blood pressure, cholesterol).
         
 
         3. One Health Goal
-
         - Provide a simple, realistic health goal for the patient to work toward based on their current profile, such as walk 15 minutes a day or add a vegetable to each meal.
         
         4. Health Horoscope
         Generate a playful, funny, and health-related "Health Horoscope" to add a bit of humor.
         Create a light-hearted, fortune-cookie-style line that’s related to health or wellness but adds humor. Examples could include:
-        
         - Health Horoscope: A salad is in your future; don’t be afraid to add a sprinkle of cheese for excitement.
         - Health Horoscope: Today’s exercise forecast predicts light stretching with a high chance of couch time.
         - Health Horoscope: The stars suggest more vegetables on your plate—no, French fries don’t count.
         
         Additional Instructions:
-        
         - Use plain, straightforward language that is easy to understand, especially for older patients.
         - Avoid complex medical jargon, and focus on actionable insights that are immediately useful to the patient.
         - Do not use stars (*) or quotation marks (" ") in the response.
@@ -133,6 +125,26 @@ function AIInsights() {
             setInsights("Failed to generate insights. Please try again.");
         }
     };
+    const parseInsights = (text) => {
+        if (!text) return {};
+
+        const sections = {
+            diagnoses: '',
+            tips: '',
+            healthGoal: '',
+            healthHoroscope: ''
+        };
+
+        sections.diagnoses = text.match(/5 Common Diagnoses\/Conditions([\s\S]*?)Top 3 Preventive Tips/)?.[1]?.trim();
+        sections.tips = text.match(/Top 3 Preventive Tips([\s\S]*?)One Health Goal/)?.[1]?.trim();
+        sections.healthGoal = text.match(/One Health Goal([\s\S]*?)Health Horoscope/)?.[1]?.trim();
+        sections.healthHoroscope = text.match(/Health Horoscope([\s\S]*)/)?.[1]?.trim();
+
+        return sections;
+    };
+
+    const insightsSections = parseInsights(insights);
+
 
     return (
         <ChakraProvider>
@@ -480,20 +492,35 @@ function AIInsights() {
                                 </Select>
                             </FormControl>
 
-                            <Button colorScheme="blue" type="submit" width="full">
-                                Generate Insights
-                            </Button>
+                            <Button colorScheme="blue" type="submit" width="full">Generate Insights</Button>
                         </VStack>
                     </form>
 
-                    {/* Display insights */}
                     {insights && (
                         <Box mt={10}>
                             <Divider mb={5} />
-                            <Heading as="h2" size="md" mb={4}>
-                                AI-Generated Health Insights
-                            </Heading>
-                            <Text whiteSpace="pre-wrap">{insights}</Text>
+                            <Heading as="h2" size="md" mb={4}>AI-Generated Health Insights</Heading>
+                            <Box style={styles.responseContainer}>
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>1. 5 Common Diagnoses/Conditions</Text>
+                                    <Text>{insightsSections.diagnoses}</Text>
+                                </Box>
+                                
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>2. Top 3 Preventive Tips</Text>
+                                    <Text>{insightsSections.tips}</Text>
+                                </Box>
+                                
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>3. One Health Goal</Text>
+                                    <Text>{insightsSections.healthGoal}</Text>
+                                </Box>
+                                
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>4. Health Horoscope</Text>
+                                    <Text>{insightsSections.healthHoroscope}</Text>
+                                </Box>
+                            </Box>
                         </Box>
                     )}
                 </VStack>
@@ -501,5 +528,26 @@ function AIInsights() {
         </ChakraProvider>
     );
 }
+
+const styles = {
+    responseContainer: {
+        backgroundColor: '#f9f9fb',
+        padding: '1rem',
+        borderRadius: '8px',
+    },
+    section: {
+        marginBottom: '1rem',
+        padding: '1rem',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+    },
+    sectionTitle: {
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
+        color: '#0b2545',
+        marginBottom: '0.5rem',
+    },
+};
 
 export default AIInsights;
