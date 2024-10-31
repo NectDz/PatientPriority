@@ -15,7 +15,7 @@ import DoctorSidePanel from "./doctorSidePanel"; // Import the new side panel co
 function DoctorProfile() {
   return (
     <ChakraProvider>
-      <Flex minH="100vh" bg="#EEF4ED">
+      <Flex minH="100vh" bg="#f1f8ff">
         {/* Side Panel */}
         <DoctorSidePanel />
 

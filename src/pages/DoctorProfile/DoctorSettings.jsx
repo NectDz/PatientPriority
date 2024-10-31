@@ -97,7 +97,7 @@ const DoctorSettings = () => {
       >
         <VStack spacing={6} align="stretch">
           <FormControl id="email">
-            <FormLabel>Email</FormLabel>
+            <FormLabel color="#335d8f">Email</FormLabel>
             <Input type="email" value={user.email} isReadOnly bg="#E2E8F0" />
           </FormControl>
 
@@ -108,7 +108,7 @@ const DoctorSettings = () => {
             Change Password
           </Heading>
           <FormControl id="password">
-            <FormLabel>New Password</FormLabel>
+            <FormLabel color="#335d8f">New Password</FormLabel>
             <Input
               type="password"
               placeholder="Enter new password"
@@ -117,7 +117,7 @@ const DoctorSettings = () => {
             />
           </FormControl>
           <FormControl id="confirmPassword">
-            <FormLabel>Confirm New Password</FormLabel>
+            <FormLabel color="#335d8f">Confirm New Password</FormLabel>
             <Input
               type="password"
               placeholder="Confirm new password"
@@ -141,7 +141,7 @@ const DoctorSettings = () => {
             Update License
           </Heading>
           <FormControl id="license">
-            <FormLabel>License Number</FormLabel>
+            <FormLabel color="#335d8f">License Number</FormLabel>
             <Input
               type="text"
               placeholder="Enter new license number"

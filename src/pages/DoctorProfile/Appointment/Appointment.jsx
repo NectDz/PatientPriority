@@ -159,8 +159,13 @@ function Appointments() {
               <Button
                 as={Link}
                 to={`/doctor-profile/appointments/${appointment.id}`}
-                colorScheme="teal"
+                // colorScheme="teal"
                 mt={4}
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+            color="#f1f8ff"
+            bg="#335d8f"
               >
                 View Details
               </Button>
@@ -188,7 +193,13 @@ function Appointments() {
 
       <Box display="flex" justifyContent="center" mt={8} mb={6}>
         <Link to="/doctor-profile/appointments/create-appointment">
-          <Button colorScheme="teal" display="flex" alignItems="center" gap="4">
+          <Button display="flex" alignItems="center" gap="4"
+          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+          color="#f1f8ff"
+          bg="#335d8f"
+          >
             New Appointment
           </Button>
         </Link>

@@ -4,18 +4,26 @@ import { ChakraProvider, Box, VStack, Heading, Text, Divider } from "@chakra-ui/
 function RemindersAndAppointments() {
     return (
         <ChakraProvider>
-            <Box bg="#EFF8F8" minHeight="100vh" padding="2rem" color="#00366d" display="flex" justifyContent="center" alignItems="center">
-            <VStack
+            <Box 
+                bgGradient="linear(to-br, blue.50, gray.50)" 
+                minHeight="100vh" 
+                padding={{ base: "1rem", md: "2rem", lg: "3rem" }} 
+                color="#333"
+            >
+                <VStack
                     spacing={8}
                     align="stretch"
-                    width="80%"
+                    width={{ base: "95%", md: "90%", lg: "80%" }}
                     maxWidth="1200px"
-                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    mx="auto"
                     bg="rgba(255, 255, 255, 0.6)"
-                    borderRadius="md"
-                    padding="2rem"
+                    borderRadius="xl"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                    transition="all 0.3s"
+                    _hover={{ boxShadow: "2xl" }}
                 >
-                    <Heading as="h1" size="lg" textAlign="center" color="#256c69">
+                    <Heading as="h1" size="lg" textAlign="center" color="#00366d">
                         Reminders and Appointments
                     </Heading>
                     <Divider />

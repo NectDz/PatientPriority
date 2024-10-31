@@ -61,7 +61,7 @@
 //             </Heading>
 
 //             <FormControl id="email" isRequired>
-//               <FormLabel>Email Address</FormLabel>
+//               <FormLabel color="#335d8f">Email Address</FormLabel>
 //               <Input
 //                 type="email"
 //                 placeholder="Enter your email"
@@ -71,7 +71,7 @@
 //             </FormControl>
 
 //             <FormControl id="password" isRequired>
-//               <FormLabel>Password</FormLabel>
+//               <FormLabel color="#335d8f">Password</FormLabel>
 //               <Input
 //                 type="password"
 //                 placeholder="Enter your password"
@@ -171,15 +171,21 @@ const PatientLogin = () => {
 
   return (
     <ChakraProvider>
-      <Flex justify="center" align="center" height="100vh" bg="#EFF8F8">
-      <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} border="1px solid rgba(0, 0, 0, 0.1)" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)">
+      <Flex justify="center" align="center" height="100vh" bg="#f1f8ff">
+      <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} 
+      border="1px solid rgba(0, 0, 0, 0.1)" 
+      //boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                    transition="all 0.3s"
+                    _hover={{ boxShadow: "2xl" }}>
           <Grid gap={4}>
-            <Heading as="h2" size="lg" textAlign="center">
+            <Heading as="h2" size="lg" textAlign="center" color="#00366d">
               Patient Login
             </Heading>
 
             <FormControl id="email" isRequired>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel color="#335d8f">Email Address</FormLabel>
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -189,7 +195,7 @@ const PatientLogin = () => {
             </FormControl>
 
             <FormControl id="password" isRequired>
-              <FormLabel>Password</FormLabel>
+              <FormLabel color="#335d8f">Password</FormLabel>
               <Input
                 type="password"
                 placeholder="Enter your password"
@@ -199,8 +205,9 @@ const PatientLogin = () => {
             </FormControl>
 
             <Button
-              bg="#5AACA8"
-              color={"white"}
+              _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"
               onClick={handleLogin}
               isLoading={loading} //loading spinner while logging in
             >

@@ -68,7 +68,8 @@ const Support = () => {
         justifyContent="center"
         minHeight="100vh"
         p={8}
-        backgroundColor="#EFF8F8"
+        backgroundColor="#f1f8ff"
+        
       >
         <Heading fontSize="4xl" color="#00366d" mb="8">
           Support
@@ -78,9 +79,12 @@ const Support = () => {
           width={{ base: "90%", md: "500px" }}
           p="8"
           backgroundColor="white"
-          boxShadow="lg"
           borderRadius="md"
           onSubmit={handleSubmit}
+          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                    transition="all 0.3s"
+                    _hover={{ boxShadow: "2xl" }}
         >
           <Text fontSize="lg" color="#00366d" mb="4">
             Please fill out the form below, and our support team will contact you shortly.
@@ -124,10 +128,13 @@ const Support = () => {
             required
           />
           <Button
-            colorScheme="teal"
+            // colorScheme="teal"
             type="submit"
             isLoading={isSubmitting}
             width="full"
+            _hover={{ bg: "#4d7098" }}
+            color="#f1f8ff"
+            bg="#335d8f"
           >
             Submit
           </Button>

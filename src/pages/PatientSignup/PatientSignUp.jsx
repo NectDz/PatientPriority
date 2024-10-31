@@ -159,15 +159,20 @@ function PatientSignUp() {
 
   return (
     <ChakraProvider>
-      <Flex justify="center" align="center" height="100vh" bg="#EFF8F8">
-        <Box bg="white" p={6} rounded="md" shadow="md" w={["90%", "400px"]}>
+      <Flex justify="center" align="center" height="100vh" bg="#f1f8ff" >
+        <Box bg="white" p={6} rounded="md" shadow="md" w={["90%", "400px"]}
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+        >
           {step === 1 ? (
             <Grid gap={4}>
-              <Heading as="h2" size="lg" textAlign="center">
+              <Heading as="h2" size="lg" textAlign="center" color="#00366d">
                 Patient Verification
               </Heading>
               <FormControl isRequired>
-                <FormLabel>Verification Code</FormLabel>
+                <FormLabel color="#335d8f">Verification Code</FormLabel>
                 <Input
                   name="verificationCode"
                   value={patientInfo.verificationCode}
@@ -176,7 +181,7 @@ function PatientSignUp() {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>First Name</FormLabel>
+                <FormLabel color="#335d8f">First Name</FormLabel>
                 <Input
                   name="firstName"
                   value={patientInfo.firstName}
@@ -185,7 +190,7 @@ function PatientSignUp() {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Last Name</FormLabel>
+                <FormLabel color="#335d8f">Last Name</FormLabel>
                 <Input
                   name="lastName"
                   value={patientInfo.lastName}
@@ -194,7 +199,7 @@ function PatientSignUp() {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Email</FormLabel>
+                <FormLabel color="#335d8f">Email</FormLabel>
                 <Input
                   name="email"
                   type="email"
@@ -204,21 +209,25 @@ function PatientSignUp() {
                 />
               </FormControl>
               <Button
-                bg="#5AACA8"
-                color="white"
+                //_hover={{ bg: "#4d7098" }}
+                color="#f1f8ff"
+                bg="#335d8f"
                 onClick={verifyPatientInfo}
                 isLoading={loading}
+                borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
               >
                 Verify Information
               </Button>
             </Grid>
           ) : (
             <Grid gap={4}>
-              <Heading as="h2" size="lg" textAlign="center">
+              <Heading as="h2" size="lg" textAlign="center" color="#00366d">
                 Set Login Details
               </Heading>
               <FormControl isRequired>
-                <FormLabel>Email</FormLabel>
+                <FormLabel color="#335d8f">Email</FormLabel>
                 <Input
                   name="email"
                   type="email"
@@ -228,7 +237,7 @@ function PatientSignUp() {
                 />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel>Password</FormLabel>
+                <FormLabel color="#335d8f">Password</FormLabel>
                 <Input
                   name="password"
                   type="password"
@@ -238,10 +247,15 @@ function PatientSignUp() {
                 />
               </FormControl>
               <Button
-                bg="#5AACA8"
-                color="white"
+                //_hover={{ bg: "#4d7098" }}
+                color="#f1f8ff"
+                bg="#335d8f"
                 onClick={handleSubmit}
                 isLoading={loading}
+                borderColor="#f1f8ff"
+               borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
               >
                 Sign Up
               </Button>

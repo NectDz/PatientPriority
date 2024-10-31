@@ -102,9 +102,9 @@ function Overview() {
                     width={{ base: "95%", md: "90%", lg: "80%" }}
                     maxWidth="1200px"
                     mx="auto"
-                    bg="white"
+                    bg="rgba(255, 255, 255, 0.6)"
                     borderRadius="xl"
-                    boxShadow="xl"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
                     padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
                     transition="all 0.3s"
                     _hover={{ boxShadow: "2xl" }}

@@ -131,6 +131,11 @@ function Patients() {
                 to={`/doctor-profile/patients/${patient.id}`}
                 colorScheme="teal"
                 mt={4}
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+            color="#f1f8ff"
+            bg="#335d8f"
               >
                 View Details
               </Button>
@@ -143,13 +148,25 @@ function Patients() {
 
       {patients.length > patientsPerPage && (
         <HStack mt={6} justify="center">
-          <Button onClick={prevPage} disabled={currentPage === 1}>
+          <Button onClick={prevPage} disabled={currentPage === 1}
+          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+            color="#00366d"
+            bg="#335d8f"
+            >
             Previous
           </Button>
           <Text>
             Page {currentPage} of {totalPages}
           </Text>
-          <Button onClick={nextPage} disabled={currentPage === totalPages}>
+          <Button onClick={nextPage} disabled={currentPage === totalPages}
+          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+            color="#00366d"
+            bg="#335d8f"
+            >
             Next
           </Button>
         </HStack>
@@ -157,7 +174,13 @@ function Patients() {
 
         <Box display="flex" justifyContent="center" mt={8} mb={6}>
             <Link to="/doctor-profile/patients/add-new-patient">
-                <Button colorScheme="teal" display="flex" alignItems="center" gap="4">
+                <Button colorScheme="teal" display="flex" alignItems="center" gap="4"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+                transition="all 0.3s"
+                  color="#f1f8ff"
+                  bg="#335d8f"
+                  >
                     Add New Patient
                 </Button>
             </Link>

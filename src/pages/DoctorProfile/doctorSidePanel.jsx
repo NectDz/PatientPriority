@@ -11,6 +11,8 @@ import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import { FaCalendarAlt, FaFileAlt, FaUserCircle } from 'react-icons/fa'; // Icons
+
 
 const DoctorSidePanel = () => {
   const { logout } = useAuth();
@@ -73,7 +75,7 @@ const DoctorSidePanel = () => {
           h="3rem"
           px={6} 
         >
-          <HamburgerIcon />
+          <FaCalendarAlt />
           <ChakraLink as={ReactRouterLink} to="/doctor-profile/appointments" fontWeight="bold">
             Appointments
           </ChakraLink>
@@ -90,7 +92,7 @@ const DoctorSidePanel = () => {
           h="3rem"
           px={6} 
         >
-          <HamburgerIcon />
+          <FaUserCircle />
           <ChakraLink as={ReactRouterLink} to="/doctor-profile/patients" fontWeight="bold">
             Patients
           </ChakraLink>

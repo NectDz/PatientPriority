@@ -20,7 +20,7 @@ const SignUp = () => {
     <Box
       height="100vh"
       width="100vw"
-      backgroundColor="#EEF4ED"
+      backgroundColor="#f1f8ff"
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -35,10 +35,10 @@ const SignUp = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Heading fontSize="6xl" color="#252B42" mb="4">
+        <Heading fontSize="6xl" color="#00366d" mb="4">
           Glad to have you here!
         </Heading>
-        <Text fontSize="3xl" color="#737373">
+        <Text fontSize="3xl" color="#335d8f">
           What best describes you?
         </Text>
       </Box>
@@ -67,12 +67,12 @@ const SignUp = () => {
             boxSize="300px" //icon size
             objectFit="contain"
           />
-          <Text fontSize="3xl" color="#252B42" mt="4">
+          <Text fontSize="3xl" color="#335d8f" mt="4">
             Doctor
           </Text>
         </Box>
 
-        <Box width="5px" height="100%" backgroundColor="#737373" />
+        <Box width="5px" height="100%" backgroundColor="#00366d" />
 
         <Box
           width="50%"
@@ -91,7 +91,7 @@ const SignUp = () => {
             boxSize="300px"
             objectFit="contain"
           />
-          <Text fontSize="3xl" color="#252B42" mt="4">
+          <Text fontSize="3xl" color="#335d8f" mt="4">
             Patient
           </Text>
         </Box>

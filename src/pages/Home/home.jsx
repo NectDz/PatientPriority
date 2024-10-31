@@ -526,9 +526,11 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
                bg="#335d8f"
                color="white"
                size="md"
-               _hover={{ bg: "#4d7098" }}
+               //_hover={{ bg: "#4d7098" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
+               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
              >
                Login as Doctor
              </Button>
@@ -540,9 +542,12 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
                bg="#f1f8ff"
                color="#00366d"
                size="md"
-               _hover={{ bg: "#e6eef7", color: "#335d8f" }}
+               _hover={{ bg: "#e6eef7", color: "#335d8f" ,boxShadow: "2xl" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
+               
+               //_hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
              >
                Login as Patient
              </Button>

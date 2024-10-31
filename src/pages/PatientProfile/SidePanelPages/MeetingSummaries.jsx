@@ -3,22 +3,29 @@ import { ChakraProvider, Box, VStack, Heading, Text, Divider, UnorderedList, Lis
 function MeetingSummaries() {
     return (
         <ChakraProvider>
-            <Box bg="#F4F4F9" minHeight="100vh" padding="2rem" color="#333" display="flex" justifyContent="center" alignItems="center">
+            <Box 
+                bgGradient="linear(to-br, blue.50, gray.50)" 
+                minHeight="100vh" 
+                padding={{ base: "1rem", md: "2rem", lg: "3rem" }} 
+                color="#333"
+            >
                 <VStack
                     spacing={8}
                     align="stretch"
-                    width={{ base: "90%", md: "80%", lg: "70%" }} // Responsive width
+                    width={{ base: "95%", md: "90%", lg: "80%" }}
                     maxWidth="1200px"
-                    boxShadow="lg"
-                    bg="white"
-                    borderRadius="md"
-                    padding="2rem"
-                    mt={{ base: "6rem", md: "8rem" }} // Added top margin for better visibility
+                    mx="auto"
+                    bg="rgba(255, 255, 255, 0.6)"
+                    borderRadius="xl"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                    transition="all 0.3s"
+                    _hover={{ boxShadow: "2xl" }}
                 >
-                    <Heading as="h1" size="lg" textAlign="center" color="#0B2545" whiteSpace="normal" wordBreak="break-word">
+                    <Heading as="h1" size="lg" textAlign="center" color="#00366d" whiteSpace="normal" wordBreak="break-word">
                         Meeting Summaries
                     </Heading>
-                    <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#555">
+                    <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#335d8f">
                         Here are the meeting notes from your doctors. Review your previous appointments, recommendations, and the next scheduled visits.
                     </Text>
                     <Divider />
@@ -26,7 +33,7 @@ function MeetingSummaries() {
                     {/* Appointment Summary 1 */}
                     <Box borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
                         <Flex align="center" flexWrap="wrap">
-                            <Heading as="h2" size="md" color="#0B2545" mb={2} flex="1" whiteSpace="normal">
+                            <Heading as="h2" size="md" color="#335d8f" mb={2} flex="1" whiteSpace="normal">
                                 Appointment: October 1, 2024
                             </Heading>
                             <Spacer />
@@ -46,7 +53,7 @@ function MeetingSummaries() {
                     {/* Appointment Summary 2 */}
                     <Box borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
                         <Flex align="center" flexWrap="wrap">
-                            <Heading as="h2" size="md" color="#0B2545" mb={2} flex="1" whiteSpace="normal">
+                            <Heading as="h2" size="md" color="#335d8f" mb={2} flex="1" whiteSpace="normal">
                                 Appointment: September 20, 2024
                             </Heading>
                             <Spacer />
@@ -66,7 +73,7 @@ function MeetingSummaries() {
                     {/* Appointment Summary 3 */}
                     <Box borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
                         <Flex align="center" flexWrap="wrap">
-                            <Heading as="h2" size="md" color="#0B2545" mb={2} flex="1" whiteSpace="normal">
+                            <Heading as="h2" size="md" color="#335d8f" mb={2} flex="1" whiteSpace="normal">
                                 Appointment: August 15, 2024
                             </Heading>
                             <Spacer />
@@ -86,7 +93,7 @@ function MeetingSummaries() {
                     {/* Appointment Summary 4 */}
                     <Box borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
                         <Flex align="center" flexWrap="wrap">
-                            <Heading as="h2" size="md" color="#0B2545" mb={2} flex="1" whiteSpace="normal">
+                            <Heading as="h2" size="md" color="#335d8f" mb={2} flex="1" whiteSpace="normal">
                                 Appointment: July 5, 2024
                             </Heading>
                             <Spacer />
@@ -106,7 +113,7 @@ function MeetingSummaries() {
                     {/* Appointment Summary 5 */}
                     <Box borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
                         <Flex align="center" flexWrap="wrap">
-                            <Heading as="h2" size="md" color="#0B2545" mb={2} flex="1" whiteSpace="normal">
+                            <Heading as="h2" size="md" color="#335d8f" mb={2} flex="1" whiteSpace="normal">
                                 Appointment: June 10, 2024
                             </Heading>
                             <Spacer />

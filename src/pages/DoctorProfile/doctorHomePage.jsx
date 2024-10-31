@@ -34,9 +34,14 @@ import Lubna from "../../assets/Team/Lubna.png";
 function DoctorHome() {
   return (
     <ChakraProvider>
-      <Card borderRadius="20px" height="100%" width="100%">
-        <CardHeader bg="#EFF8F8" borderRadius="20px 20px 0px 0px">
-          <Heading fontSize="2xl" color="black">
+      <Card borderRadius="20px" height="100%" width="100%"
+      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+          <Heading fontSize="2xl" color="#00366d">
             <Icon as={CalendarIcon} mr={2} />
             My Day
           </Heading>
@@ -55,13 +60,17 @@ function DoctorHome() {
 
       {/* RECENT PATIENTS CARD */}
       <Card
-        // bg="#EFF8F8"
+        // bg="#ddeeff"
         borderRadius="20px"
         height="100%"
         width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "2xl" }}
       >
-        <CardHeader bg="#EFF8F8" borderRadius="20px 20px 0px 0px">
-          <Heading fontSize="2xl" color="#252B42">
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+          <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserMd} mr={2} />
             Recent Patients
           </Heading>
@@ -111,9 +120,14 @@ function DoctorHome() {
       </Card>
 
       {/* DOCTOR TEAM CARD */}
-      <Card borderRadius="20px" height="100%" width="100%">
-        <CardHeader bg="#EFF8F8" borderRadius="20px 20px 0px 0px">
-          <Heading fontSize="2xl" color="black">
+      <Card borderRadius="20px" height="100%" width="100%"
+      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+      transition="all 0.3s"
+      _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+          <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserFriends} mr={2} />
             My Team
           </Heading>

@@ -182,6 +182,7 @@ function AddPatient() {
         justifyContent="center"
         alignItems="center"
         minH="100vh"
+        
       >
         <Spinner size="xl" />
       </Box>
@@ -194,21 +195,21 @@ function AddPatient() {
         hasStripe
         value={calculateProgress()}
         size="md"
-        colorScheme="teal"
+        color= "#00366d"
         mb={6}
       />
 
       <Box bg="white" p={8} borderRadius="lg" boxShadow="lg">
-        <Heading mb={8} textAlign="center" fontSize="2xl" color="teal.600">
+        <Heading mb={8} textAlign="center" fontSize="2xl" color="#00366d">
           Add New Patient
         </Heading>
 
         {successMessage ? (
-          <Box textAlign="center" color="teal.600">
+          <Box textAlign="center" color="#00366d">
             <p>{successMessage}</p>
             <Button
               mt={4}
-              colorScheme="teal"
+              color= "#00366d"
               onClick={() => window.location.href = "/"}
             >
               Redirect to Homepage
@@ -219,7 +220,7 @@ function AddPatient() {
         <form onSubmit={handleSubmit}>
           <VStack spacing={6} align="stretch">
             <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-              <Heading fontSize="lg" color="teal.500" mb={4}>
+              <Heading fontSize="lg" color="#335d8f" mb={4}>
                 Step 1: Personal Information
               </Heading>
               <Divider borderColor="gray.300" />
@@ -235,7 +236,7 @@ function AddPatient() {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    focusBorderColor="teal.400"
+                    focusBorderColor="#335d8f"
                     borderRadius="md"
                     placeholder="Enter first name"
                   />
@@ -254,7 +255,7 @@ function AddPatient() {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    focusBorderColor="teal.400"
+                    focusBorderColor="#335d8f"
                     borderRadius="md"
                     placeholder="Enter last name"
                   />
@@ -273,7 +274,7 @@ function AddPatient() {
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
-                    focusBorderColor="teal.400"
+                    focusBorderColor="#335d8f"
                     borderRadius="md"
                   />
                 </InputGroup>
@@ -288,7 +289,7 @@ function AddPatient() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select gender"
                 >
@@ -316,7 +317,7 @@ function AddPatient() {
                       }
                     }}
                     placeholder="(123) 456-7890"
-                    focusBorderColor="teal.400"
+                    focusBorderColor="#335d8f"
                     borderRadius="md"
                   />
                 </InputGroup>
@@ -342,7 +343,7 @@ function AddPatient() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    focusBorderColor="teal.400"
+                    focusBorderColor="#335d8f"
                     borderRadius="md"
                     placeholder="Enter your email"
                   />
@@ -353,7 +354,7 @@ function AddPatient() {
               </FormControl>
 
               <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-                <Heading fontSize="lg" color="teal.500" mb={4}>
+                <Heading fontSize="lg" color="#335d8f" mb={4}>
                   Step 2: Address Section
                 </Heading>
                 <Divider borderColor="gray.300" />
@@ -367,7 +368,7 @@ function AddPatient() {
                   name="street"
                   value={formData.address.street}
                   onChange={(e) => handleNestedChange(e, "address", "street")}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter street address"
                 />
@@ -383,7 +384,7 @@ function AddPatient() {
                   name="city"
                   value={formData.address.city}
                   onChange={(e) => handleNestedChange(e, "address", "city")}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter city"
                 />
@@ -398,7 +399,7 @@ function AddPatient() {
                   name="state"
                   value={formData.address.state}
                   onChange={(e) => handleNestedChange(e, "address", "state")}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select a state"
                 >
@@ -463,7 +464,7 @@ function AddPatient() {
                   name="zip"
                   value={formData.address.zip}
                   onChange={(e) => handleNestedChange(e, "address", "zip")}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter zip code"
                 />
@@ -474,7 +475,7 @@ function AddPatient() {
 
               {/* Insurance Details */}
               <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-                <Heading fontSize="lg" color="teal.500" mb={4}>
+                <Heading fontSize="lg" color="#335d8f" mb={4}>
                   Step 3: Insurance Details
                 </Heading>
                 <Divider borderColor="gray.300" />
@@ -487,7 +488,7 @@ function AddPatient() {
                   value={formData.insuranceProvider}
                   onChange={handleChange}
                   placeholder="e.g., Aetna, Blue Cross"
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
                 {formData.insuranceProvider && !/^[a-zA-Z\s]+$/.test(formData.insuranceProvider) && (
@@ -503,7 +504,7 @@ function AddPatient() {
                   value={formData.policyNumber}
                   onChange={handleChange}
                   placeholder="6-20 alphanumeric characters"
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
                 {formData.policyNumber && !/^[a-zA-Z0-9]{6,20}$/.test(formData.policyNumber) && (
@@ -514,7 +515,7 @@ function AddPatient() {
 
               {/* Emergency Contact */}
               <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-                <Heading fontSize="lg" color="teal.500" mb={4}>
+                <Heading fontSize="lg" color="#335d8f" mb={4}>
                   Step 4: Emergency Contact
                 </Heading>
                 <Divider borderColor="gray.300" />
@@ -535,7 +536,7 @@ function AddPatient() {
                   onChange={(e) =>
                     handleNestedChange(e, "emergencyContact", "name")
                   }
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter contact name"
                 />
@@ -557,7 +558,7 @@ function AddPatient() {
                   onChange={(e) =>
                     handleNestedChange(e, "emergencyContact", "relationship")
                   }
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select an option"
                 >
@@ -586,7 +587,7 @@ function AddPatient() {
                   onChange={(e) =>
                     handleNestedChange(e, "emergencyContact", "phone")
                   }
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter phone number"
                 />
@@ -612,7 +613,7 @@ function AddPatient() {
                   onChange={(e) =>
                     handleNestedChange(e, "emergencyContact", "email")
                   }
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Enter email address"
                 />
@@ -624,7 +625,7 @@ function AddPatient() {
 
               {/* Medical History */}
               <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-                <Heading fontSize="lg" color="teal.500" mb={4}>
+                <Heading fontSize="lg" color="#335d8f" mb={4}>
                   Step 5: Medical History
                 </Heading>
                 <Divider borderColor="gray.300" />
@@ -635,7 +636,7 @@ function AddPatient() {
                   name="conditions"
                   value={formData.conditions}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
               </FormControl>
@@ -646,7 +647,7 @@ function AddPatient() {
                   name="medications"
                   value={formData.medications}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
               </FormControl>
@@ -657,7 +658,7 @@ function AddPatient() {
                   name="surgeries"
                   value={formData.surgeries}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
               </FormControl>
@@ -668,14 +669,14 @@ function AddPatient() {
                   name="allergies"
                   value={formData.allergies}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                 />
               </FormControl>
 
               {/* Lifestyle Information */}
               <Box mb={6} bg="gray.100" p={4} borderRadius="md">
-                <Heading fontSize="lg" color="teal.500" mb={4}>
+                <Heading fontSize="lg" color="#335d8f" mb={4}>
                   Step 6: Lifestyle Information
                 </Heading>
                 <Divider borderColor="gray.300" />
@@ -686,7 +687,7 @@ function AddPatient() {
                   name="lifestyle"
                   value={formData.lifestyle}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select lifestyle habit"
                 >
@@ -702,7 +703,7 @@ function AddPatient() {
                   name="alcoholConsumption"
                   value={formData.alcoholConsumption}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select alcohol consumption"
                 >
@@ -718,7 +719,7 @@ function AddPatient() {
                   name="physicalActivity"
                   value={formData.physicalActivity}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select activity level"
                 >
@@ -734,7 +735,7 @@ function AddPatient() {
                   name="diet"
                   value={formData.diet}
                   onChange={handleChange}
-                  focusBorderColor="teal.400"
+                  focusBorderColor="#335d8f"
                   borderRadius="md"
                   placeholder="Select dietary habits"
                 >
@@ -750,10 +751,12 @@ function AddPatient() {
 
             <Button
               type="submit"
-              colorScheme="teal"
               size="lg"
               borderRadius="md"
               mt={8}
+              _hover={{ bg: "#4d7098" }}
+            color="#f1f8ff"
+            bg="#335d8f"
             >
               Submit
             </Button>
