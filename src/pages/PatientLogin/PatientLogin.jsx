@@ -171,8 +171,8 @@ const PatientLogin = () => {
 
   return (
     <ChakraProvider>
-      <Flex justify="center" align="center" height="100vh" bg="gray.100">
-        <Box bg="white" p={6} rounded="md" shadow="md" w={["90%", "400px"]}>
+      <Flex justify="center" align="center" height="100vh" bg="#EFF8F8">
+      <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} border="1px solid rgba(0, 0, 0, 0.1)" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)">
           <Grid gap={4}>
             <Heading as="h2" size="lg" textAlign="center">
               Patient Login

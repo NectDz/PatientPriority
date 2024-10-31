@@ -162,6 +162,10 @@ import PatientDetails from "./pages/DoctorProfile/PatientsPage/PatientDetails.js
 import DoctorHomePage from "./pages/DoctorProfile/doctorHomePage.jsx";
 import AddPatient from "./pages/Patients/AddPatient";
 
+//support
+import Support from "./pages/Home/Support";
+
+
 // a wrapper for the protected doctor routes
 function ProtectedDoctorRoute({ children }) {
   const { currentUser, userRole } = useAuth();
@@ -284,6 +288,7 @@ ReactDOM.createRoot(rootElement).render(
 
               {/* If a user tries to go to any unspecified route, redirect them to "/", which is the HomeRoutes */}
               <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/support" element={<Support />} />
             </Routes>
           </BrowserRouter>
         </Layout>

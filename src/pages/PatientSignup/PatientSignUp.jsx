@@ -159,7 +159,7 @@ function PatientSignUp() {
 
   return (
     <ChakraProvider>
-      <Flex justify="center" align="center" height="100vh" bg="gray.100">
+      <Flex justify="center" align="center" height="100vh" bg="#EFF8F8">
         <Box bg="white" p={6} rounded="md" shadow="md" w={["90%", "400px"]}>
           {step === 1 ? (
             <Grid gap={4}>
