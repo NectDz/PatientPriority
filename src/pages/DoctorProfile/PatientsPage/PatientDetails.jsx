@@ -192,7 +192,41 @@ function PatientDetails() {
             </Grid>
           </Box>
 
-          
+          {/* Emergency Info */}
+          <Box 
+            p={6} 
+            bg="red.50" 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+          >
+            <Heading as="h2" size="md" color="red.600" mb={4}>
+              Emergency Contact
+            </Heading>
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+              <InfoField label="Name" value={patient.emergencyContact?.name} />
+              <InfoField label="Relationship" value={patient.emergencyContact?.relationship} />
+              <InfoField label="Phone" value={patient.emergencyContact?.phone} />
+              <InfoField label="Email" value={patient.emergencyContact?.email} />
+            </Grid>
+          </Box>
+
+          {/* Insurance Info */}
+          <Box 
+            p={6} 
+            bg="yellow.50" 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+          >
+            <Heading as="h2" size="md" color="yellow.700" mb={4}>
+              Insurance Information
+            </Heading>
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+              <InfoField label="Provider" value={patient.insuranceProvider} />
+              <InfoField label="Policy Number" value={patient.policyNumber} />
+            </Grid>
+          </Box>
         </VStack>
       </Box>
     </ChakraProvider>
