@@ -8,22 +8,51 @@ import {
     Divider,
     Input,
     Button,
-    HStack,
     Flex
 } from "@chakra-ui/react";
+import { GoogleGenerativeAI } from "@google/generative-ai"; // Import Google Generative AI
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
     const [responses, setResponses] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const handleQuestionSubmit = () => {
-        if (question.trim()) {
-            // Simulate AI response generation
-            setResponses([
-                ...responses,
-                { question, response: "This is a sample response from the AI chatbot based on your question." }
-            ]);
-            setQuestion(""); // Clear input after submission
+    const handleQuestionSubmit = async () => {
+        if (!question.trim()) return; // Avoid empty submissions
+        setLoading(true);
+
+        // Append the user's question to responses
+        const newResponses = [...responses, { question, response: "Thinking..." }];
+        setResponses(newResponses);
+        setQuestion(""); // Clear input after submission
+
+        try {
+            const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            
+            // Construct prompt
+            const prompt = `
+            Here is a health-related question from a user:
+            
+            "${question}"
+            
+            Respond to this question in a clear, helpful way without complex medical jargon. Keep it brief and easy to understand.`;
+
+            const result = await model.generateContent(prompt);
+
+            // Extract response text from result
+            const aiResponse = result.response.text();
+
+            // Update the last response with the AI's actual response
+            newResponses[newResponses.length - 1].response = aiResponse;
+            setResponses(newResponses);
+        } catch (error) {
+            console.error("Error:", error);
+            // If there's an error, update response to show a failure message
+            newResponses[newResponses.length - 1].response = "Sorry, I couldn't process your question. Please try again.";
+            setResponses(newResponses);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -69,6 +98,7 @@ function AIChatbot() {
                             maxWidth="700px"
                             mr={{ md: 4 }}
                             mb={{ base: 4, md: 0 }}
+                            disabled={loading} // Disable input while loading
                         />
                         <Button
                             bg="#335d8f"  
@@ -79,6 +109,7 @@ function AIChatbot() {
                             paddingY="1.5rem"
                             borderRadius="md"
                             onClick={handleQuestionSubmit}
+                            isLoading={loading} // Show loading state
                         >
                             Submit
                         </Button>
