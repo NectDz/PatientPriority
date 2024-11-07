@@ -1,5 +1,16 @@
-import { ChakraProvider, Box, VStack, Heading, Text, Divider, Input, Button, Flex } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from 'react';
+import {
+    ChakraProvider,
+    Box,
+    VStack,
+    Heading,
+    Text,
+    Divider,
+    Input,
+    Button,
+    HStack,
+    Flex
+} from "@chakra-ui/react";
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
@@ -7,16 +18,19 @@ function AIChatbot() {
 
     const handleQuestionSubmit = () => {
         if (question.trim()) {
-            // Add the question and a placeholder response to the responses list
-            setResponses([...responses, { question, response: "Here is a response from the AI chatbot." }]);
-            setQuestion(""); // Clear the input after submission
+            // Simulate AI response generation
+            setResponses([
+                ...responses,
+                { question, response: "This is a sample response from the AI chatbot based on your question." }
+            ]);
+            setQuestion(""); // Clear input after submission
         }
     };
 
     return (
         <ChakraProvider>
             <Box 
-                bgGradient="linear(to-br, teal.50, gray.50)" 
+                bgGradient="linear(to-br, blue.50, gray.50)" 
                 minHeight="100vh" 
                 padding={{ base: "1rem", md: "2rem", lg: "3rem" }} 
                 color="#333"
@@ -34,15 +48,15 @@ function AIChatbot() {
                     transition="all 0.3s"
                     _hover={{ boxShadow: "2xl" }}
                 >
-                    <Heading as="h1" size="lg" textAlign="center" color="#006d5b" whiteSpace="normal" wordBreak="break-word">
-                        How can I help you today?
+                    <Heading as="h1" size="lg" textAlign="center" color="#00366d">
+                        AI Chatbot
                     </Heading>
-                    <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#2a5950">
-                        Type your question below to ask the AI Chatbot about health, wellness, and more.
+                    <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#335d8f">
+                        How can I help you today? Type your question below.
                     </Text>
                     <Divider />
 
-                    {/* Input for user question */}
+                    {/* User Input */}
                     <Flex as="form" align="center" justify="center" direction={{ base: "column", md: "row" }} w="100%">
                         <Input 
                             placeholder="Type your question here..."
@@ -56,22 +70,35 @@ function AIChatbot() {
                             mr={{ md: 4 }}
                             mb={{ base: 4, md: 0 }}
                         />
-                        <Button colorScheme="teal" size="md" onClick={handleQuestionSubmit}>
+                        <Button
+                            bg="#335d8f"  
+                            color="white"
+                            _hover={{ bg: "#0B2545" }}
+                            fontSize="md"
+                            paddingX="2rem"
+                            paddingY="1.5rem"
+                            borderRadius="md"
+                            onClick={handleQuestionSubmit}
+                        >
                             Submit
                         </Button>
                     </Flex>
 
                     <Divider />
 
-                    {/* Displaying question and responses */}
+                    {/* Displaying Responses */}
                     <VStack spacing={4} align="stretch">
                         {responses.map((item, index) => (
-                            <Box key={index} borderWidth="1px" borderRadius="md" padding="1.5rem" bg="#F9FAFB" boxShadow="sm">
-                                <Text fontWeight="bold" color="#2a5950">You asked:</Text>
-                                <Text mb={2}>{item.question}</Text>
+                            <Box key={index} style={styles.responseContainer}>
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>You asked:</Text>
+                                    <Text mb={2}>{item.question}</Text>
+                                </Box>
                                 <Divider />
-                                <Text fontWeight="bold" color="#2a5950" mt={2}>AI Chatbot:</Text>
-                                <Text>{item.response}</Text>
+                                <Box style={styles.section}>
+                                    <Text style={styles.sectionTitle}>AI Chatbot:</Text>
+                                    <Text>{item.response}</Text>
+                                </Box>
                             </Box>
                         ))}
                     </VStack>
@@ -80,5 +107,26 @@ function AIChatbot() {
         </ChakraProvider>
     );
 }
+
+const styles = {
+    responseContainer: {
+        backgroundColor: '#f9f9fb',
+        padding: '1rem',
+        borderRadius: '8px',
+    },
+    section: {
+        marginBottom: '1rem',
+        padding: '1rem',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+    },
+    sectionTitle: {
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
+        color: '#0b2545',
+        marginBottom: '0.5rem',
+    },
+};
 
 export default AIChatbot;
