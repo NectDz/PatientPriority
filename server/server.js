@@ -1,9 +1,9 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const { exec } = require("child_process");
-const cors = require("cors");
+import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { exec } from "child_process";
+import cors from "cors";
 
 // Ensure the 'uploads/' and 'transcripts/' directories exist
 if (!fs.existsSync("uploads")) {
@@ -15,6 +15,7 @@ if (!fs.existsSync("transcripts")) {
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const PORT = 3000;
 
@@ -60,6 +61,44 @@ app.post("/transcribe", upload.single("audio"), (req, res) => {
       });
     }
   );
+});
+
+app.post("/generate-summary", async (req, res) => {
+  const { transcript } = req.body;
+
+  if (!transcript) {
+    return res.status(400).send("Transcript is required.");
+  }
+
+  try {
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta2/models/gemini-1.5:generateText",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.GOOGLE_API_KEY}`,
+        },
+        body: JSON.stringify({
+          prompt: `Based on this transcript of a Patient and a Doctor, summarize the conversation in one paragraph:\n--------\n${transcript}`,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorDetails = await response.text(); // Capture error details
+      console.error("Error from Google API:", response.status, errorDetails);
+      throw new Error(`Failed to fetch summary: ${errorDetails}`);
+    }
+
+    const data = await response.json();
+    const summaryText = data.candidates[0].output;
+
+    res.json({ summary: summaryText });
+  } catch (error) {
+    console.error("Error generating summary:", error);
+    res.status(500).send(`Error generating summary: ${error.message}`);
+  }
 });
 
 app.listen(PORT, () => {

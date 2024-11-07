@@ -23,32 +23,31 @@ import {
 const db = getFirestore();
 
 function AppointmentDetail() {
-  const { id } = useParams(); //get appointment ID from URL params
+  const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
-  const [patientName, setPatientName] = useState(""); 
-  const [audioFile, setAudioFile] = useState(null); //audio upload
+  const [patientName, setPatientName] = useState("");
+  const [audioFile, setAudioFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [summary, setSummary] = useState(""); // Add state for summary
 
   useEffect(() => {
     async function fetchAppointment() {
       try {
-        //fetch appointment details using ID
         const appointmentDoc = await getDoc(doc(db, "appointment", id));
         if (appointmentDoc.exists()) {
           const appointmentData = appointmentDoc.data();
           setAppointment(appointmentData);
 
-          //fetch patient details using the patient_id in the appointment
           const patientsQuery = query(
             collection(db, "patients"),
-            where("id", "==", appointmentData.patient_id) //match appointment's patient_id to patient's id field
+            where("id", "==", appointmentData.patient_id)
           );
 
           const patientsSnapshot = await getDocs(patientsQuery);
           if (!patientsSnapshot.empty) {
-            const patientData = patientsSnapshot.docs[0].data(); //get first matching patient document
+            const patientData = patientsSnapshot.docs[0].data();
             setPatientName(`${patientData.firstName} ${patientData.lastName}`);
           } else {
             setPatientName("Unknown Patient");
@@ -91,7 +90,6 @@ function AppointmentDetail() {
       if (response.ok) {
         const transcript = await response.text();
 
-        //update appointment with the transcript in Firestore
         await updateDoc(doc(db, "appointment", id), {
           appointmentTranscript: transcript,
         });
@@ -101,7 +99,31 @@ function AppointmentDetail() {
           appointmentTranscript: transcript,
         }));
 
-        setMessage("Transcript uploaded and saved.");
+        // Call the summary endpoint
+        const summaryResponse = await fetch(
+          "http://localhost:3000/generate-summary",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ transcript }),
+          }
+        );
+
+        if (summaryResponse.ok) {
+          const summaryData = await summaryResponse.json();
+          setSummary(summaryData.summary);
+
+          // Optionally update the summary in Firestore
+          await updateDoc(doc(db, "appointment", id), {
+            Summary: summaryData.summary,
+          });
+        } else {
+          setMessage("Error generating summary.");
+        }
+
+        setMessage("Transcript and summary generated and saved.");
       } else {
         setMessage("Error during transcription.");
       }
@@ -120,7 +142,6 @@ function AppointmentDetail() {
         justifyContent="center"
         alignItems="center"
         minH="100vh"
-
       >
         <Spinner size="xl" />
       </Box>
@@ -134,7 +155,6 @@ function AppointmentDetail() {
         justifyContent="center"
         alignItems="center"
         minH="100vh"
-
       >
         <Heading>Appointment not found</Heading>
       </Box>
@@ -146,11 +166,14 @@ function AppointmentDetail() {
       <Heading as="h1" size="xl" mb={6} color="#00366d">
         Appointment Details
       </Heading>
-      <Box p={6} bg="white" borderRadius="md"
-      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-      transition="all 0.3s"
-      _hover={{ boxShadow: "2xl" }}
+      <Box
+        p={6}
+        bg="white"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
       >
         <Text>
           <strong>Patient Name:</strong> {patientName}
@@ -171,20 +194,20 @@ function AppointmentDetail() {
           <strong>Description:</strong> {appointment.appointmentDescription}
         </Text>
       </Box>
-      <Divider my={6} />{" "}
-      
-      {/* Transcript Section */}
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
-          Appointment Transcript
-        </Heading>
-      <Box p={6} bg="gray.50" borderRadius="md" 
-      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-      transition="all 0.3s"
-      _hover={{ boxShadow: "2xl" }}
-      >
-        
+      <Divider my={6} />
 
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
+        Appointment Transcript
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
         {appointment.appointmentTranscript ? (
           <Box
             p={4}
@@ -202,7 +225,28 @@ function AppointmentDetail() {
           <Text>No transcript available for this appointment.</Text>
         )}
       </Box>
-      {/*render buttons depending on if there's a transcript or not */}
+
+      <Divider my={6} />
+
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
+        Appointment Summary
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {summary ? (
+          <Text whiteSpace="pre-wrap">{summary}</Text>
+        ) : (
+          <Text>No summary available for this appointment.</Text>
+        )}
+      </Box>
+
       {!appointment.appointmentTranscript && (
         <Box mt={6}>
           <Input
@@ -212,23 +256,26 @@ function AppointmentDetail() {
             display="none"
             id="audio-upload"
           />
-          <Button as="label" htmlFor="audio-upload" mt={4}
-          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
-          marginRight={3}
-          color="#f1f8ff"
-          bg="#335d8f">
+          <Button
+            as="label"
+            htmlFor="audio-upload"
+            mt={4}
+            _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+            transition="all 0.3s"
+            marginRight={3}
+            color="#f1f8ff"
+            bg="#335d8f"
+          >
             Select Audio
           </Button>
           <Button
             onClick={handleUpload}
-            // colorScheme="green"
             mt={4}
             isLoading={uploading}
             _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
-          color="#f1f8ff"
-          bg="#335d8f"
+            transition="all 0.3s"
+            color="#f1f8ff"
+            bg="#335d8f"
           >
             Upload and Transcribe
           </Button>
