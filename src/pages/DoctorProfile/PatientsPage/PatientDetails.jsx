@@ -94,6 +94,104 @@ function PatientDetails() {
           transition="all 0.3s"
           _hover={{ boxShadow: "2xl" }}
         >
+          {/* Patient Info */}
+          <Box 
+            p={6} 
+            bg="blue.50" 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+          >
+            <Heading as="h2" size="md" color="blue.600" mb={4}>
+              Patient Information
+            </Heading>
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+              <InfoField label="Name" value={`${patient.firstName} ${patient.lastName}`} />
+              <InfoField label="Age" value={patient.age} />
+              <InfoField label="Gender" value={patient.gender} />
+              <InfoField label="Phone" value={patient.phone} />
+              <GridItem colSpan={{ base: 1, md: 2 }}>
+                <InfoField label="Email" value={patient.email} />
+              </GridItem>
+            </Grid>
+          </Box>
+
+          {/* Address Info */}
+          <Box 
+            p={6} 
+            bg="purple.50" 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+          >
+            <Heading as="h2" size="md" color="purple.600" mb={4}>
+              Address
+            </Heading>
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+              <InfoField label="Street" value={patient.address?.street} />
+              <InfoField label="City" value={patient.address?.city} />
+              <InfoField label="State" value={patient.address?.state} />
+              <InfoField label="ZIP" value={patient.address?.zip} />
+            </Grid>
+          </Box>
+
+          {/* Health Info */}
+          <Box 
+            p={6} 
+            bg="green.50" 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+          >
+            <Heading as="h2" size="md" color="green.600" mb={4}>
+              Health Information
+            </Heading>
+            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+              <InfoField label="Diet" value={patient.diet} />
+              <InfoField label="Physical Activity" value={patient.physicalActivity} />
+              <InfoField label="Lifestyle" value={patient.lifestyle} />
+              <InfoField label="Alcohol Consumption" value={patient.alcoholConsumption} />
+              <GridItem colSpan={{ base: 1, md: 2 }}>
+                <InfoField 
+                  label="Conditions" 
+                  value={
+                    patient.conditions ? 
+                    patient.conditions.split(',').map((condition, index) => (
+                      <Badge key={index} mr={2} mb={2} colorScheme="red" variant="subtle" fontSize="sm">
+                        {condition.trim()}
+                      </Badge>
+                    )) : 
+                    "None reported"
+                  }
+                />
+                <InfoField 
+                  label="Allergies" 
+                  value={
+                    patient.allergies ? 
+                    patient.allergies.split(',').map((allergy, index) => (
+                      <Badge key={index} mr={2} mb={2} colorScheme="orange" variant="subtle" fontSize="sm">
+                        {allergy.trim()}
+                      </Badge>
+                    )) : 
+                    "None reported"
+                  }
+                />
+                <InfoField 
+                  label="Medications" 
+                  value={
+                    patient.medications ? 
+                    patient.medications.split(',').map((medication, index) => (
+                      <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
+                        {medication.trim()}
+                      </Badge>
+                    )) : 
+                    "None reported"
+                  }
+                />
+              </GridItem>
+            </Grid>
+          </Box>
+
           
         </VStack>
       </Box>
