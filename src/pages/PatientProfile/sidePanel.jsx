@@ -139,6 +139,8 @@ import { FaCalendarAlt, FaFileAlt, FaUserCircle } from 'react-icons/fa'; // Icon
 import { FaRegNoteSticky } from "react-icons/fa6";
 import { GrOverview } from "react-icons/gr";
 import { FaBrain } from "react-icons/fa";
+import { FaRobot } from "react-icons/fa"; // New icon for AI Chatbot
+
 
 const SidePanel = () => {
 
@@ -258,17 +260,7 @@ const SidePanel = () => {
           </ChakraLink>
         </HStack>
 
-        <Spacer />
-      </VStack>
-
-      <Box
-        border="1px"
-        borderColor="whiteAlpha.300"
-        w="100%"
-        // p={4}
-        mt={6}
-        marginBottom="4vh"
-      >
+        {/* AI Chatbot */}
         <HStack
           spacing={4}
           _hover={{
@@ -278,8 +270,35 @@ const SidePanel = () => {
           }}
           w="97.5%"
           h="3rem"
-          px={6} 
-          // mt={2}
+          px={6}
+        >
+          <FaRobot />
+          <ChakraLink as={ReactRouterLink} to="/patient-profile/ai-chatbot" fontWeight="bold">
+            AI Chatbot
+          </ChakraLink>
+        </HStack>
+
+        <Spacer />
+      </VStack>
+
+      <Box
+        border="1px"
+        borderColor="whiteAlpha.300"
+        w="100%"
+        mt={6}
+        marginBottom="4vh"
+      >
+        {/* Settings */}
+        <HStack
+          spacing={4}
+          _hover={{
+            bg: "#2A3B5C",
+            transform: "scale(1.05)", 
+            transition: "0.2s", 
+          }}
+          w="97.5%"
+          h="3rem"
+          px={6}
         >
           <SettingsIcon />
           <ChakraLink as={ReactRouterLink} to="/patient-profile/settings" fontWeight="bold">
@@ -287,16 +306,17 @@ const SidePanel = () => {
           </ChakraLink>
         </HStack>
 
+        {/* Logout */}
         <HStack
           spacing={4}
           _hover={{
             bg: "#FF2C2C75",
-            transform: "scale(1.05)",
+            transform: "scale(1.05)", 
             transition: "0.2s", 
           }}
           w="97.5%"
           h="3rem"
-          px={6} 
+          px={6}
           mb={3}
           onClick={handleLogout}
         >
