@@ -1,14 +1,53 @@
 // AboutUs.jsx
 
 import React from "react";
-import { ChakraProvider, Box, Heading, Text, VStack, extendTheme } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  Box,
+  Heading,
+  Text,
+  VStack,
+  Divider,
+  extendTheme,
+  HStack,
+  Icon,
+  Stack,
+} from "@chakra-ui/react";
+import { FaHeartbeat, FaChartLine, FaLightbulb, FaUserShield } from "react-icons/fa";
 
 const theme = extendTheme({
   fonts: {
     heading: "Sansation, sans-serif",
     body: "Sansation, sans-serif",
   },
+  colors: {
+    primary: "#00366d",
+    secondary: "#335d8f",
+    highlight: "#ff5c5c",
+    background: "#f1f8ff",
+    accent: "#4d7098",
+  },
 });
+
+const StatBox = ({ icon, stat, label }) => (
+  <Box
+    p={4}
+    backgroundColor="white"
+    boxShadow="md"
+    borderRadius="md"
+    textAlign="center"
+    transition="all 0.3s ease"
+    _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
+  >
+    <Icon as={icon} boxSize="2em" color="highlight" mb={2} />
+    <Text fontSize="4xl" fontWeight="bold" color="highlight">
+      {stat}
+    </Text>
+    <Text color="secondary" fontSize="lg">
+      {label}
+    </Text>
+  </Box>
+);
 
 const AboutUs = () => {
   return (
@@ -20,87 +59,83 @@ const AboutUs = () => {
         justifyContent="center"
         minHeight="100vh"
         p={8}
-        backgroundColor="#f1f8ff"
+        backgroundColor="background"
       >
-        {/* Page Title */}
-        <Heading fontSize="4xl" color="#00366d" mb="8" textAlign="center">
-          About Us
-        </Heading>
+        {/* Spacing to push content below the navbar */}
+        <Box height="100px" />
 
-        <VStack spacing={8} align="stretch" width={{ base: "90%", md: "70%", lg: "60%" }} mx="auto">
+        {/* Header Section */}
+        <Heading fontSize="6xl" color="primary" mb={4} textAlign="center">
+          About Patient Priority
+        </Heading>
+        <Text fontSize="2xl" color="secondary" textAlign="center" mb={12} maxW="80%">
+          Revolutionizing healthcare by enhancing communication, proactive care, and personalized insights.
+        </Text>
+
+        {/* Stats Section */}
+        <HStack spacing={8} wrap="wrap" justify="center" mb={16}>
+          <StatBox icon={FaHeartbeat} stat="30%" label="Poor Communication between patients and providers" />
+          <StatBox icon={FaChartLine} stat="80%" label="Preventable Chronic Diseases with Early Intervention" />
+          <StatBox icon={FaUserShield} stat="36%" label="Adults with Low Health Literacy in the U.S." />
+          <StatBox icon={FaLightbulb} stat="10-20%" label="Avoidable Hospitalizations with Timely Reminders" />
+        </HStack>
+
+        <VStack spacing={10} align="stretch" width={{ base: "90%", md: "70%", lg: "60%" }} mx="auto">
 
           {/* Motivation Section */}
-          <Box backgroundColor="white" borderRadius="md" p={6} boxShadow="lg">
-            <Heading fontSize="2xl" color="#00366d" mb={4}>
+          <Box backgroundColor="white" borderRadius="md" p={8} boxShadow="lg">
+            <Heading fontSize="3xl" color="primary" mb={4}>
               Our Motivation
             </Heading>
-            <Text fontSize="lg" color="#335d8f">
-              At PatientPriority, we recognize the challenges patients and healthcare providers face in today’s healthcare landscape:
+            <Divider mb={4} borderColor="secondary" />
+            <Text fontSize="lg" color="secondary" lineHeight="1.7">
+              We’re motivated by the critical challenges in healthcare today—communication gaps, late disease detection, and low health literacy. By empowering patients and doctors, PatientPriority aims to fill these gaps, driving better health outcomes and streamlined care.
             </Text>
-            <Text mt={4} color="#4d7098">
-              - **Poor Communication**: Around 30% of patients report inadequate communication with their providers, impacting their health journey.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Late Disease Detection**: The American Cancer Society notes that 1 in 3 cancers are diagnosed late, leading to difficult and costly treatments.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Missed Early Detection**: According to the CDC, early intervention could prevent up to 80% of chronic disease-related deaths.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Low Health Literacy**: Approximately 36% of U.S. adults have low health literacy, leading to misunderstandings about conditions and medications.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Missed Health Reminders**: Simple reminders can reduce preventable hospitalizations by 10-20%.
-            </Text>
-            <Text mt={4} fontSize="lg" color="#335d8f">
-              These challenges inspired us to create a platform that bridges these gaps and empowers patients and providers alike.
-            </Text>
+            <Stack mt={6} spacing={4}>
+              <Text color="accent" fontWeight="semibold">- Poor Communication: <Text as="span" color="highlight">30%</Text> of patients report ineffective communication with healthcare providers.</Text>
+              <Text color="accent" fontWeight="semibold">- Late Disease Detection: <Text as="span" color="highlight">1 in 3</Text> cancer cases are detected at an advanced stage.</Text>
+              <Text color="accent" fontWeight="semibold">- Low Health Literacy: Roughly <Text as="span" color="highlight">36%</Text> of U.S. adults have low health literacy.</Text>
+              <Text color="accent" fontWeight="semibold">- Missed Health Reminders: Preventable hospitalizations could be reduced by <Text as="span" color="highlight">10-20%</Text> with simple, timely reminders.</Text>
+            </Stack>
           </Box>
 
           {/* Project Overview Section */}
-          <Box backgroundColor="white" borderRadius="md" p={6} boxShadow="lg">
-            <Heading fontSize="2xl" color="#00366d" mb={4}>
-              Project Overview
+          <Box backgroundColor="white" borderRadius="md" p={8} boxShadow="lg">
+            <Heading fontSize="3xl" color="primary" mb={4}>
+              What We Do
             </Heading>
-            <Text fontSize="lg" color="#335d8f">
-              PatientPriority is a comprehensive platform designed for both **doctors** and **patients**:
+            <Divider mb={4} borderColor="secondary" />
+            <Text fontSize="lg" color="secondary" lineHeight="1.7">
+              PatientPriority provides an intuitive platform for doctors and patients to interact, share health information, and manage care proactively. With an AI-driven system, we help patients and doctors make informed decisions and provide insights tailored to individual needs.
             </Text>
-            <Text mt={4} color="#4d7098">
-              - **Doctor Side**: A secure portal for doctors to upload meeting notes, simplifying post-visit documentation and managing multiple patients.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Patient Side**: A personalized experience for patients, allowing them to complete a detailed health questionnaire that helps build a customized **Patient Profile** with health insights.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Generative AI Integration**: The platform leverages AI to analyze each patient’s profile, offering insights, recommendations, and personalized tips for preventive care, lifestyle adjustments, and health monitoring.
-            </Text>
-            <Text mt={4} fontSize="lg" color="#335d8f">
-              Our goal is to promote proactive health management by providing a seamless, user-friendly experience.
-            </Text>
+            <Box mt={6}>
+              <Text color="accent" fontWeight="bold" fontSize="xl">Key Features:</Text>
+              <Stack spacing={4} mt={3}>
+                <Text color="secondary">- <strong>Doctor Portal:</strong> Securely upload notes and manage post-visit documentation.</Text>
+                <Text color="secondary">- <strong>Patient Dashboard:</strong> A customized space for patients to track appointments, prescriptions, and health history.</Text>
+                <Text color="secondary">- <strong>AI-Powered Insights:</strong> Generates personalized health suggestions, reminders, and preventive tips.</Text>
+              </Stack>
+            </Box>
           </Box>
 
           {/* Unique Features Section */}
-          <Box backgroundColor="white" borderRadius="md" p={6} boxShadow="lg">
-            <Heading fontSize="2xl" color="#00366d" mb={4}>
-              What Makes Us Unique
+          <Box backgroundColor="white" borderRadius="md" p={8} boxShadow="lg">
+            <Heading fontSize="3xl" color="primary" mb={4}>
+              What Sets Us Apart
             </Heading>
-            <Text fontSize="lg" color="#335d8f">
-              While other platforms like **MyChart**, **NYP Connect**, and **Mayo Clinic Online Services** offer patient portals, PatientPriority stands out by focusing on:
+            <Divider mb={4} borderColor="secondary" />
+            <Text fontSize="lg" color="secondary" lineHeight="1.7">
+              PatientPriority is not just another health platform; we prioritize personalization and proactive care. Leveraging AI technology, we deliver a unique experience that stands out in today’s healthcare landscape.
             </Text>
-            <Text mt={4} color="#4d7098">
-              - **Ease of Use**: Our platform is designed for all users, with a straightforward sign-up process and easy navigation, ensuring accessibility for patients of all tech levels.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **AI-Driven Personalization**: Unlike other platforms, PatientPriority uses AI to provide tailored health insights, diet and lifestyle suggestions, and preventive care reminders based on each patient’s unique profile.
-            </Text>
-            <Text mt={2} color="#4d7098">
-              - **Proactive Health Management**: We emphasize preventive care by offering reminders and recommendations to avoid late disease detection and reduce preventable hospitalizations.
-            </Text>
-            <Text mt={4} fontSize="lg" color="#335d8f">
-              With PatientPriority, we’re not just managing health records—we’re helping patients and doctors work together for proactive, personalized care.
-            </Text>
+            <Box mt={6}>
+              <Text color="accent" fontWeight="bold" fontSize="xl">Why Choose Us:</Text>
+              <Stack spacing={4} mt={3}>
+                <Text color="secondary">- <strong>AI-Driven Personalization:</strong> Personalized insights and recommendations based on patient profiles.</Text>
+                <Text color="secondary">- <strong>User-Friendly Design:</strong> Accessible interface designed for all levels of tech experience.</Text>
+                <Text color="secondary">- <strong>Proactive Health Management:</strong> Health reminders and preventive alerts that encourage proactive care.</Text>
+              </Stack>
+            </Box>
           </Box>
-          
         </VStack>
       </Box>
     </ChakraProvider>
