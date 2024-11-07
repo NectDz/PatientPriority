@@ -76,52 +76,54 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       console.log("Current user:", user);
       setCurrentUser(user);
-
+  
       if (user) {
         // console.log("User is authenticated, UID:", user.uid);  // for debugging 
-
         try {
           // look through the "doctor" collection and find where id matches user.uid
           const doctorQuery = query(
             collection(db, "doctor"),
             where("id", "==", user.uid)
           );
-
+  
           // look through the "patients" collection and find where id matches user.uid
           const patientQuery = query(
             collection(db, "patients"),
             where("id", "==", user.uid)
           );
-
-          // look through both, and assign value from doctorQuery to doctorSnapshot, same for patient
-          const [doctorSnapshot, patientSnapshot] = await Promise.all([ // Promise.all runs both functions together instead of one after the other
+  
+          // debugging
+          console.log("Checking for user with ID:", user.uid);
+  
+          const [doctorSnapshot, patientSnapshot] = await Promise.all([
             getDocs(doctorQuery),
             getDocs(patientQuery)
           ]);
-
+  
           // debugging
-          // console.log("Doctor documents found:", !doctorSnapshot.empty);
-          // console.log("Patient documents found:", !patientSnapshot.empty);
-
-          // Check which query returned results
+          console.log("Doctor documents found:", !doctorSnapshot.empty);
+          console.log("Patient documents found:", !patientSnapshot.empty);
+  
           if (!doctorSnapshot.empty) {
-            // console.log("User is a doctor"); // debugging
+            // debugging
+            console.log("User is a doctor");
             const doctorData = doctorSnapshot.docs[0].data();
             setUserRole({
               type: "doctor",
               data: doctorData
             });
           } else if (!patientSnapshot.empty) {
-            // console.log("User is a patient"); // debugging
-
-            // go through the array of and get the first document (should be only one since filtering through uid), and get the data
+            // debugging
+            console.log("User is a patient");
             const patientData = patientSnapshot.docs[0].data();
             setUserRole({
-              type: "patient", // set the role to patient
-              data: patientData // give the state the patient data
+              type: "patient",
+              data: patientData
             });
           } else {
-            console.log("No role found for user");
+            // debugging
+            console.log("No role found for user with ID:", user.uid);
+            console.log("Checking patients collection query:", patientQuery);
             setUserRole(null);
           }
         } catch (error) {
@@ -132,10 +134,10 @@ export const AuthProvider = ({ children }) => {
         console.log("User is not logged in");
         setUserRole(null);
       }
-
+  
       setLoading(false);
     });
-
+  
     return () => unsubscribe();
   }, []);
 
