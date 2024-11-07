@@ -165,7 +165,7 @@ import AddPatient from "./pages/Patients/AddPatient";
 
 //support
 import Support from "./pages/Home/Support";
-
+import AboutUs from "./pages/Home/AboutUs";
 
 // a wrapper for the protected doctor routes
 function ProtectedDoctorRoute({ children }) {
@@ -291,6 +291,7 @@ ReactDOM.createRoot(rootElement).render(
               {/* If a user tries to go to any unspecified route, redirect them to "/", which is the HomeRoutes */}
               <Route path="*" element={<Navigate to="/" replace />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/about" element={<AboutUs />} />
             </Routes>
           </BrowserRouter>
         </Layout>
