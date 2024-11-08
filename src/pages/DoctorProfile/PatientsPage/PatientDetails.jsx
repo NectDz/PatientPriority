@@ -349,7 +349,8 @@ function PatientDetails() {
             </Grid>
           </Box>
 
-
+          {/* below is the new health box which doctors can now edit -- code above */}
+          <EditableHealthInfo />
           
           {/* Emergency Info */}
           <Box 
