@@ -524,12 +524,12 @@ function AIInsights() {
                                 <Box mb={6} p={4} bg="blue.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaHeartbeat} color="blue.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="blue.700" fontSize="xl">Common Diagnoses/Conditions</Text>
+                                        <Text fontWeight="bold" color="blue.700" fontSize="2xl">Common Diagnoses/Conditions</Text>
                                     </HStack>
-                                    <UnorderedList mt={2}>
+                                    <UnorderedList mt={2} spacing={2}>
                                         {insights.diagnoses.map((diag, index) => (
-                                            <ListItem key={index} color="#333">
-                                                <Text>{diag.condition}: {diag.description}</Text>
+                                            <ListItem key={index} color="#333" fontSize="lg">
+                                                <Text as="span" fontWeight="semibold">{diag.condition}:</Text> {diag.description}
                                             </ListItem>
                                         ))}
                                     </UnorderedList>
@@ -538,30 +538,37 @@ function AIInsights() {
                                 <Box mb={6} p={4} bg="green.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaAppleAlt} color="green.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="green.700" fontSize="xl">Preventive Tips</Text>
+                                        <Text fontWeight="bold" color="green.700" fontSize="2xl">Preventive Tips</Text>
                                     </HStack>
-                                    <Text mt={2}>Diet: {insights.preventive_tips.diet}</Text>
-                                    <Text>Activity: {insights.preventive_tips.activity}</Text>
-                                    <Text>Health Monitoring: {insights.preventive_tips.health_monitoring}</Text>
+                                    <Text mt={2} fontSize="lg" fontWeight="medium">
+                                        <Text as="span" fontWeight="semibold">Diet:</Text> {insights.preventive_tips.diet}
+                                    </Text>
+                                    <Text fontSize="lg" fontWeight="medium">
+                                        <Text as="span" fontWeight="semibold">Activity:</Text> {insights.preventive_tips.activity}
+                                    </Text>
+                                    <Text fontSize="lg" fontWeight="medium">
+                                        <Text as="span" fontWeight="semibold">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}
+                                    </Text>
                                 </Box>
 
                                 <Box mb={6} p={4} bg="yellow.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaRunning} color="yellow.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="yellow.700" fontSize="xl">Health Goal</Text>
+                                        <Text fontWeight="bold" color="yellow.700" fontSize="2xl">Health Goal</Text>
                                     </HStack>
-                                    <Text mt={2}>{insights.health_goal}</Text>
+                                    <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_goal}</Text>
                                 </Box>
 
                                 <Box mb={6} p={4} bg="purple.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaStar} color="purple.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="purple.700" fontSize="xl">Health Horoscope</Text>
+                                        <Text fontWeight="bold" color="purple.700" fontSize="2xl">Health Horoscope</Text>
                                     </HStack>
-                                    <Text mt={2}>{insights.health_horoscope}</Text>
+                                    <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_horoscope}</Text>
                                 </Box>
                             </Box>
                         </Box>
+
                     )}
                 </VStack>
             </Box>
