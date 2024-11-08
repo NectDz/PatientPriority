@@ -14,8 +14,10 @@ import {
     Textarea,
     Button,
     UnorderedList,
-    ListItem
+    ListItem,
+    Icon
 } from "@chakra-ui/react";
+import { FaHeartbeat, FaAppleAlt, FaRunning, FaStar } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function AIInsights() {
@@ -76,7 +78,7 @@ function AIInsights() {
         }
         
         Additional Instructions:
-        - In the "diagnoses" section, include exactly 5 common health conditions or illnesses that people with a similar profile (age, weight, height, and ethnicity) typically experience. If specific medical history is missing, base these on general trends for the patient’s demographic.
+        - In the "diagnoses" section, include exactly 5 common health conditions or illnesses that people with a similar patient profile  typically experience. If specific medical history is missing, base these on general trends for the patient’s demographic.
         - Ensure all language is clear, simple, and straightforward for easy understanding, especially for older patients.
         - Avoid complex medical jargon; focus on actionable, useful insights.
         - Do not use stars (*) or quotation marks (" ") in the response.
@@ -514,38 +516,49 @@ function AIInsights() {
                         </Box>
                     )}
 
-                    {/* Display the parsed response in a formatted way */}
                     {insights && (
                         <Box mt={10}>
                             <Divider mb={5} />
-                            <Heading as="h2" size="lg" mb={4}>Formatted AI-Generated Health Insights</Heading>
+                            <Heading as="h2" size="lg" mb={4} textAlign="center">Formatted AI-Generated Health Insights</Heading>
                             <Box>
-                                <Box mb={4}>
-                                    <Text fontWeight="bold">1. Common Diagnoses/Conditions</Text>
-                                    <UnorderedList>
+                                <Box mb={6} p={4} bg="blue.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaHeartbeat} color="blue.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="blue.700" fontSize="xl">Common Diagnoses/Conditions</Text>
+                                    </HStack>
+                                    <UnorderedList mt={2}>
                                         {insights.diagnoses.map((diag, index) => (
-                                            <ListItem key={index}>
+                                            <ListItem key={index} color="#333">
                                                 <Text>{diag.condition}: {diag.description}</Text>
                                             </ListItem>
                                         ))}
                                     </UnorderedList>
                                 </Box>
 
-                                <Box mb={4}>
-                                    <Text fontWeight="bold">2. Preventive Tips</Text>
-                                    <Text>Diet: {insights.preventive_tips.diet}</Text>
+                                <Box mb={6} p={4} bg="green.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaAppleAlt} color="green.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="green.700" fontSize="xl">Preventive Tips</Text>
+                                    </HStack>
+                                    <Text mt={2}>Diet: {insights.preventive_tips.diet}</Text>
                                     <Text>Activity: {insights.preventive_tips.activity}</Text>
                                     <Text>Health Monitoring: {insights.preventive_tips.health_monitoring}</Text>
                                 </Box>
 
-                                <Box mb={4}>
-                                    <Text fontWeight="bold">3. Health Goal</Text>
-                                    <Text>{insights.health_goal}</Text>
+                                <Box mb={6} p={4} bg="yellow.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaRunning} color="yellow.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="yellow.700" fontSize="xl">Health Goal</Text>
+                                    </HStack>
+                                    <Text mt={2}>{insights.health_goal}</Text>
                                 </Box>
 
-                                <Box mb={4}>
-                                    <Text fontWeight="bold">4. Health Horoscope</Text>
-                                    <Text>{insights.health_horoscope}</Text>
+                                <Box mb={6} p={4} bg="purple.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaStar} color="purple.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="purple.700" fontSize="xl">Health Horoscope</Text>
+                                    </HStack>
+                                    <Text mt={2}>{insights.health_horoscope}</Text>
                                 </Box>
                             </Box>
                         </Box>
