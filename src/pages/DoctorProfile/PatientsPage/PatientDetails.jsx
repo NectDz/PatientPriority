@@ -66,7 +66,37 @@ function PatientDetails() {
     fetchPatient();
   }, [id, toast]);
 
-
+  const handleSave = async () => {
+    try {
+      await updateDoc(doc(db, "patients", id), { //update in doc db with the id in patients collection
+        ...editedHealth
+      });
+      
+      setPatient(prev => ({ //updarte local patient state
+        ...prev,
+        ...editedHealth
+      }));
+      
+      setIsEditing(false); //exit when success
+      
+      toast({
+        title: "Success",
+        description: "Health information updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating patient:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update health information",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   const InfoField = ({ label, value }) => (
     <Box mb={2}>
