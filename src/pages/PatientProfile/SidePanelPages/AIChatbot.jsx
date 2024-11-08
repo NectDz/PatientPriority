@@ -173,7 +173,9 @@ import {
     Textarea,
     Button,
     Flex,
-    Icon
+    Icon,
+    ListItem,
+    UnorderedList
 } from "@chakra-ui/react";
 import { FaRobot, FaUser } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -225,11 +227,12 @@ function AIChatbot() {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-        A patient asked: "${initialQuestion}"
+        A user has asked the following health-related question:
+        "${initialQuestion}"
         
         Additional details provided: "${additionalDetails}"
         
-        Based on the initial question and these additional details, please generate a comprehensive response in clear, plain language, without complex medical jargon.
+        Please respond to this question with a brief, simple, and straightforward answer that avoids complex medical jargon. Keep it concise and focused on providing clear, helpful guidance, no longer than a few sentences.
         `;
 
         const result = await model.generateContent(prompt);
@@ -241,6 +244,36 @@ function AIChatbot() {
         setPatientData({ initialQuestion: "", additionalDetails: "" });
         setAdditionalDetails("");
     };
+
+    // Parsing function to format response text
+    function parseAIResponse(response) {
+        const lines = response.split('\n');
+        const elements = [];
+
+        lines.forEach((line, index) => {
+            if (line.startsWith('**')) {
+                elements.push(
+                    <Text as="b" fontSize="lg" key={`header-${index}`} mt={4}>
+                        {line.replace(/\*\*/g, '')}
+                    </Text>
+                );
+            } else if (line.startsWith('*')) {
+                elements.push(
+                    <ListItem key={`bullet-${index}`} ml={4} fontSize="md">
+                        {line.replace(/^\*\s*/, '')}
+                    </ListItem>
+                );
+            } else {
+                elements.push(
+                    <Text key={`text-${index}`} fontSize="md" mt={2}>
+                        {line}
+                    </Text>
+                );
+            }
+        });
+
+        return elements;
+    }
 
     return (
         <ChakraProvider>
@@ -351,7 +384,9 @@ function AIChatbot() {
                                         <Icon as={FaRobot} color="purple.500" mr={2} />
                                         <Text style={styles.sectionTitle}>AI Chatbot:</Text>
                                     </Flex>
-                                    <Text fontSize="lg">{item.response}</Text>
+                                    <UnorderedList spacing={2}>
+                                        {parseAIResponse(item.response)}
+                                    </UnorderedList>
                                 </Box>
                             </Box>
                         ))}
