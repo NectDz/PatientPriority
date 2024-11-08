@@ -105,7 +105,169 @@ function PatientDetails() {
     </Box>
   );
 
+  const EditableHealthInfo = () => (
+    <Box 
+      p={6} 
+      bg="green.50" 
+      borderRadius="lg"
+      transition="transform 0.2s"
+      _hover={{ transform: "translateY(-2px)" }}
+    >
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+        <Heading as="h2" size="md" color="green.600">
+          Health Information
+        </Heading>
+        {isEditing ? ( //if false then static if not then dynamic
+          <Box>
+            <IconButton
+              icon={<CheckIcon />}
+              colorScheme="green"
+              size="sm"
+              mr={2}
+              onClick={handleSave} //updates real time in firebase
+              aria-label="Save"
+            />
+            <IconButton
+              icon={<CloseIcon />}
+              colorScheme="red"
+              size="sm"
+              onClick={() => setIsEditing(false)}
+              aria-label="Cancel"
+            />
+          </Box>
+        ) : (
+          <IconButton
+            icon={<EditIcon />}
+            colorScheme="green"
+            size="sm"
+            onClick={() => setIsEditing(true)}
+            aria-label="Edit"
+          />
+        )}
+      </Box>
 
+      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+        {isEditing ? (
+          <>
+            <GridItem>
+              <Text fontWeight="semibold" mb={1}>Diet</Text>
+              <Input
+                value={editedHealth.diet || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, diet: e.target.value }))} //changing -- done for all fields & dropdown
+                bg="white"
+              />
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="semibold" mb={1}>Physical Activity</Text>
+              <Select
+                value={editedHealth.physicalActivity || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, physicalActivity: e.target.value }))}
+                bg="white"
+              >
+                <option value="">Select option</option>
+                <option value="Sedentary">Sedentary</option>
+                <option value="Light">Light</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Active">Active</option>
+                <option value="Very Active">Very Active</option> 
+              </Select>
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="semibold" mb={1}>Lifestyle</Text>
+              <Input
+                value={editedHealth.lifestyle || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, lifestyle: e.target.value }))}
+                bg="white"
+              />
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="semibold" mb={1}>Alcohol Consumption</Text>
+              <Select
+                value={editedHealth.alcoholConsumption || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, alcoholConsumption: e.target.value }))} //dropdown selections match quesstionnaire
+                bg="white"
+              >
+                <option value="">Select option</option>
+                <option value="None">None</option>
+                <option value="Occasional">Occasional</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Regular">Regular</option>
+              </Select>
+            </GridItem>
+            <GridItem colSpan={{ base: 1, md: 2 }}>
+              <Text fontWeight="semibold" mb={1}>Conditions (comma-separated)</Text>
+              <Textarea
+                value={editedHealth.conditions || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, conditions: e.target.value }))}
+                bg="white"
+              />
+            </GridItem>
+            <GridItem colSpan={{ base: 1, md: 2 }}>
+              <Text fontWeight="semibold" mb={1}>Allergies (comma-separated)</Text>
+              <Textarea
+                value={editedHealth.allergies || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, allergies: e.target.value }))}
+                bg="white"
+              />
+            </GridItem>
+            <GridItem colSpan={{ base: 1, md: 2 }}>
+              <Text fontWeight="semibold" mb={1}>Medications (comma-separated)</Text>
+              <Textarea
+                value={editedHealth.medications || ''}
+                onChange={(e) => setEditedHealth(prev => ({ ...prev, medications: e.target.value }))}
+                bg="white"
+              />
+            </GridItem>
+          </>
+        ) : (
+          <>
+            <InfoField label="Diet" value={patient.diet} />
+            <InfoField label="Physical Activity" value={patient.physicalActivity} />
+            <InfoField label="Lifestyle" value={patient.lifestyle} />
+            <InfoField label="Alcohol Consumption" value={patient.alcoholConsumption} />
+            <GridItem colSpan={{ base: 1, md: 2 }}>
+              <InfoField 
+                label="Conditions" 
+                value={
+                  patient.conditions ? 
+                  patient.conditions.split(',').map((condition, index) => (
+                    <Badge key={index} mr={2} mb={2} colorScheme="red" variant="subtle" fontSize="sm">
+                      {condition.trim()}
+                    </Badge>
+                  )) : 
+                  "None reported"
+                }
+              />
+              <InfoField 
+                label="Allergies" 
+                value={
+                  patient.allergies ? 
+                  patient.allergies.split(',').map((allergy, index) => (
+                    <Badge key={index} mr={2} mb={2} colorScheme="orange" variant="subtle" fontSize="sm">
+                      {allergy.trim()}
+                    </Badge>
+                  )) : 
+                  "None reported"
+                }
+              />
+              <InfoField 
+                label="Medications" 
+                value={
+                  patient.medications ? 
+                  patient.medications.split(',').map((medication, index) => (
+                    <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
+                      {medication.trim()}
+                    </Badge>
+                  )) : 
+                  "None reported"
+                }
+              />
+            </GridItem>
+          </>
+        )}
+      </Grid>
+    </Box>
+  );
 
   if (loading) {
     return (
