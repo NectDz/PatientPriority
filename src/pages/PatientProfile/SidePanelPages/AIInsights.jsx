@@ -538,17 +538,13 @@ function AIInsights() {
                                 <Box mb={6} p={4} bg="green.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaAppleAlt} color="green.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="green.700" fontSize="2xl">Preventive Tips</Text>
+                                        <Text fontWeight="bold" color="green.700" fontSize="xl">Preventive Tips</Text>
                                     </HStack>
-                                    <Text mt={2} fontSize="lg" fontWeight="medium">
-                                        <Text as="span" fontWeight="semibold">Diet:</Text> {insights.preventive_tips.diet}
-                                    </Text>
-                                    <Text fontSize="lg" fontWeight="medium">
-                                        <Text as="span" fontWeight="semibold">Activity:</Text> {insights.preventive_tips.activity}
-                                    </Text>
-                                    <Text fontSize="lg" fontWeight="medium">
-                                        <Text as="span" fontWeight="semibold">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}
-                                    </Text>
+                                    <UnorderedList mt={2} spacing={1}>
+                                        <ListItem><Text fontWeight="medium">Diet:</Text> {insights.preventive_tips.diet}</ListItem>
+                                        <ListItem><Text fontWeight="medium">Activity:</Text> {insights.preventive_tips.activity}</ListItem>
+                                        <ListItem><Text fontWeight="medium">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}</ListItem>
+                                    </UnorderedList>
                                 </Box>
 
                                 <Box mb={6} p={4} bg="yellow.50" borderRadius="md" boxShadow="sm">
