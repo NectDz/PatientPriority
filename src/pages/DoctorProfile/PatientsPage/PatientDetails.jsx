@@ -9,10 +9,16 @@ import {
   Grid,
   GridItem,
   Badge,
-  useToast
+  useToast,
+  Button,
+  Input,
+  Select,
+  Textarea,
+  IconButton
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 const db = getFirestore();
 
@@ -20,14 +26,26 @@ function PatientDetails() {
   const { id } = useParams();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false); //new for health editing
+  const [editedHealth, setEditedHealth] = useState({});
   const toast = useToast();
 
   useEffect(() => {
     async function fetchPatient() {
       try {
-        const patientDoc = await getDoc(doc(db, "patients", id));
+        const patientDoc = await getDoc(doc(db, "patients", id)); //get patient
         if (patientDoc.exists()) {
-          setPatient({ id: patientDoc.id, ...patientDoc.data() });
+          const patientData = { id: patientDoc.id, ...patientDoc.data() }; //match id from URL
+          setPatient(patientData); //get data and store it in the patient state
+          setEditedHealth({
+            diet: patientData.diet || '',
+            physicalActivity: patientData.physicalActivity || '', //undefined fields turn into ' ', initialize rest
+            lifestyle: patientData.lifestyle || '',
+            alcoholConsumption: patientData.alcoholConsumption || '',
+            conditions: patientData.conditions || '',
+            allergies: patientData.allergies || '',
+            medications: patientData.medications || ''
+          });
         } else {
           throw new Error("No such patient!");
         }
@@ -48,12 +66,16 @@ function PatientDetails() {
     fetchPatient();
   }, [id, toast]);
 
+
+
   const InfoField = ({ label, value }) => (
     <Box mb={2}>
       <Text fontWeight="semibold" color="gray.600" fontSize="sm" mb={1}>{label}</Text>
       <Text color="gray.800" fontSize="md">{value || "Not provided"}</Text>
     </Box>
   );
+
+
 
   if (loading) {
     return (
@@ -135,63 +157,8 @@ function PatientDetails() {
             </Grid>
           </Box>
 
-          {/* Health Info */}
-          <Box 
-            p={6} 
-            bg="green.50" 
-            borderRadius="lg"
-            transition="transform 0.2s"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <Heading as="h2" size="md" color="green.600" mb={4}>
-              Health Information
-            </Heading>
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-              <InfoField label="Diet" value={patient.diet} />
-              <InfoField label="Physical Activity" value={patient.physicalActivity} />
-              <InfoField label="Lifestyle" value={patient.lifestyle} />
-              <InfoField label="Alcohol Consumption" value={patient.alcoholConsumption} />
-              <GridItem colSpan={{ base: 1, md: 2 }}>
-                <InfoField 
-                  label="Conditions" 
-                  value={
-                    patient.conditions ? 
-                    patient.conditions.split(',').map((condition, index) => (
-                      <Badge key={index} mr={2} mb={2} colorScheme="red" variant="subtle" fontSize="sm">
-                        {condition.trim()}
-                      </Badge>
-                    )) : 
-                    "None reported"
-                  }
-                />
-                <InfoField 
-                  label="Allergies" 
-                  value={
-                    patient.allergies ? 
-                    patient.allergies.split(',').map((allergy, index) => (
-                      <Badge key={index} mr={2} mb={2} colorScheme="orange" variant="subtle" fontSize="sm">
-                        {allergy.trim()}
-                      </Badge>
-                    )) : 
-                    "None reported"
-                  }
-                />
-                <InfoField 
-                  label="Medications" 
-                  value={
-                    patient.medications ? 
-                    patient.medications.split(',').map((medication, index) => (
-                      <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
-                        {medication.trim()}
-                      </Badge>
-                    )) : 
-                    "None reported"
-                  }
-                />
-              </GridItem>
-            </Grid>
-          </Box>
 
+          
           {/* Emergency Info */}
           <Box 
             p={6} 
