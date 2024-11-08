@@ -538,12 +538,18 @@ function AIInsights() {
                                 <Box mb={6} p={4} bg="green.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaAppleAlt} color="green.500" boxSize={6} />
-                                        <Text fontWeight="bold" color="green.700" fontSize="xl">Preventive Tips</Text>
+                                        <Text fontWeight="bold" color="green.700" fontSize="2xl">Preventive Tips</Text>
                                     </HStack>
-                                    <UnorderedList mt={2} spacing={1}>
-                                        <ListItem><Text fontWeight="medium">Diet:</Text> {insights.preventive_tips.diet}</ListItem>
-                                        <ListItem><Text fontWeight="medium">Activity:</Text> {insights.preventive_tips.activity}</ListItem>
-                                        <ListItem><Text fontWeight="medium">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}</ListItem>
+                                    <UnorderedList mt={2} spacing={2}>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold"><strong>Diet:</strong></Text> {insights.preventive_tips.diet}
+                                        </ListItem>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold"><strong>Activity:</strong></Text> {insights.preventive_tips.activity}
+                                        </ListItem>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold"><strong>Health Monitoring:</strong></Text> {insights.preventive_tips.health_monitoring}
+                                        </ListItem>
                                     </UnorderedList>
                                 </Box>
 
@@ -562,6 +568,7 @@ function AIInsights() {
                                     </HStack>
                                     <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_horoscope}</Text>
                                 </Box>
+
                             </Box>
                         </Box>
 
