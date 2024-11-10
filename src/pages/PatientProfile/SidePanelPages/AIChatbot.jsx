@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ChakraProvider,
     Box,
     VStack,
-    HStack,
     Heading,
     Text,
     Divider,
@@ -11,55 +10,72 @@ import {
     Textarea,
     Button,
     Icon,
-    Flex
+    Flex,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    useDisclosure
 } from "@chakra-ui/react";
 import { FaRobot, FaUser } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const ChatMessage = ({ role, icon, text }) => (
+    <Box style={styles.responseContainer}>
+        <Box style={styles.section}>
+            <Flex align="center" mb={2}>
+                <Icon as={icon} color={role === 'user' ? "teal.500" : "purple.500"} mr={2} />
+                <Text style={styles.sectionTitle}>{role === 'user' ? "You asked:" : "AI Chatbot:"}</Text>
+            </Flex>
+            <Text fontSize="lg">{text}</Text>
+        </Box>
+    </Box>
+);
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
     const [additionalDetails, setAdditionalDetails] = useState("");
     const [responses, setResponses] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [awaitingDetails, setAwaitingDetails] = useState(false); // Track if we are waiting for additional details
-    const [initialQuestion, setInitialQuestion] = useState(""); // Store initial question separately
+    const [awaitingDetails, setAwaitingDetails] = useState(false);
+    const [initialQuestion, setInitialQuestion] = useState("");
+    const { isOpen, onOpen, onClose } = useDisclosure(); // Modal control
+
+    // Show the disclaimer modal when the component first loads
+    useEffect(() => {
+        onOpen();
+    }, [onOpen]);
 
     const handleInitialSubmit = async () => {
-        if (!question.trim()) return; // Avoid empty submissions
+        if (!question.trim()) return;
         setLoading(true);
 
-        // Append the user's initial question to responses
-        const newResponses = [...responses, { question, response: "Can you give me some more details?" }];
+        const newResponses = [...responses, { role: 'user', text: question }];
         setResponses(newResponses);
-        setInitialQuestion(question); // Store the initial question
-        setQuestion(""); // Clear input after submission
+        setInitialQuestion(question);
+        setQuestion("");
 
-        // Set state to expect additional details
         setAwaitingDetails(true);
         setLoading(false);
     };
 
     const handleDetailsSubmit = async () => {
-        if (!additionalDetails.trim()) return; // Avoid empty submissions
+        if (!additionalDetails.trim()) return;
         setLoading(true);
 
-        // Append the user's additional details to responses
-        const newResponses = [...responses, { question: additionalDetails, response: "Thinking..." }];
+        const newResponses = [...responses, { role: 'user', text: additionalDetails }];
         setResponses(newResponses);
 
         try {
-            // Generate final response with initial question and additional details
             const finalResponse = await generateFinalResponse(initialQuestion, additionalDetails);
-            
-            // Update the last response with the AI's actual response
-            newResponses[newResponses.length - 1].response = finalResponse;
+            newResponses.push({ role: 'bot', text: finalResponse });
             setResponses(newResponses);
-            
-            // Reset for next interaction
             resetChatState();
         } catch (error) {
             console.error("Error:", error);
-            newResponses[newResponses.length - 1].response = "Sorry, I couldn't process your question. Please try again.";
+            newResponses.push({ role: 'bot', text: "Sorry, I couldn't process your question. Please try again." });
             setResponses(newResponses);
         } finally {
             setLoading(false);
@@ -67,7 +83,7 @@ function AIChatbot() {
     };
 
     const generateFinalResponse = async (initialQuestion, additionalDetails) => {
-        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
+        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with actual API key
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
@@ -84,12 +100,31 @@ function AIChatbot() {
 
     const resetChatState = () => {
         setAwaitingDetails(false);
-        setInitialQuestion(""); // Clear initial question
-        setAdditionalDetails(""); // Clear additional details input
+        setInitialQuestion("");
+        setAdditionalDetails("");
     };
 
     return (
         <ChakraProvider>
+            {/* Disclaimer Modal */}
+            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Disclaimer</ModalHeader>
+                    <ModalBody>
+                        <Text fontSize="sm" color="gray.600">
+                            This chatbot is a beta version powered by AI and is intended for informational purposes only. The responses are generated by an AI model and do not constitute medical advice. Please consult a healthcare professional for any medical concerns.
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" onClick={onClose}>
+                            Agree
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            {/* Main Chat Interface */}
             <Box
                 bgGradient="linear(to-br, blue.50, gray.50)"
                 minHeight="100vh"
@@ -133,27 +168,17 @@ function AIChatbot() {
                     borderRadius="xl"
                     padding="1.5rem"
                     overflowY="auto"
-                    maxHeight="70vh"
+                    maxHeight="60vh"
                 >
                     {responses.map((item, index) => (
-                        <Box key={index} style={styles.responseContainer}>
-                            <Box style={styles.section}>
-                                <Flex align="center" mb={2}>
-                                    <Icon as={FaUser} color="teal.500" mr={2} />
-                                    <Text style={styles.sectionTitle}>You asked:</Text>
-                                </Flex>
-                                <Text fontSize="lg">{item.question}</Text>
-                            </Box>
-                            <Divider />
-                            <Box style={styles.section}>
-                                <Flex align="center" mb={2}>
-                                    <Icon as={FaRobot} color="purple.500" mr={2} />
-                                    <Text style={styles.sectionTitle}>AI Chatbot:</Text>
-                                </Flex>
-                                <Text fontSize="lg">{item.response}</Text>
-                            </Box>
-                        </Box>
+                        <ChatMessage
+                            key={index}
+                            role={item.role}
+                            icon={item.role === 'user' ? FaUser : FaRobot}
+                            text={item.text}
+                        />
                     ))}
+                    {loading && <Spinner size="lg" color="blue.500" />}
                 </VStack>
 
                 {/* User Input at the Bottom */}
