@@ -17,6 +17,11 @@ if (!fs.existsSync("transcripts")) {
 }
 
 const app = express();
+const googleAPIKey = new GoogleGenerativeAI(
+  "AIzaSyAogRxjZDtIsvZgRILsSEcSmQwIvloDRb0",
+  { fetch }
+);
+const genAI = new GoogleGenerativeAI(googleAPIKey, { fetch }); // Initialize with API key and fetch
 app.use(cors());
 app.use(express.json());
 
@@ -67,76 +72,26 @@ app.post("/transcribe", upload.single("audio"), (req, res) => {
 });
 
 app.post("/generate-summary", async (req, res) => {
-  const { transcriptFilePath } = req.body;
+  const { transcript } = req.body;
 
-  if (!transcriptFilePath) {
-    return res.status(400).json({ error: "Transcript file path is required." });
+  if (!transcript) {
+    return res.status(400).json({ error: "Transcript is required." });
   }
 
   try {
-    // Step 1: Read the transcript file
-    const transcript = await fs.promises.readFile(transcriptFilePath, "utf-8");
+    // Define the prompt
+    const prompt = `Based on this transcript of a Patient and a Doctor, determine who is the patient and who is the doctor and rewrite the transcript in the following format with the same order of the conversation:\nPatient:\n--------\n\n${transcript}`;
 
-    // Step 2: Define prompts for each stage (reformatting, extracting JSON, summarizing)
-    const prompts = [
-      {
-        label: "reformattedTranscript",
-        prompt: `Based on this transcript of a Patient and a Doctor, determine who is the patient and who is the doctor and rewrite the transcript in the following format with the same order of the conversation:\nPatient:\n--------\n\n${transcript}`,
-      },
-      {
-        label: "extractedData",
-        prompt: `Based on this transcript of a Patient and a Doctor, extract the following items and output them in JSON format. Do not include any additional text or explanations—only output the JSON object:\n\n{\n  "VisitReason": "",\n  "Prescription": "",\n  "Dosage": "",\n  "Advice": "",\n  "Next Appointment Date": "",\n  "Next Appointment Time": "",\n  "Diagnosis": "",\n  "Referral(s)": ""\n}\n--------\n\n${transcript}`,
-      },
-      {
-        label: "summaryText",
-        prompt: `Based on this transcript of a Patient and a Doctor, summarize the following topics of the conversation for it to be readable in a paragraph of what happened during the visit:\nVisitReason, Prescription, Dosage, Advice, Next Appointment Date, Next Appointment Time, Diagnosis, Referral(s)\n--------\n\n${transcript}`,
-      },
-    ];
+    // Use the model to generate content
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
 
-    // Step 3: Execute each prompt and collect results
-    const results = {};
-    for (const { label, prompt } of prompts) {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta2/models/gemini-1.5:generateText?key=${googleAPIKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ prompt }), // Ensure prompt is formatted correctly
-        }
-      );
+    // Extract the text from the response
+    const response = await result.response;
+    const generatedText = await response.text();
 
-      if (!response.ok) {
-        const errorDetails = await response.text();
-        console.error(
-          `Error from Google API on prompt "${label}":`,
-          response.status,
-          errorDetails
-        );
-        return res
-          .status(500)
-          .json({ error: `Failed to fetch ${label} from Google API` });
-      }
-
-      const data = await response.json();
-      results[label] = data.candidates[0]?.output || `No ${label} available.`;
-    }
-
-    // Parse the extracted data JSON if possible
-    let extractedData = null;
-    try {
-      extractedData = JSON.parse(results.extractedData);
-    } catch (error) {
-      console.warn("Failed to parse extracted JSON data.");
-    }
-
-    // Send the summary and extracted data as JSON response
-    res.json({
-      summary: results.summaryText,
-      extractedData,
-      reformattedTranscript: results.reformattedTranscript,
-    });
+    // Send the generated summary back to the client
+    res.json({ summary: generatedText });
   } catch (error) {
     console.error("Error generating summary:", error);
     res.status(500).json({ error: "Error generating summary." });
