@@ -117,7 +117,7 @@ import { auth } from "../../firebase-config";
 import { useAuth } from "../../Context/AuthContext";
 
 const PatientLogin = () => {
-  const { login, userRole, logout } = useAuth(); 
+  const { login, userRole, logout } = useAuth();
   let navigate = useNavigate();
   const toast = useToast();
 
@@ -144,8 +144,13 @@ const PatientLogin = () => {
   };
 
   useEffect(() => {
-    // first check if the userRole exists and then verify that it's a patient
+    // debugging
+    console.log("Current userRole:", userRole);
+    console.log("Auth loading state:", loading);
+  
     if (userRole) {
+      // debugging
+      console.log("UserRole type:", userRole.type);
       if (userRole.type === "patient") {
         toast({
           title: "Login Successful",

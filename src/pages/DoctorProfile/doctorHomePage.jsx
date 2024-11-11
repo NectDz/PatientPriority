@@ -23,6 +23,16 @@ import {
 import { CalendarIcon } from "@chakra-ui/icons";
 import { FaUserFriends, FaUserMd } from "react-icons/fa";
 
+import React, { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
 //Team Images
 import Deedat from "../../assets/Team/Deedat.png";
 import Abir from "../../assets/Team/Abir.png";
@@ -31,14 +41,104 @@ import Kazi from "../../assets/Team/Kazi.png";
 import Kevin from "../../assets/Team/Kevin.png";
 import Lubna from "../../assets/Team/Lubna.png";
 
+//firebase init
+const db = getFirestore();
+
 function DoctorHome() {
+  // reuse same code from appointments page to get patient appointments
+
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    async function fetchAppointments() {
+      try {
+        if (!user) {
+          return;
+        }
+
+        const doctorEmail = user.email;
+
+        //1 - get the doctor's ID by matching the email in the "doctor" collection
+        const doctorQuery = query(
+          collection(db, "doctor"),
+          where("email", "==", doctorEmail)
+        );
+        const doctorSnapshot = await getDocs(doctorQuery);
+
+        if (!doctorSnapshot.empty) {
+          const doctorData = doctorSnapshot.docs[0].data();
+          const doctorId = doctorData.id;
+
+          //2 - get patients associated with this doctor
+          const patientQuery = query(
+            collection(db, "patients"),
+            where("doctor_id", "==", doctorId)
+          );
+          const patientSnapshot = await getDocs(patientQuery);
+
+          const patientIds = patientSnapshot.docs.map((doc) => ({
+            id: doc.data().id,
+            firstName: doc.data().firstName,
+            lastName: doc.data().lastName,
+          }));
+
+          //3 - get appointments for each patient and display their first and last name
+          const appointmentPromises = patientIds.map(async (patient) => {
+            const appointmentQuery = query(
+              collection(db, "appointment"),
+              where("patient_id", "==", patient.id)
+            );
+            const appointmentSnapshot = await getDocs(appointmentQuery);
+
+            return appointmentSnapshot.docs.map((doc) => ({
+              id: doc.id,
+              date: doc.data().appointmentDate,
+              description: doc.data().appointmentDescription,
+              patientName: `${patient.firstName} ${patient.lastName}`,
+            }));
+          });
+
+          const fetchedAppointments = (
+            await Promise.all(appointmentPromises)
+          ).flat();
+
+          // filter out appointments any date made during and after current date
+          const currentDate = new Date();
+          const pastAppointments = fetchedAppointments.filter(
+            (appointment) => appointment.date.toDate() < currentDate
+          );
+
+          // sort the dates in descending order and take the 3 latest appointments
+          const latestAppointments = pastAppointments
+            .sort((a, b) => b.date - a.date)
+            .slice(0, 5);
+
+          setAppointments(latestAppointments);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchAppointments();
+  }, [user]);
+
   return (
     <ChakraProvider>
-      <Card borderRadius="20px" height="100%" width="100%"
-      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-      transition="all 0.3s"
-      _hover={{ boxShadow: "2xl" }}
+      <Card
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
       >
         <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
@@ -65,9 +165,9 @@ function DoctorHome() {
         height="100%"
         width="100%"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-      transition="all 0.3s"
-      _hover={{ boxShadow: "2xl" }}
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
       >
         <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
@@ -75,56 +175,51 @@ function DoctorHome() {
             Recent Patients
           </Heading>
         </CardHeader>
-        <CardBody
-          display="flex"
-          flexDirection="column"
-          //   justifyContent="center"
-          borderRadius="0px 0px 20px 20px"
-        >
+        <CardBody>
           <Text fontSize="lg" color="#737373">
-            See your most recent patient interactions.
+            See your most recent patient interactions here.
           </Text>
-        {/* Display patients using table component*/}
-          <TableContainer mt={5}>
-            <Table variant="striped"> {/* adds the color between rows */}
-
-              <Thead> {/* this is the table head aka categories */}
-                <Tr> 
-                  <Th>Image</Th>
-                  <Th>Name</Th>
-                  <Th>Date of Visit</Th>
-                  <Th>Appointment Type</Th>
-                </Tr>
-              </Thead>
-
-              <Tbody>
-                <Tr>
-                  <Td>
-                    <Avatar
-                      size="xl"
-                      name="Kazi"
-                      src="https://www.usatoday.com/gcdn/presto/2020/08/28/USAT/efafa6ba-5d7c-4218-8684-37436e378850-liam_payne.JPG?crop=2978,1676,x0,y447"
-                    />
-                  </Td>
-                  <Td>Liam Payne</Td>
-                  <Td>October 16, 2024</Td>
-                  <Td>Drug Test</Td>
-                </Tr>
-                
-              </Tbody>
-
-            </Table>
-            <Divider />
-          </TableContainer>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <TableContainer mt={5}>
+              <Table variant="striped">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Date</Th>
+                    <Th>Description</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {appointments.map((appointment) => (
+                    <Tr key={appointment.id}>
+                      <Td>{appointment.patientName}</Td>
+                      <Td>
+                        {new Date(
+                          appointment.date.seconds * 1000
+                        ).toLocaleDateString()}
+                      </Td>
+                      <Td>{appointment.description}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              <Divider />
+            </TableContainer>
+          )}
         </CardBody>
       </Card>
 
       {/* DOCTOR TEAM CARD */}
-      <Card borderRadius="20px" height="100%" width="100%"
-      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-      transition="all 0.3s"
-      _hover={{ boxShadow: "2xl" }}
+      <Card
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
       >
         <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
