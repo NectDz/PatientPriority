@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react"; // added useRef
 import {
   Box,
   ChakraProvider,
@@ -14,7 +14,9 @@ import {
   Input,
   Select,
   Textarea,
-  IconButton
+  IconButton,
+  FormControl,
+  FormLabel
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -27,8 +29,19 @@ function PatientDetails() {
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false); //new for health editing
-  const [editedHealth, setEditedHealth] = useState({});
   const toast = useToast();
+
+  //refs for all form fields -- i tried useCallback, memoization, direct state management, controlled inputs and direct handling but the bug persisted
+  //the bug -- clicked to edit, typed 1 letter, had to click back on field to type again, typed 1 letter, had to click back on field to type again on and on 
+  const formRefs = {
+    diet: useRef(),
+    physicalActivity: useRef(),
+    lifestyle: useRef(),
+    alcoholConsumption: useRef(),
+    conditions: useRef(),
+    allergies: useRef(),
+    medications: useRef()
+  };
 
   useEffect(() => {
     async function fetchPatient() {
@@ -37,15 +50,15 @@ function PatientDetails() {
         if (patientDoc.exists()) {
           const patientData = { id: patientDoc.id, ...patientDoc.data() }; //match id from URL
           setPatient(patientData); //get data and store it in the patient state
-          setEditedHealth({
-            diet: patientData.diet || '',
-            physicalActivity: patientData.physicalActivity || '', //undefined fields turn into ' ', initialize rest
-            lifestyle: patientData.lifestyle || '',
-            alcoholConsumption: patientData.alcoholConsumption || '',
-            conditions: patientData.conditions || '',
-            allergies: patientData.allergies || '',
-            medications: patientData.medications || ''
-          });
+          
+          //set initial values when entering edit mode
+          if (isEditing) {
+            Object.keys(formRefs).forEach(key => {
+              if (formRefs[key].current) {
+                formRefs[key].current.value = patientData[key] || '';
+              }
+            });
+          }
         } else {
           throw new Error("No such patient!");
         }
@@ -64,17 +77,31 @@ function PatientDetails() {
     }
 
     fetchPatient();
-  }, [id, toast]);
+  }, [id, toast, isEditing]);
+
+  const handleStartEditing = () => {
+    setIsEditing(true);
+    //set initial values when entering edit mode
+    Object.keys(formRefs).forEach(key => {
+      if (formRefs[key].current) {
+        formRefs[key].current.value = patient[key] || '';
+      }
+    });
+  };
 
   const handleSave = async () => {
     try {
-      await updateDoc(doc(db, "patients", id), { //update in doc db with the id in patients collection
-        ...editedHealth
-      });
+      //collect values from refs
+      const formData = Object.keys(formRefs).reduce((acc, key) => {
+        acc[key] = formRefs[key].current?.value || '';
+        return acc;
+      }, {});
+
+      await updateDoc(doc(db, "patients", id), formData); //update in doc db with the id in patients collection
       
-      setPatient(prev => ({ //updarte local patient state
+      setPatient(prev => ({ //update local patient state
         ...prev,
-        ...editedHealth
+        ...formData
       }));
       
       setIsEditing(false); //exit when success
@@ -140,7 +167,7 @@ function PatientDetails() {
             icon={<EditIcon />}
             colorScheme="green"
             size="sm"
-            onClick={() => setIsEditing(true)}
+            onClick={handleStartEditing}
             aria-label="Edit"
           />
         )}
@@ -150,73 +177,94 @@ function PatientDetails() {
         {isEditing ? (
           <>
             <GridItem>
-              <Text fontWeight="semibold" mb={1}>Diet</Text>
-              <Input
-                value={editedHealth.diet || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, diet: e.target.value }))} //changing -- done for all fields & dropdown
-                bg="white"
-              />
+              <FormControl>
+                <FormLabel>Diet</FormLabel>
+                <Input
+                  ref={formRefs.diet}
+                  name="diet"
+                  defaultValue={patient.diet}
+                  bg="white"
+                />
+              </FormControl>
             </GridItem>
             <GridItem>
-              <Text fontWeight="semibold" mb={1}>Physical Activity</Text>
-              <Select
-                value={editedHealth.physicalActivity || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, physicalActivity: e.target.value }))}
-                bg="white"
-              >
-                <option value="">Select option</option>
-                <option value="Sedentary">Sedentary</option>
-                <option value="Light">Light</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Active">Active</option>
-                <option value="Very Active">Very Active</option> 
-              </Select>
+              <FormControl>
+                <FormLabel>Physical Activity</FormLabel>
+                <Select
+                  ref={formRefs.physicalActivity}
+                  name="physicalActivity"
+                  defaultValue={patient.physicalActivity} //dropdown selections match questionnaire
+                  bg="white"
+                >
+                  <option value="">Select option</option>
+                  <option value="Sedentary">Sedentary</option>
+                  <option value="Light">Light</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Active">Active</option>
+                  <option value="Very Active">Very Active</option>
+                </Select>
+              </FormControl>
             </GridItem>
             <GridItem>
-              <Text fontWeight="semibold" mb={1}>Lifestyle</Text>
-              <Input
-                value={editedHealth.lifestyle || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, lifestyle: e.target.value }))}
-                bg="white"
-              />
+              <FormControl>
+                <FormLabel>Lifestyle</FormLabel>
+                <Input
+                  ref={formRefs.lifestyle}
+                  name="lifestyle"
+                  defaultValue={patient.lifestyle}
+                  bg="white"
+                />
+              </FormControl>
             </GridItem>
             <GridItem>
-              <Text fontWeight="semibold" mb={1}>Alcohol Consumption</Text>
-              <Select
-                value={editedHealth.alcoholConsumption || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, alcoholConsumption: e.target.value }))} //dropdown selections match quesstionnaire
-                bg="white"
-              >
-                <option value="">Select option</option>
-                <option value="None">None</option>
-                <option value="Occasional">Occasional</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Regular">Regular</option>
-              </Select>
+              <FormControl>
+                <FormLabel>Alcohol Consumption</FormLabel>
+                <Select
+                  ref={formRefs.alcoholConsumption}
+                  name="alcoholConsumption"
+                  defaultValue={patient.alcoholConsumption}
+                  bg="white"
+                >
+                  <option value="">Select option</option>
+                  <option value="None">None</option>
+                  <option value="Occasional">Occasional</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Regular">Regular</option>
+                </Select>
+              </FormControl>
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
-              <Text fontWeight="semibold" mb={1}>Conditions (comma-separated)</Text>
-              <Textarea
-                value={editedHealth.conditions || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, conditions: e.target.value }))}
-                bg="white"
-              />
+              <FormControl>
+                <FormLabel>Conditions (comma-separated)</FormLabel>
+                <Textarea
+                  ref={formRefs.conditions}
+                  name="conditions"
+                  defaultValue={patient.conditions}
+                  bg="white"
+                />
+              </FormControl>
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
-              <Text fontWeight="semibold" mb={1}>Allergies (comma-separated)</Text>
-              <Textarea
-                value={editedHealth.allergies || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, allergies: e.target.value }))}
-                bg="white"
-              />
+              <FormControl>
+                <FormLabel>Allergies (comma-separated)</FormLabel>
+                <Textarea
+                  ref={formRefs.allergies}
+                  name="allergies"
+                  defaultValue={patient.allergies}
+                  bg="white"
+                />
+              </FormControl>
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
-              <Text fontWeight="semibold" mb={1}>Medications (comma-separated)</Text>
-              <Textarea
-                value={editedHealth.medications || ''}
-                onChange={(e) => setEditedHealth(prev => ({ ...prev, medications: e.target.value }))}
-                bg="white"
-              />
+              <FormControl>
+                <FormLabel>Medications (comma-separated)</FormLabel>
+                <Textarea
+                  ref={formRefs.medications}
+                  name="medications"
+                  defaultValue={patient.medications}
+                  bg="white"
+                />
+              </FormControl>
             </GridItem>
           </>
         ) : (
