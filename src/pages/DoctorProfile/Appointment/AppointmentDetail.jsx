@@ -7,6 +7,7 @@ import {
   Input,
   Spinner,
   Divider,
+  Icon,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import {
@@ -19,6 +20,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { FaMicrophone, FaStop } from "react-icons/fa"; // Import icons
 
 const db = getFirestore();
 
@@ -33,8 +35,10 @@ function AppointmentDetail() {
 
   // Voice recording state
   const [recording, setRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0); // Recording time in seconds
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const timerIntervalRef = useRef(null); // Reference to the timer interval
 
   useEffect(() => {
     async function fetchAppointment() {
@@ -69,6 +73,13 @@ function AppointmentDetail() {
     }
 
     fetchAppointment();
+
+    // Cleanup function to clear interval when component unmounts
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
   }, [id]);
 
   const handleFileChange = (event) => {
@@ -152,6 +163,12 @@ function AppointmentDetail() {
 
       mediaRecorderRef.current.start();
       setRecording(true);
+      setRecordingTime(0);
+
+      // Start timer
+      timerIntervalRef.current = setInterval(() => {
+        setRecordingTime((prevTime) => prevTime + 1);
+      }, 1000);
     } catch (error) {
       console.error("Error accessing microphone:", error);
       setMessage("Error accessing microphone.");
@@ -162,6 +179,12 @@ function AppointmentDetail() {
     if (mediaRecorderRef.current && recording) {
       mediaRecorderRef.current.stop();
       setRecording(false);
+
+      // Stop timer
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
     }
   };
 
@@ -276,6 +299,7 @@ function AppointmentDetail() {
             marginRight={3}
             color="#f1f8ff"
             bg="#335d8f"
+            isDisabled={recording || uploading}
           >
             Select Audio
           </Button>
@@ -288,36 +312,57 @@ function AppointmentDetail() {
             color="#f1f8ff"
             bg="#335d8f"
             marginRight={3}
+            isDisabled={recording}
           >
             Upload and Transcribe
           </Button>
           {/* Voice Recording Buttons */}
-          {!recording ? (
-            <Button
-              onClick={startRecording}
-              mt={4}
-              _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-              transition="all 0.3s"
-              color="#f1f8ff"
-              bg="#335d8f"
-            >
-              Start Recording
-            </Button>
-          ) : (
-            <Button
-              onClick={stopRecording}
-              mt={4}
-              _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-              transition="all 0.3s"
-              color="#f1f8ff"
-              bg="#335d8f"
-            >
-              Stop Recording
-            </Button>
+          <Button
+            onClick={recording ? stopRecording : startRecording}
+            mt={4}
+            _hover={{ bg: recording ? "#c53030" : "#4d7098", boxShadow: "2xl" }}
+            transition="all 0.3s"
+            color="#f1f8ff"
+            bg={recording ? "#e53e3e" : "#335d8f"} // Change color when recording
+            leftIcon={<Icon as={recording ? FaStop : FaMicrophone} />} // Change icon
+            isDisabled={uploading}
+          >
+            {recording ? "Stop Recording" : "Start Recording"}
+          </Button>
+          {/* Recording Indicator */}
+          {recording && (
+            <Box mt={4} display="flex" alignItems="center">
+              <Box
+                as="span"
+                h="12px"
+                w="12px"
+                borderRadius="50%"
+                bg="red.500"
+                mr={2}
+                className="blink" // CSS class for blinking effect
+              />
+              <Text color="red.500" fontWeight="bold" mr={2}>
+                Recording in progress...
+              </Text>
+              <Text color="red.500">
+                Recording Time: {recordingTime} seconds
+              </Text>
+            </Box>
           )}
         </Box>
       )}
       {message && <Box mt={4}>{message}</Box>}
+      {/* Add CSS for blinking effect */}
+      <style>
+        {`
+          .blink {
+            animation: blinker 1s linear infinite;
+          }
+          @keyframes blinker {
+            50% { opacity: 0; }
+          }
+        `}
+      </style>
     </Box>
   );
 }
