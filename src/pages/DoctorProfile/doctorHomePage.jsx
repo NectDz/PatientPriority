@@ -136,7 +136,38 @@ function DoctorHome() {
         </CardBody>
       </Card>
 
-      {/*
+      {/* UPCOMING APPOINTMENTS */}
+      <Card mt={8} borderRadius="20px" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" _hover={{ boxShadow: "2xl" }}>
+        <CardHeader bg="#ddeeff">
+          <Heading fontSize="2xl" color="#00366d">
+            <Icon as={FaBell} mr={2} />
+            Today's Appointments
+          </Heading>
+        </CardHeader>
+        <CardBody>
+          <TableContainer>
+            <Table variant="striped">
+              <Thead>
+                <Tr>
+                  <Th>Time</Th>
+                  <Th>Patient</Th>
+                  <Th>Type</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {appointments.map((appointment) => (
+                  <Tr key={appointment.id}>
+                    <Td>{appointment.time}</Td>
+                    <Td>{appointment.name}</Td>
+                    <Td>{appointment.type}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </CardBody>
+      </Card>
+
       {/* RECENT PATIENTS */}
       <Card mt={8} borderRadius="20px" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" _hover={{ boxShadow: "2xl" }}>
         <CardHeader bg="#ddeeff">
