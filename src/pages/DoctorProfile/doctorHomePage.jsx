@@ -26,9 +26,19 @@ import {
 } from "@chakra-ui/react";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { auth, db } from "../../firebase-config";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-// Team Images
+// Doctor Team Images
 import Deedat from "../../assets/Team/Deedat.png";
 import Abir from "../../assets/Team/Abir.png";
 import Rahat from "../../assets/Team/Rahat.png";
@@ -38,32 +48,70 @@ import Lubna from "../../assets/Team/Lubna.png";
 
 function DoctorHome() {
   const toast = useToast();
+  const [user] = useAuthState(auth);
 
-  // State for To-Do List
+  // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [taskPriority, setTaskPriority] = useState("Medium");
 
-  // State for Appointments
-  const appointments = [
-    { id: 1, name: "John Doe", time: "10:00 AM", type: "Follow-up" },
-    { id: 2, name: "Jane Smith", time: "12:00 PM", type: "Consultation" },
-  ];
+  // Appointments States
+  const [appointments, setAppointments] = useState([]);
 
-  // State for Recent Patients
+  // Static data for recent patients
   const recentPatients = [
     {
       id: 1,
       name: "Liam Payne",
       date: "October 16, 2024",
       type: "Drug Test",
-      image:
-        "https://www.usatoday.com/gcdn/presto/2020/08/28/USAT/efafa6ba-5d7c-4218-8684-37436e378850-liam_payne.JPG?crop=2978,1676,x0,y447",
+      image: "https://via.placeholder.com/100",
     },
   ];
 
-  // Handle adding a new task
-  const addTask = () => {
+  // Static data for doctor team
+  const team = [
+    { name: "Dr. Abir", img: Abir },
+    { name: "Dr. Kevin", img: Kevin },
+    { name: "Dr. Rahat", img: Rahat },
+    { name: "Dr. Lubna", img: Lubna },
+    { name: "Dr. Deedat", img: Deedat },
+    { name: "Dr. Kazi", img: Kazi },
+  ];
+
+  // Fetch tasks from Firestore
+  const fetchTasks = async () => {
+    if (user) {
+      const tasksRef = collection(db, "users", user.uid, "tasks");
+      const snapshot = await getDocs(tasksRef);
+      const fetchedTasks = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTasks(fetchedTasks);
+    }
+  };
+
+  // Fetch appointments from Firestore
+  const fetchAppointments = async () => {
+    if (user) {
+      const appointmentsRef = collection(db, "users", user.uid, "appointments");
+      const snapshot = await getDocs(appointmentsRef);
+      const fetchedAppointments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setAppointments(fetchedAppointments);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+    fetchAppointments();
+  }, [user]);
+
+  // Add a new task
+  const addTask = async () => {
     if (newTask.trim() === "") {
       toast({
         title: "Task cannot be empty",
@@ -73,50 +121,56 @@ function DoctorHome() {
       });
       return;
     }
-    setTasks([...tasks, { text: newTask, priority: taskPriority, completed: false }]);
-    setNewTask("");
+
+    const taskObj = { text: newTask, priority: taskPriority, completed: false };
+    if (user) {
+      await addDoc(collection(db, "users", user.uid, "tasks"), taskObj);
+      fetchTasks();
+      setNewTask("");
+    }
   };
 
-  // Handle task completion
-  const toggleTaskCompletion = (index) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, completed: !task.completed } : task
-    );
-    setTasks(updatedTasks);
+  // Toggle task completion
+  const toggleTaskCompletion = async (task) => {
+    const taskRef = doc(db, "users", user.uid, "tasks", task.id);
+    await updateDoc(taskRef, { completed: !task.completed });
+    fetchTasks();
   };
 
-  // Handle deleting a task
-  const deleteTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
+  // Delete task
+  const deleteTask = async (taskId) => {
+    const taskRef = doc(db, "users", user.uid, "tasks", taskId);
+    await deleteDoc(taskRef);
+    fetchTasks();
   };
 
   return (
     <ChakraProvider>
-      {/* MY DAY CARD with To-Do List */}
-      <Card borderRadius="20px" height="100%" width="100%" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" transition="all 0.3s" _hover={{ boxShadow: "2xl" }}>
-        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+      {/* My Day Card with To-Do List */}
+      <Card>
+        <CardHeader bg="#ddeeff" borderRadius="10px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={CalendarIcon} mr={2} />
             My Day
           </Heading>
         </CardHeader>
         <CardBody>
-          {/* To-Do List */}
           <Stack spacing={4}>
-            <Heading fontSize="lg" color="#00366d">To-Do List</Heading>
-            {tasks.map((task, index) => (
-              <HStack key={index} spacing={4}>
+            <Heading fontSize="lg">To-Do List</Heading>
+            {tasks.map((task) => (
+              <HStack key={task.id} spacing={4}>
                 <Checkbox
                   isChecked={task.completed}
-                  onChange={() => toggleTaskCompletion(index)}
+                  onChange={() => toggleTaskCompletion(task)}
                 >
                   <Text as={task.completed ? "del" : ""}>{task.text}</Text>
                 </Checkbox>
-                <Text fontSize="sm" color={task.priority === "High" ? "red.500" : task.priority === "Low" ? "green.500" : "orange.500"}>
+                <Text color={task.priority === "High" ? "red.500" : task.priority === "Low" ? "green.500" : "orange.500"}>
                   {task.priority}
                 </Text>
-                <Button size="xs" colorScheme="red" onClick={() => deleteTask(index)}>Delete</Button>
+                <Button size="xs" colorScheme="red" onClick={() => deleteTask(task.id)}>
+                  Delete
+                </Button>
               </HStack>
             ))}
             <HStack>
@@ -125,7 +179,7 @@ function DoctorHome() {
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
               />
-              <Select width="120px" value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
+              <Select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
@@ -136,9 +190,9 @@ function DoctorHome() {
         </CardBody>
       </Card>
 
-      {/* UPCOMING APPOINTMENTS */}
-      <Card mt={8} borderRadius="20px" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" _hover={{ boxShadow: "2xl" }}>
-        <CardHeader bg="#ddeeff">
+      {/* Appointments Section */}
+      <Card mt={8}>
+        <CardHeader bg="#ddeeff" borderRadius="10px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaBell} mr={2} />
             Today's Appointments
@@ -168,8 +222,8 @@ function DoctorHome() {
         </CardBody>
       </Card>
 
-      {/* RECENT PATIENTS */}
-      <Card mt={8} borderRadius="20px" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" _hover={{ boxShadow: "2xl" }}>
+      {/* Recent Patients Section */}
+      <Card mt={8}>
         <CardHeader bg="#ddeeff">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserMd} mr={2} />
@@ -177,33 +231,17 @@ function DoctorHome() {
           </Heading>
         </CardHeader>
         <CardBody>
-          <TableContainer>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Image</Th>
-                  <Th>Name</Th>
-                  <Th>Date of Visit</Th>
-                  <Th>Appointment Type</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {recentPatients.map((patient) => (
-                  <Tr key={patient.id}>
-                    <Td><Avatar size="xl" src={patient.image} /></Td>
-                    <Td>{patient.name}</Td>
-                    <Td>{patient.date}</Td>
-                    <Td>{patient.type}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          {recentPatients.map((patient) => (
+            <HStack key={patient.id} spacing={4}>
+              <Avatar src={patient.image} size="lg" />
+              <Text>{patient.name} - {patient.type}</Text>
+            </HStack>
+          ))}
         </CardBody>
       </Card>
 
-      {/* DOCTOR TEAM */}
-      <Card mt={8} borderRadius="20px" boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)" _hover={{ boxShadow: "2xl" }}>
+      {/* Doctor Team Section */}
+      <Card mt={8}>
         <CardHeader bg="#ddeeff">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserFriends} mr={2} />
@@ -212,9 +250,9 @@ function DoctorHome() {
         </CardHeader>
         <CardBody>
           <HStack spacing={10} justifyContent="center">
-            {[{ name: "Dr. A Bear", img: Abir }, { name: "Dr. Kave", img: Kevin }, { name: "Dr. Rahhh", img: Rahat }, { name: "Dr. Lube", img: Lubna }, { name: "Dr. Deed", img: Deedat }, { name: "Dr. Kazoo", img: Kazi }].map((doctor, index) => (
+            {team.map((doctor, index) => (
               <VStack key={index}>
-                <Avatar size="2xl" src={doctor.img} />
+                <Avatar src={doctor.img} size="2xl" />
                 <Text>{doctor.name}</Text>
               </VStack>
             ))}
