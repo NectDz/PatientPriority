@@ -3,7 +3,6 @@ import {
     ChakraProvider,
     Box,
     VStack,
-    HStack,
     Heading,
     Text,
     Divider,
@@ -11,7 +10,13 @@ import {
     Textarea,
     Button,
     Icon,
-    Flex
+    Flex,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
 } from "@chakra-ui/react";
 import { FaRobot, FaUser } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -21,41 +26,34 @@ function AIChatbot() {
     const [additionalDetails, setAdditionalDetails] = useState("");
     const [responses, setResponses] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [awaitingDetails, setAwaitingDetails] = useState(false); // Track if we are waiting for additional details
-    const [initialQuestion, setInitialQuestion] = useState(""); // Store initial question separately
+    const [awaitingDetails, setAwaitingDetails] = useState(false);
+    const [initialQuestion, setInitialQuestion] = useState("");
+    const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
 
     const handleInitialSubmit = async () => {
-        if (!question.trim()) return; // Avoid empty submissions
+        if (!question.trim()) return;
         setLoading(true);
 
-        // Append the user's initial question to responses
         const newResponses = [...responses, { question, response: "Can you give me some more details?" }];
         setResponses(newResponses);
-        setInitialQuestion(question); // Store the initial question
-        setQuestion(""); // Clear input after submission
+        setInitialQuestion(question);
+        setQuestion("");
 
-        // Set state to expect additional details
         setAwaitingDetails(true);
         setLoading(false);
     };
 
     const handleDetailsSubmit = async () => {
-        if (!additionalDetails.trim()) return; // Avoid empty submissions
+        if (!additionalDetails.trim()) return;
         setLoading(true);
 
-        // Append the user's additional details to responses
         const newResponses = [...responses, { question: additionalDetails, response: "Thinking..." }];
         setResponses(newResponses);
 
         try {
-            // Generate final response with initial question and additional details
             const finalResponse = await generateFinalResponse(initialQuestion, additionalDetails);
-            
-            // Update the last response with the AI's actual response
             newResponses[newResponses.length - 1].response = finalResponse;
             setResponses(newResponses);
-            
-            // Reset for next interaction
             resetChatState();
         } catch (error) {
             console.error("Error:", error);
@@ -67,7 +65,7 @@ function AIChatbot() {
     };
 
     const generateFinalResponse = async (initialQuestion, additionalDetails) => {
-        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
+        const genAI = new GoogleGenerativeAI("YOUR_API_KEY"); // Replace with your actual API key
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
@@ -84,12 +82,68 @@ function AIChatbot() {
 
     const resetChatState = () => {
         setAwaitingDetails(false);
-        setInitialQuestion(""); // Clear initial question
-        setAdditionalDetails(""); // Clear additional details input
+        setInitialQuestion("");
+        setAdditionalDetails("");
     };
 
     return (
         <ChakraProvider>
+            {/* Disclaimer Modal */}
+            <Modal isOpen={isDisclaimerOpen} onClose={() => {}} isCentered>
+                <ModalOverlay />
+                <ModalContent
+                    p={8}
+                    bg="blue.900"
+                    color="white"
+                    borderRadius="md"
+                    boxShadow="2xl"
+                    maxWidth="90vw"
+                    maxHeight="90vh"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    transform="scale(1)"
+                    transition="transform 0.3s ease"
+                    _hover={{
+                        transform: "scale(1.05)",
+                        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.4)"
+                    }}
+                >
+                    <ModalHeader textAlign="center" fontSize="4xl" fontWeight="bold" color="white">
+                        Important Notice
+                    </ModalHeader>
+                    <ModalBody textAlign="center" fontSize="2xl">
+                        <Text mb={6}>
+                            This AI Chatbot is a beta feature designed to provide general health information.
+                            Responses are AI-generated and should not be considered as medical advice. 
+                            Please consult a healthcare professional for personalized guidance.
+                        </Text>
+                        <Text fontSize="2xl" fontWeight="bold" color="red.300">
+                            Always verify information with your doctor.
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter display="flex" justifyContent="center">
+                        <Button
+                            colorScheme="whiteAlpha"
+                            bg="blue.600"
+                            color="white"
+                            _hover={{
+                                bg: "blue.500",
+                                transform: "scale(1.1)",
+                                boxShadow: "0px 4px 15px rgba(0, 123, 255, 0.6)"
+                            }}
+                            size="lg"
+                            onClick={() => setIsDisclaimerOpen(false)}
+                            px={10} py={6}
+                            fontSize="2xl"
+                        >
+                            I Understand
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
             <Box
                 bgGradient="linear(to-br, blue.50, gray.50)"
                 minHeight="100vh"
