@@ -50,9 +50,6 @@ import Kazi from "../../assets/Team/Kazi.png";
 import Kevin from "../../assets/Team/Kevin.png";
 import Lubna from "../../assets/Team/Lubna.png";
 
-//firebase init
-// const db = getFirestore();
-
 function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
@@ -64,24 +61,9 @@ function DoctorHome() {
 
   // Appointments States
   const [appointments, setAppointments] = useState([]);
-
-  // Static data for recent patients
-  const recentPatients = [
-    {
-      id: 1,
-      name: "Liam Payne",
-      date: "October 16, 2024",
-      type: "Drug Test",
-      image: "https://via.placeholder.com/100",
-    },
-    {
-      id: 2,
-      name: "Sophia Smith",
-      date: "October 10, 2024",
-      type: "Physical Exam",
-      image: "https://via.placeholder.com/100",
-    },
-  ];
+  const [todaysAppointments, setTodaysAppointments] = useState([]);
+  const [recentAppointments, setRecentAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Static data for doctor team
   const team = [
@@ -113,14 +95,103 @@ function DoctorHome() {
 
   // Fetch appointments from Firestore
   const fetchAppointments = async () => {
-    if (user) {
-      const appointmentsRef = collection(db, "users", user.uid, "appointments");
-      const snapshot = await getDocs(appointmentsRef);
-      const fetchedAppointments = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setAppointments(fetchedAppointments);
+    // reuse same code from appointments page to get patient appointments
+
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const doctorEmail = user.email;
+
+      //1 - get the doctor's ID by matching the email in the "doctor" collection
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("email", "==", doctorEmail)
+      );
+      const doctorSnapshot = await getDocs(doctorQuery);
+
+      if (!doctorSnapshot.empty) {
+        const doctorData = doctorSnapshot.docs[0].data();
+        const doctorId = doctorData.id;
+
+        //2 - get patients associated with this doctor
+        const patientQuery = query(
+          collection(db, "patients"),
+          where("doctor_id", "==", doctorId)
+        );
+        const patientSnapshot = await getDocs(patientQuery);
+
+        const patientIds = patientSnapshot.docs.map((doc) => ({
+          id: doc.data().id,
+          firstName: doc.data().firstName,
+          lastName: doc.data().lastName,
+        }));
+
+        //3 - get appointments for each patient and display their first and last name
+        const appointmentPromises = patientIds.map(async (patient) => {
+          const appointmentQuery = query(
+            collection(db, "appointment"),
+            where("patient_id", "==", patient.id)
+          );
+          const appointmentSnapshot = await getDocs(appointmentQuery);
+
+          return appointmentSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            date: doc.data().appointmentDate,
+            description: doc.data().appointmentDescription,
+            patientName: `${patient.firstName} ${patient.lastName}`,
+          }));
+        });
+
+        const fetchedAppointments = (
+          await Promise.all(appointmentPromises)
+        ).flat();
+        // console.log("Fetched appointments:", fetchedAppointments);
+
+        // Get current date at midnight for date comparison
+        const currentDate = new Date();
+        const today = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate()
+        );
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // filter out appointments set on the current date
+        const todaysAppointments = fetchedAppointments
+          .filter((appointment) => {
+            const appointmentDate = appointment.date.toDate();
+            return appointmentDate >= today && appointmentDate < tomorrow;
+          })
+          .sort((a, b) => a.date.toDate() - b.date.toDate()); // Sort by time ascending
+
+        // filter out appointments any date made during and after current date
+        const pastAppointments = fetchedAppointments.filter(
+          (appointment) => appointment.date.toDate() < today
+        );
+
+        // sort the dates in descending order and take the 5 latest appointments
+        const latestAppointments = pastAppointments
+          .sort((a, b) => b.date.toDate() - a.date.toDate())
+          .slice(0, 5);
+
+        setAppointments(fetchedAppointments);
+        setRecentAppointments(latestAppointments);
+        setTodaysAppointments(todaysAppointments);
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      toast({
+        title: "Error loading appointments.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      // console.log("Fetched today's appointments:", todaysAppointments);
+      // console.log("Fetched recent appointments:", recentAppointments);
+      setLoading(false);
     }
   };
 
@@ -184,8 +255,18 @@ function DoctorHome() {
   return (
     <ChakraProvider>
       {/* To-Do List */}
-      <Card mt={4}>
-        <CardHeader bg="#ddeeff" borderRadius="10px">
+      <Card
+        mt={4}
+        // bg="#ddeeff"
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={CalendarIcon} mr={2} />
             My Day
@@ -202,10 +283,22 @@ function DoctorHome() {
                 >
                   <Text as={task.completed ? "del" : ""}>{task.text}</Text>
                 </Checkbox>
-                <Text color={task.priority === "High" ? "red.500" : task.priority === "Low" ? "green.500" : "orange.500"}>
+                <Text
+                  color={
+                    task.priority === "High"
+                      ? "red.500"
+                      : task.priority === "Low"
+                      ? "green.500"
+                      : "orange.500"
+                  }
+                >
                   {task.priority}
                 </Text>
-                <Button size="xs" colorScheme="red" onClick={() => deleteTask(task.id)}>
+                <Button
+                  size="xs"
+                  colorScheme="red"
+                  onClick={() => deleteTask(task.id)}
+                >
                   Delete
                 </Button>
               </HStack>
@@ -216,21 +309,25 @@ function DoctorHome() {
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
               />
-              <Select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
+              <Select
+                value={taskPriority}
+                onChange={(e) => setTaskPriority(e.target.value)}
+              >
                 <option value="High">High Priority</option>
                 <option value="Medium">Medium Priority</option>
                 <option value="Low">Low Priority</option>
               </Select>
               <Button colorScheme="blue" onClick={addTask} minWidth="120px">
-  Add Task
-</Button>
+                Add Task
+              </Button>
             </HStack>
           </Stack>
         </CardBody>
       </Card>
 
-      {/* RECENT PATIENTS CARD */}
+      {/* TODAYS APPOINTMENTS CARD */}
       <Card
+        mt={8}
         // bg="#ddeeff"
         borderRadius="20px"
         height="100%"
@@ -247,54 +344,99 @@ function DoctorHome() {
           </Heading>
         </CardHeader>
         <CardBody>
-          <TableContainer>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Time</Th>
-                  <Th>Patient</Th>
-                  <Th>Type</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {appointments.map((appointment) => (
-                  <Tr key={appointment.id}>
-                    <Td>{appointment.time}</Td>
-                    <Td>{appointment.name}</Td>
-                    <Td>{appointment.type}</Td>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <TableContainer>
+              <Table variant="striped">
+                <Thead>
+                  <Tr>
+                    <Th>Patient</Th>
+                    <Th>Time</Th>
+                    <Th>Description</Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {todaysAppointments.map((appointment) => (
+                    <Tr key={appointment.id}>
+                      <Td>{appointment.patientName}</Td>
+                      <Td>{appointment.date.toDate().toLocaleTimeString()}</Td>
+                      <Td>{appointment.description}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </CardBody>
       </Card>
 
       {/* Recent Patients */}
-      <Card mt={8}>
-        <CardHeader bg="#ddeeff">
+      <Card
+        mt={8}
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserMd} mr={2} />
             Recent Patients
           </Heading>
         </CardHeader>
         <CardBody>
-          {recentPatients.map((patient) => (
-            <HStack key={patient.id} spacing={4}>
-              <Avatar src={patient.image} size="lg" />
-              <VStack align="start">
-                <Text fontWeight="bold">{patient.name}</Text>
-                <Text>{patient.type}</Text>
-                <Text color="gray.500">{patient.date}</Text>
-              </VStack>
-            </HStack>
-          ))}
+          <Text fontSize="lg" color="#737373">
+            See your most recent patient interactions here.
+          </Text>
+
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <TableContainer mt={5}>
+              <Table variant="striped">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Date</Th>
+                    <Th>Description</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {recentAppointments.map((appointment) => (
+                    <Tr key={appointment.id}>
+                      <Td>{appointment.patientName}</Td>
+                      <Td>
+                        {new Date(
+                          appointment.date.seconds * 1000
+                        ).toLocaleDateString()}
+                      </Td>
+                      <Td>{appointment.description}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+              <Divider />
+            </TableContainer>
+          )}
         </CardBody>
       </Card>
 
       {/* Doctor Team */}
-      <Card mt={8}>
-        <CardHeader bg="#ddeeff">
+      <Card
+        mt={8}
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        //padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaUserFriends} mr={2} />
             My Team

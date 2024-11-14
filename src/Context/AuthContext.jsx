@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   //firebase listener for authentication state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log("Current user:", user);
+      // console.log("Current user:", user);
       setCurrentUser(user);
   
       if (user) {
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
           );
   
           // debugging
-          console.log("Checking for user with ID:", user.uid);
+          // console.log("Checking for user with ID:", user.uid);
   
           const [doctorSnapshot, patientSnapshot] = await Promise.all([
             getDocs(doctorQuery),
@@ -101,12 +101,12 @@ export const AuthProvider = ({ children }) => {
           ]);
   
           // debugging
-          console.log("Doctor documents found:", !doctorSnapshot.empty);
-          console.log("Patient documents found:", !patientSnapshot.empty);
+          // console.log("Doctor documents found:", !doctorSnapshot.empty);
+          // console.log("Patient documents found:", !patientSnapshot.empty);
   
           if (!doctorSnapshot.empty) {
             // debugging
-            console.log("User is a doctor");
+            // console.log("User is a doctor");
             const doctorData = doctorSnapshot.docs[0].data();
             setUserRole({
               type: "doctor",
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
             });
           } else if (!patientSnapshot.empty) {
             // debugging
-            console.log("User is a patient");
+            // console.log("User is a patient");
             const patientData = patientSnapshot.docs[0].data();
             setUserRole({
               type: "patient",
@@ -122,8 +122,8 @@ export const AuthProvider = ({ children }) => {
             });
           } else {
             // debugging
-            console.log("No role found for user with ID:", user.uid);
-            console.log("Checking patients collection query:", patientQuery);
+            // console.log("No role found for user with ID:", user.uid);
+            // console.log("Checking patients collection query:", patientQuery);
             setUserRole(null);
           }
         } catch (error) {
