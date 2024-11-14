@@ -15,9 +15,15 @@ import {
     Button,
     UnorderedList,
     ListItem,
-    Icon
+    Icon,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
 } from "@chakra-ui/react";
-import { FaHeartbeat, FaAppleAlt, FaRunning, FaStar } from 'react-icons/fa';
+import { FaHeartbeat, FaAppleAlt, FaRunning, FaStar, FaChartLine } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function AIInsights() {
@@ -47,6 +53,7 @@ function AIInsights() {
 
     const [rawInsights, setRawInsights] = useState(null); // State for raw response
     const [insights, setInsights] = useState(null); // State for parsed response
+    const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true); // State for disclaimer modal
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -138,6 +145,61 @@ function AIInsights() {
 
     return (
         <ChakraProvider>
+            {/* Disclaimer Modal */}
+            <Modal isOpen={isDisclaimerOpen} onClose={() => {}} isCentered>
+                <ModalOverlay />
+                <ModalContent
+                    p={8}
+                    bg="blue.900"
+                    color="white"
+                    borderRadius="md"
+                    boxShadow="2xl"
+                    maxWidth="90vw"
+                    maxHeight="90vh"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    transform="scale(1)"
+                    transition="transform 0.3s ease"
+                    _hover={{
+                        transform: "scale(1.05)",
+                        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.4)"
+                    }}
+                >
+                    <ModalHeader textAlign="center" fontSize="4xl" fontWeight="bold" color="white">
+                        Important Notice
+                    </ModalHeader>
+                    <ModalBody textAlign="center" fontSize="2xl">
+                        <Text mb={6}>
+                            The AI Insights feature provides general health information based on the provided data.
+                            The insights are AI-generated and are not a substitute for professional medical advice.
+                            Always consult with a healthcare provider for personalized medical guidance.
+                        </Text>
+                        <Text fontSize="2xl" fontWeight="bold" color="red.300">
+                            Verify insights with your healthcare provider.
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter display="flex" justifyContent="center">
+                        <Button
+                            bg="#003366"
+                            color="white"
+                            _hover={{
+                                bg: "#002244",
+                                transform: "scale(1.1)",
+                                boxShadow: "0px 4px 15px rgba(0, 123, 255, 0.6)"
+                            }}
+                            size="lg"
+                            onClick={() => setIsDisclaimerOpen(false)}
+                            px={10} py={6}
+                            fontSize="2xl"
+                        >
+                            I Understand
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            
             <Box 
                 bgGradient="linear(to-br, blue.50, gray.50)" 
                 minHeight="100vh" 
@@ -508,19 +570,20 @@ function AIInsights() {
                         </VStack>
                     </form>
 
-                    {/* Display the raw response */}
-                    {rawInsights && (
-                        <Box mt={10} p={4} bg="gray.100" borderRadius="md">
-                            <Heading as="h3" size="md" mb={3}>Raw AI Response</Heading>
-                            <Text fontSize="md" whiteSpace="pre-wrap">{rawInsights}</Text>
-                        </Box>
-                    )}
-
                     {insights && (
                         <Box mt={10}>
                             <Divider mb={5} />
-                            <Heading as="h2" size="lg" mb={4} textAlign="center">Formatted AI-Generated Health Insights</Heading>
-                            <Box>
+                            <HStack justifyContent="center" spacing={3}>
+                                <Icon as={FaChartLine} color="teal.500" boxSize={8} />
+                                <Heading as="h2" size="lg" color="teal.700" fontWeight="bold">
+                                    Your Personalized Health Insights
+                                </Heading>
+                                <Icon as={FaChartLine} color="teal.500" boxSize={8} />
+                            </HStack>
+                            <Text mt={2} fontSize="md" color="gray.600" textAlign="center">
+                                Based on the information you provided, here are some personalized health insights just for you!
+                            </Text>
+                            <Box mt={8}>
                                 <Box mb={6} p={4} bg="blue.50" borderRadius="md" boxShadow="sm">
                                     <HStack spacing={3}>
                                         <Icon as={FaHeartbeat} color="blue.500" boxSize={6} />
@@ -542,13 +605,13 @@ function AIInsights() {
                                     </HStack>
                                     <UnorderedList mt={2} spacing={2}>
                                         <ListItem fontSize="lg">
-                                            <Text as="span" fontWeight="semibold"><strong>Diet:</strong></Text> {insights.preventive_tips.diet}
+                                            <Text as="span" fontWeight="semibold">Diet:</Text> {insights.preventive_tips.diet}
                                         </ListItem>
                                         <ListItem fontSize="lg">
-                                            <Text as="span" fontWeight="semibold"><strong>Activity:</strong></Text> {insights.preventive_tips.activity}
+                                            <Text as="span" fontWeight="semibold">Activity:</Text> {insights.preventive_tips.activity}
                                         </ListItem>
                                         <ListItem fontSize="lg">
-                                            <Text as="span" fontWeight="semibold"><strong>Health Monitoring:</strong></Text> {insights.preventive_tips.health_monitoring}
+                                            <Text as="span" fontWeight="semibold">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}
                                         </ListItem>
                                     </UnorderedList>
                                 </Box>
@@ -568,10 +631,8 @@ function AIInsights() {
                                     </HStack>
                                     <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_horoscope}</Text>
                                 </Box>
-
                             </Box>
                         </Box>
-
                     )}
                 </VStack>
             </Box>
