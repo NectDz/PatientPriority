@@ -92,45 +92,46 @@ const Contact = () => {
       justifyContent="center"
       minHeight="100vh"
       p={8}
-      backgroundColor="background"
+      backgroundColor="#f1f8ff"
     >
       <Box height="100px" />
 
       {/* Header Section */}
-      <Heading fontSize="6xl" color="primary" mb={4} textAlign="center">
+      <Heading fontSize="6xl" color="#00366d" mb={4} textAlign="center">
         Contact Us
       </Heading>
-      <Text fontSize="2xl" color="secondary" textAlign="center" mb={12} maxW="80%">
+      <Text fontSize="2xl" color="#00366d" textAlign="center" mb={12} maxW="80%">
         Select your inquiry type and reach out to us directly.
       </Text>
 
       {/* Contact Form */}
       <VStack
-        spacing={6}
-        align="stretch"
-        width={{ base: "90%", md: "70%", lg: "50%" }}
         as="form"
-        onSubmit={handleSubmit}
+        width={{ base: "90%", md: "500px" }}
+        p="8"
         backgroundColor="white"
         borderRadius="md"
-        p={8}
-        boxShadow="lg"
+        onSubmit={handleSubmit}
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                  padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+                  transition="all 0.3s"
+                  _hover={{ boxShadow: "2xl" }}
       >
         <FormControl>
-          <FormLabel color="primary" fontSize="lg">Name</FormLabel>
+          <FormLabel color="#00366d" fontSize="lg">Name</FormLabel>
           <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter your name"
-            borderColor="secondary"
+            borderColor="#00366d"
             focusBorderColor="highlight"
           />
         </FormControl>
 
         <FormControl>
-          <FormLabel color="primary" fontSize="lg">Email</FormLabel>
+          <FormLabel color="#00366d" fontSize="lg">Email</FormLabel>
           <Input
             type="email"
             name="email"
@@ -143,7 +144,7 @@ const Contact = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel color="primary" fontSize="lg">Inquiry Type</FormLabel>
+          <FormLabel color="#00366d" fontSize="lg">Inquiry Type</FormLabel>
           <Select
             name="inquiryType"
             value={formData.inquiryType}
@@ -159,7 +160,7 @@ const Contact = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel color="primary" fontSize="lg">Message</FormLabel>
+          <FormLabel color="#00366d" fontSize="lg">Message</FormLabel>
           <Textarea
             name="message"
             value={formData.message}
@@ -188,7 +189,7 @@ const Contact = () => {
 
       {/* Additional Contact Information */}
       <VStack mt={8} spacing={6} align="center" width={{ base: "90%", md: "70%", lg: "50%" }}>
-        <Text fontSize="2xl" color="primary" fontWeight="bold">
+        <Text fontSize="2xl" color="#00366d" fontWeight="bold">
           Additional Contact Information
         </Text>
         <Box
@@ -199,13 +200,13 @@ const Contact = () => {
           width="100%"
         >
           <HStack spacing={4} align="center" mb={4}>
-            <Icon as={FaInfoCircle} boxSize="2em" color="primary" />
-            <Heading fontSize="xl" color="primary">
+            <Icon as={FaInfoCircle} boxSize="2em" color="#00366d" />
+            <Heading fontSize="xl" color="#00366d">
               General Inquiries
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:general.patientpriority@gmail.com" color="primary" fontWeight="bold" isExternal>
+            <Link href="mailto:general.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
               general.patientpriority@gmail.com
             </Link>
           </Text>
@@ -216,13 +217,13 @@ const Contact = () => {
           <Divider my={4} />
 
           <HStack spacing={4} align="center" mb={4}>
-            <Icon as={FaUser} boxSize="2em" color="primary" />
-            <Heading fontSize="xl" color="primary">
+            <Icon as={FaUser} boxSize="2em" color="#00366d" />
+            <Heading fontSize="xl" color="#00366d">
               Patient Support
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:patientsupport.patientpriority@gmail.com" color="primary" fontWeight="bold" isExternal>
+            <Link href="mailto:patientsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
               patientsupport.patientpriority@gmail.com
             </Link>
           </Text>
@@ -233,13 +234,13 @@ const Contact = () => {
           <Divider my={4} />
 
           <HStack spacing={4} align="center" mb={4}>
-            <Icon as={FaUserMd} boxSize="2em" color="primary" />
-            <Heading fontSize="xl" color="primary">
+            <Icon as={FaUserMd} boxSize="2em" color="#00366d" />
+            <Heading fontSize="xl" color="#00366d">
               Doctor Support
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:doctorsupport.patientpriority@gmail.com" color="primary" fontWeight="bold" isExternal>
+            <Link href="mailto:doctorsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
               doctorsupport.patientpriority@gmail.com
             </Link>
           </Text>
