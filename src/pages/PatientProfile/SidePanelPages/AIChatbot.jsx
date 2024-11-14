@@ -65,7 +65,7 @@ function AIChatbot() {
     };
 
     const generateFinalResponse = async (initialQuestion, additionalDetails) => {
-        const genAI = new GoogleGenerativeAI("YOUR_API_KEY"); // Replace with your actual API key
+        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
@@ -125,11 +125,10 @@ function AIChatbot() {
                     </ModalBody>
                     <ModalFooter display="flex" justifyContent="center">
                         <Button
-                            colorScheme="whiteAlpha"
-                            bg="blue.600"
+                            bg="#003366"
                             color="white"
                             _hover={{
-                                bg: "blue.500",
+                                bg: "#002244",
                                 transform: "scale(1.1)",
                                 boxShadow: "0px 4px 15px rgba(0, 123, 255, 0.6)"
                             }}
@@ -177,38 +176,40 @@ function AIChatbot() {
                 </VStack>
 
                 {/* Chat Display */}
-                <VStack
-                    spacing={4}
-                    align="stretch"
-                    width={{ base: "95%", md: "90%", lg: "80%" }}
-                    maxWidth="1200px"
-                    mx="auto"
-                    bg="rgba(255, 255, 255, 0.6)"
-                    borderRadius="xl"
-                    padding="1.5rem"
-                    overflowY="auto"
-                    maxHeight="70vh"
-                >
-                    {responses.map((item, index) => (
-                        <Box key={index} style={styles.responseContainer}>
-                            <Box style={styles.section}>
-                                <Flex align="center" mb={2}>
-                                    <Icon as={FaUser} color="teal.500" mr={2} />
-                                    <Text style={styles.sectionTitle}>You asked:</Text>
-                                </Flex>
-                                <Text fontSize="lg">{item.question}</Text>
+                {responses.length > 0 && (
+                    <VStack
+                        spacing={4}
+                        align="stretch"
+                        width={{ base: "95%", md: "90%", lg: "80%" }}
+                        maxWidth="1200px"
+                        mx="auto"
+                        bg="rgba(255, 255, 255, 0.6)"
+                        borderRadius="xl"
+                        padding="1.5rem"
+                        overflowY="auto"
+                        maxHeight="70vh"
+                    >
+                        {responses.map((item, index) => (
+                            <Box key={index} style={styles.responseContainer}>
+                                <Box style={styles.section}>
+                                    <Flex align="center" mb={2}>
+                                        <Icon as={FaUser} color="teal.600" mr={2} />
+                                        <Text style={styles.sectionTitle}>You asked:</Text>
+                                    </Flex>
+                                    <Text fontSize="lg">{item.question}</Text>
+                                </Box>
+                                <Divider />
+                                <Box style={styles.section}>
+                                    <Flex align="center" mb={2}>
+                                        <Icon as={FaRobot} color="purple.700" mr={2} />
+                                        <Text style={styles.sectionTitle}>AI Chatbot:</Text>
+                                    </Flex>
+                                    <Text fontSize="lg">{item.response}</Text>
+                                </Box>
                             </Box>
-                            <Divider />
-                            <Box style={styles.section}>
-                                <Flex align="center" mb={2}>
-                                    <Icon as={FaRobot} color="purple.500" mr={2} />
-                                    <Text style={styles.sectionTitle}>AI Chatbot:</Text>
-                                </Flex>
-                                <Text fontSize="lg">{item.response}</Text>
-                            </Box>
-                        </Box>
-                    ))}
-                </VStack>
+                        ))}
+                    </VStack>
+                )}
 
                 {/* User Input at the Bottom */}
                 <Box
@@ -240,9 +241,9 @@ function AIChatbot() {
                                 disabled={loading}
                             />
                             <Button
-                                bg="#335d8f"
+                                bg="#003366"
                                 color="white"
-                                _hover={{ bg: "#0B2545" }}
+                                _hover={{ bg: "#002244" }}
                                 fontSize="md"
                                 paddingX="2rem"
                                 paddingY="1.5rem"
@@ -268,9 +269,9 @@ function AIChatbot() {
                                 disabled={loading}
                             />
                             <Button
-                                bg="#335d8f"
+                                bg="#003366"
                                 color="white"
-                                _hover={{ bg: "#0B2545" }}
+                                _hover={{ bg: "#002244" }}
                                 fontSize="md"
                                 paddingX="2rem"
                                 paddingY="1.5rem"
