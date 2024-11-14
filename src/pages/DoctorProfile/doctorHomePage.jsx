@@ -35,17 +35,12 @@ import {
   query,
   where,
   getDocs,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase-config";
-import {
-  collection,
   addDoc,
-  getDocs,
   deleteDoc,
   updateDoc,
   doc,
 } from "firebase/firestore";
+import { auth, db } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import Deedat from "../../assets/Team/Deedat.png";
@@ -56,7 +51,7 @@ import Kevin from "../../assets/Team/Kevin.png";
 import Lubna from "../../assets/Team/Lubna.png";
 
 //firebase init
-const db = getFirestore();
+// const db = getFirestore();
 
 function DoctorHome() {
   const toast = useToast();
