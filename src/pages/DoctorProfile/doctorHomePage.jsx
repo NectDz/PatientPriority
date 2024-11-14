@@ -213,7 +213,9 @@ function DoctorHome() {
                 <option value="Medium">Medium Priority</option>
                 <option value="Low">Low Priority</option>
               </Select>
-              <Button colorScheme="blue" onClick={addTask}>Add Task</Button>
+              <Button colorScheme="blue" onClick={addTask} minWidth="120px">
+  Add Task
+</Button>
             </HStack>
           </Stack>
         </CardBody>
