@@ -38,7 +38,6 @@ import {
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 
-// Doctor Team Images
 import Deedat from "../../assets/Team/Deedat.png";
 import Abir from "../../assets/Team/Abir.png";
 import Rahat from "../../assets/Team/Rahat.png";
@@ -67,6 +66,13 @@ function DoctorHome() {
       type: "Drug Test",
       image: "https://via.placeholder.com/100",
     },
+    {
+      id: 2,
+      name: "Sophia Smith",
+      date: "October 10, 2024",
+      type: "Physical Exam",
+      image: "https://via.placeholder.com/100",
+    },
   ];
 
   // Static data for doctor team
@@ -88,7 +94,12 @@ function DoctorHome() {
         id: doc.id,
         ...doc.data(),
       }));
-      setTasks(fetchedTasks);
+      setTasks(
+        fetchedTasks.sort((a, b) => {
+          const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+          return priorityOrder[a.priority] - priorityOrder[b.priority];
+        })
+      );
     }
   };
 
@@ -127,6 +138,12 @@ function DoctorHome() {
       await addDoc(collection(db, "users", user.uid, "tasks"), taskObj);
       fetchTasks();
       setNewTask("");
+      toast({
+        title: "Task added successfully!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
     }
   };
 
@@ -135,6 +152,12 @@ function DoctorHome() {
     const taskRef = doc(db, "users", user.uid, "tasks", task.id);
     await updateDoc(taskRef, { completed: !task.completed });
     fetchTasks();
+    toast({
+      title: task.completed ? "Task marked as incomplete" : "Task completed",
+      status: "info",
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   // Delete task
@@ -142,12 +165,18 @@ function DoctorHome() {
     const taskRef = doc(db, "users", user.uid, "tasks", taskId);
     await deleteDoc(taskRef);
     fetchTasks();
+    toast({
+      title: "Task deleted successfully",
+      status: "error",
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   return (
     <ChakraProvider>
-      {/* My Day Card with To-Do List */}
-      <Card>
+      {/* To-Do List */}
+      <Card mt={4}>
         <CardHeader bg="#ddeeff" borderRadius="10px">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={CalendarIcon} mr={2} />
@@ -175,24 +204,24 @@ function DoctorHome() {
             ))}
             <HStack>
               <Input
-                placeholder="New task"
+                placeholder="Add a new task..."
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
               />
               <Select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
               </Select>
-              <Button colorScheme="blue" onClick={addTask}>Add</Button>
+              <Button colorScheme="blue" onClick={addTask}>Add Task</Button>
             </HStack>
           </Stack>
         </CardBody>
       </Card>
 
-      {/* Appointments Section */}
+      {/* Appointments */}
       <Card mt={8}>
-        <CardHeader bg="#ddeeff" borderRadius="10px">
+        <CardHeader bg="#ddeeff">
           <Heading fontSize="2xl" color="#00366d">
             <Icon as={FaBell} mr={2} />
             Today's Appointments
@@ -222,7 +251,7 @@ function DoctorHome() {
         </CardBody>
       </Card>
 
-      {/* Recent Patients Section */}
+      {/* Recent Patients */}
       <Card mt={8}>
         <CardHeader bg="#ddeeff">
           <Heading fontSize="2xl" color="#00366d">
@@ -234,13 +263,17 @@ function DoctorHome() {
           {recentPatients.map((patient) => (
             <HStack key={patient.id} spacing={4}>
               <Avatar src={patient.image} size="lg" />
-              <Text>{patient.name} - {patient.type}</Text>
+              <VStack align="start">
+                <Text fontWeight="bold">{patient.name}</Text>
+                <Text>{patient.type}</Text>
+                <Text color="gray.500">{patient.date}</Text>
+              </VStack>
             </HStack>
           ))}
         </CardBody>
       </Card>
 
-      {/* Doctor Team Section */}
+      {/* Doctor Team */}
       <Card mt={8}>
         <CardHeader bg="#ddeeff">
           <Heading fontSize="2xl" color="#00366d">
