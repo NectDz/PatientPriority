@@ -31,22 +31,23 @@ const theme = extendTheme({
 
 const StatBox = ({ icon, stat, label }) => (
   <Box
-    p={4}
-    backgroundColor="white"
-    boxShadow="md"
-    borderRadius="md"
-    textAlign="center"
-    transition="all 0.3s ease"
-    _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
-  >
-    <Icon as={icon} boxSize="2em" color="highlight" mb={2} />
-    <Text fontSize="4xl" fontWeight="bold" color="highlight">
-      {stat}
-    </Text>
-    <Text color="secondary" fontSize="lg">
-      {label}
-    </Text>
-  </Box>
+  p={4}
+  backgroundColor="white"
+  boxShadow="md"
+  borderRadius="md"
+  textAlign="center"
+  width={{ base: "100%", md: "250px" }}
+  transition="all 0.3s ease"
+  _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
+>
+  <Icon as={icon} boxSize="2em" color="highlight" mb={2} />
+  <Text fontSize="4xl" fontWeight="bold" color="highlight">
+    {stat}
+  </Text>
+  <Text color="secondary" fontSize="lg">
+    {label}
+  </Text>
+</Box>
 );
 
 const AboutUs = () => {

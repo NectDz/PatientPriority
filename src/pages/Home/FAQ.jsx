@@ -157,10 +157,10 @@ const FAQ = () => {
       <Box height="100px" />
 
       
-      <Heading fontSize="6xl" color="primary" mb={4} textAlign="center">
+      <Heading fontSize="6xl" color="#00366d" mb={4} textAlign="center">
         FAQ
       </Heading>
-      <Text fontSize="2xl" color="secondary" textAlign="center" mb={12} maxW="80%">
+      <Text fontSize="2xl" color="#00366d" textAlign="center" mb={12} maxW="80%">
         Frequently Asked Questions
       </Text>
 
