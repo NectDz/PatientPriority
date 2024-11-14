@@ -14,8 +14,16 @@ import {
     Textarea,
     Button,
     UnorderedList,
-    ListItem
+    ListItem,
+    Icon,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
 } from "@chakra-ui/react";
+import { FaHeartbeat, FaAppleAlt, FaRunning, FaStar, FaChartLine } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function AIInsights() {
@@ -43,7 +51,9 @@ function AIInsights() {
         cholesterol: '',
     });
 
-    const [insights, setInsights] = useState(null);
+    const [rawInsights, setRawInsights] = useState(null); // State for raw response
+    const [insights, setInsights] = useState(null); // State for parsed response
+    const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true); // State for disclaimer modal
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,34 +65,32 @@ function AIInsights() {
 
         // Construct the prompt from the form data
         const prompt = `
-        Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary. If some of these infromation are missing or not applicable, ignore them while generating the insight. The response should be structured in the following format:
-
-        1. 5 Common Diagnoses/Conditions
-        - List five health conditions most common for someone with this profile (considering their age, lifestyle, and family history), with a short, clear description for each.
+        Based on the patient's demographic information, medical history, lifestyle habits, family medical history, and vital signs, generate a personalized health insights summary in JSON format. If specific information is missing or not applicable, generate insights based on general trends for similar profiles. Ensure that the response follows this exact JSON structure:
         
-        Top 3 Preventive Tips
-        
-        - Diet: Provide one suggestion for improving nutrition specific to this patient's needs.
-        - Activity: Recommend a type or amount of exercise suited to the patient's lifestyle and physical condition.
-        - Health Monitoring: Suggest one key check-up or screening the patient should prioritize (e.g., blood pressure, cholesterol).
-        
-
-        One Health Goal
-        - Provide a simple, realistic health goal for the patient to work toward based on their current profile, such as walk 15 minutes a day or add a vegetable to each meal.
-        
-        Health Horoscope
-        Generate a playful, funny, and health-related "Health Horoscope" to add a bit of humor.
-        Create a light-hearted, fortune-cookie-style line that’s related to health or wellness but adds humor. Examples could include:
-        - Health Horoscope: A salad is in your future; don’t be afraid to add a sprinkle of cheese for excitement.
-        - Health Horoscope: Today’s exercise forecast predicts light stretching with a high chance of couch time.
-        - Health Horoscope: The stars suggest more vegetables on your plate—no, French fries don’t count.
+        {
+            "diagnoses": [
+                {"condition": "Condition 1", "description": "Brief description of Condition 1"},
+                {"condition": "Condition 2", "description": "Brief description of Condition 2"},
+                {"condition": "Condition 3", "description": "Brief description of Condition 3"},
+                {"condition": "Condition 4", "description": "Brief description of Condition 4"},
+                {"condition": "Condition 5", "description": "Brief description of Condition 5"}
+            ],
+            "preventive_tips": {
+                "diet": "One specific suggestion for improving nutrition based on the patient's profile",
+                "activity": "A recommended type or amount of exercise suitable for the patient's lifestyle and physical condition",
+                "health_monitoring": "One key health check-up or screening that the patient should prioritize, such as blood pressure or cholesterol check"
+            },
+            "health_goal": "A simple, realistic health goal that the patient can work toward based on their current profile, like walking 15 minutes daily or adding a vegetable to each meal",
+            "health_horoscope": "A playful, light-hearted, health-related 'Health Horoscope' line with humor, such as 'A salad is in your future; don’t be afraid to add a sprinkle of cheese for excitement' or 'Today’s exercise forecast predicts light stretching with a high chance of couch time'"
+        }
         
         Additional Instructions:
-        - Use plain, straightforward language that is easy to understand, especially for older patients.
-        - Avoid complex medical jargon, and focus on actionable insights that are immediately useful to the patient.
+        - In the "diagnoses" section, include exactly 5 common health conditions or illnesses that people with a similar patient profile  typically experience. If specific medical history is missing, base these on general trends for the patient’s demographic.
+        - Ensure all language is clear, simple, and straightforward for easy understanding, especially for older patients.
+        - Avoid complex medical jargon; focus on actionable, useful insights.
         - Do not use stars (*) or quotation marks (" ") in the response.
-        - Organize the response clearly with headers and bolded key points for easy readability.
-
+        - Use consistent formatting in JSON, with keys in lowercase and descriptive content as specified.
+        
         **Patient Information:**
         - Age: ${formData.age}
         - Gender: ${formData.gender}
@@ -114,42 +122,84 @@ function AIInsights() {
         - Cholesterol Levels: ${formData.cholesterol}
         `;
         
-
+        
+        
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
             const result = await model.generateContent(prompt);
+            const rawResponse = result.response.text(); // Store the raw response
+            setRawInsights(rawResponse);
 
-            setInsights(result.response.text());
+            const jsonResponse = rawResponse.match(/\{.*\}/s)[0]; // Extract JSON with regex
+            const parsedInsights = JSON.parse(jsonResponse); // Parse JSON response
+            setInsights(parsedInsights);
         } catch (error) {
             console.error('Error:', error);
-            setInsights("Failed to generate insights. Please try again.");
+            setRawInsights("Failed to generate insights. Please try again.");
+            setInsights(null);
         }
     };
-    const parseInsights = (text) => {
-        if (!text) return {};
-
-        const sections = {
-            diagnoses: '',
-            tips: '',
-            healthGoal: '',
-            healthHoroscope: ''
-        };
-
-        sections.diagnoses = text.match(/5 Common Diagnoses\/Conditions([\s\S]*?)Top 3 Preventive Tips/)?.[1]?.trim();
-        sections.tips = text.match(/Top 3 Preventive Tips([\s\S]*?)One Health Goal/)?.[1]?.trim();
-        sections.healthGoal = text.match(/One Health Goal([\s\S]*?)Health Horoscope/)?.[1]?.trim();
-        sections.healthHoroscope = text.match(/Health Horoscope([\s\S]*)/)?.[1]?.trim();
-
-        return sections;
-    };
-
-    const insightsSections = parseInsights(insights);
 
 
     return (
         <ChakraProvider>
+            {/* Disclaimer Modal */}
+            <Modal isOpen={isDisclaimerOpen} onClose={() => {}} isCentered>
+                <ModalOverlay />
+                <ModalContent
+                    p={8}
+                    bg="blue.900"
+                    color="white"
+                    borderRadius="md"
+                    boxShadow="2xl"
+                    maxWidth="90vw"
+                    maxHeight="90vh"
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    transform="scale(1)"
+                    transition="transform 0.3s ease"
+                    _hover={{
+                        transform: "scale(1.05)",
+                        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.4)"
+                    }}
+                >
+                    <ModalHeader textAlign="center" fontSize="4xl" fontWeight="bold" color="white">
+                        Important Notice
+                    </ModalHeader>
+                    <ModalBody textAlign="center" fontSize="2xl">
+                        <Text mb={6}>
+                            The AI Insights feature provides general health information based on the provided data.
+                            The insights are AI-generated and are not a substitute for professional medical advice.
+                            Always consult with a healthcare provider for personalized medical guidance.
+                        </Text>
+                        <Text fontSize="2xl" fontWeight="bold" color="red.300">
+                            Verify insights with your healthcare provider.
+                        </Text>
+                    </ModalBody>
+                    <ModalFooter display="flex" justifyContent="center">
+                        <Button
+                            bg="#003366"
+                            color="white"
+                            _hover={{
+                                bg: "#002244",
+                                transform: "scale(1.1)",
+                                boxShadow: "0px 4px 15px rgba(0, 123, 255, 0.6)"
+                            }}
+                            size="lg"
+                            onClick={() => setIsDisclaimerOpen(false)}
+                            px={10} py={6}
+                            fontSize="2xl"
+                        >
+                            I Understand
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+            
             <Box 
                 bgGradient="linear(to-br, blue.50, gray.50)" 
                 minHeight="100vh" 
@@ -523,26 +573,63 @@ function AIInsights() {
                     {insights && (
                         <Box mt={10}>
                             <Divider mb={5} />
-                            <Heading as="h2" size="lg" mb={4}>AI-Generated Health Insights</Heading>
-                            <Box style={styles.responseContainer}>
-                                <Box style={styles.section}>
-                                    <Text style={styles.sectionTitle}>1. 5 Common Diagnoses/Conditions</Text>
-                                    <Text fontSize="lg">{insightsSections.diagnoses}</Text> {/* Added fontSize */}
+                            <HStack justifyContent="center" spacing={3}>
+                                <Icon as={FaChartLine} color="teal.500" boxSize={8} />
+                                <Heading as="h2" size="lg" color="teal.700" fontWeight="bold">
+                                    Your Personalized Health Insights
+                                </Heading>
+                                <Icon as={FaChartLine} color="teal.500" boxSize={8} />
+                            </HStack>
+                            <Text mt={2} fontSize="md" color="gray.600" textAlign="center">
+                                Based on the information you provided, here are some personalized health insights just for you!
+                            </Text>
+                            <Box mt={8}>
+                                <Box mb={6} p={4} bg="blue.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaHeartbeat} color="blue.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="blue.700" fontSize="2xl">Common Diagnoses/Conditions</Text>
+                                    </HStack>
+                                    <UnorderedList mt={2} spacing={2}>
+                                        {insights.diagnoses.map((diag, index) => (
+                                            <ListItem key={index} color="#333" fontSize="lg">
+                                                <Text as="span" fontWeight="semibold">{diag.condition}:</Text> {diag.description}
+                                            </ListItem>
+                                        ))}
+                                    </UnorderedList>
                                 </Box>
-                                
-                                <Box style={styles.section}>
-                                    <Text style={styles.sectionTitle}>2. Top 3 Preventive Tips</Text>
-                                    <Text fontSize="lg">{insightsSections.tips}</Text> {/* Added fontSize */}
+
+                                <Box mb={6} p={4} bg="green.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaAppleAlt} color="green.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="green.700" fontSize="2xl">Preventive Tips</Text>
+                                    </HStack>
+                                    <UnorderedList mt={2} spacing={2}>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold">Diet:</Text> {insights.preventive_tips.diet}
+                                        </ListItem>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold">Activity:</Text> {insights.preventive_tips.activity}
+                                        </ListItem>
+                                        <ListItem fontSize="lg">
+                                            <Text as="span" fontWeight="semibold">Health Monitoring:</Text> {insights.preventive_tips.health_monitoring}
+                                        </ListItem>
+                                    </UnorderedList>
                                 </Box>
-                                
-                                <Box style={styles.section}>
-                                    <Text style={styles.sectionTitle}>3. One Health Goal</Text>
-                                    <Text fontSize="lg">{insightsSections.healthGoal}</Text> {/* Added fontSize */}
+
+                                <Box mb={6} p={4} bg="yellow.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaRunning} color="yellow.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="yellow.700" fontSize="2xl">Health Goal</Text>
+                                    </HStack>
+                                    <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_goal}</Text>
                                 </Box>
-                                
-                                <Box style={styles.section}>
-                                    <Text style={styles.sectionTitle}>4. Health Horoscope</Text>
-                                    <Text fontSize="lg">{insightsSections.healthHoroscope}</Text> {/* Added fontSize */}
+
+                                <Box mb={6} p={4} bg="purple.50" borderRadius="md" boxShadow="sm">
+                                    <HStack spacing={3}>
+                                        <Icon as={FaStar} color="purple.500" boxSize={6} />
+                                        <Text fontWeight="bold" color="purple.700" fontSize="2xl">Health Horoscope</Text>
+                                    </HStack>
+                                    <Text mt={2} fontSize="lg" fontWeight="medium">{insights.health_horoscope}</Text>
                                 </Box>
                             </Box>
                         </Box>
@@ -552,26 +639,5 @@ function AIInsights() {
         </ChakraProvider>
     );
 }
-
-const styles = {
-    responseContainer: {
-        backgroundColor: '#f9f9fb',
-        padding: '1rem',
-        borderRadius: '8px',
-    },
-    section: {
-        marginBottom: '1rem',
-        padding: '1rem',
-        backgroundColor: '#ffffff',
-        border: '1px solid #e0e0e0',
-        borderRadius: '8px',
-    },
-    sectionTitle: {
-        fontSize: '1.25rem',
-        fontWeight: 'bold',
-        color: '#0b2545',
-        marginBottom: '0.5rem',
-    },
-};
 
 export default AIInsights;

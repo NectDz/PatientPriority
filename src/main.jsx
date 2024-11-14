@@ -150,6 +150,7 @@ import RemindersAndAppointments from "./pages/PatientProfile/SidePanelPages/Remi
 import MeetingSummaries from "./pages/PatientProfile/SidePanelPages/MeetingSummaries.jsx";
 import AIInsights from "./pages/PatientProfile/SidePanelPages/AIInsights.jsx";
 import PatientHomePage from "./pages/PatientProfile/SidePanelPages/patientHomePage.jsx"
+import AIChatbot from "./pages/PatientProfile/SidePanelPages/AIChatbot.jsx";
 
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
@@ -164,7 +165,9 @@ import AddPatient from "./pages/Patients/AddPatient";
 
 //support
 import Support from "./pages/Home/Support";
-
+import AboutUs from "./pages/Home/AboutUs";
+import FAQ from "./pages/Home/FAQ";
+import Contact from "./pages/Home/Contact";
 
 // a wrapper for the protected doctor routes
 function ProtectedDoctorRoute({ children }) {
@@ -254,6 +257,7 @@ ReactDOM.createRoot(rootElement).render(
                   element={<MeetingSummaries />}
                 />
                 <Route path="ai-insights" element={<AIInsights />} />
+                <Route path="ai-chatbot" element={<AIChatbot />} />
                 <Route path="audio-test" element={<AudioTest />} />
                 {/* Redirect to home if no sub-route specified */}
                 <Route index element={<Navigate to="home" replace />} />
@@ -289,6 +293,9 @@ ReactDOM.createRoot(rootElement).render(
               {/* If a user tries to go to any unspecified route, redirect them to "/", which is the HomeRoutes */}
               <Route path="*" element={<Navigate to="/" replace />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
           </BrowserRouter>
         </Layout>
