@@ -1,5 +1,18 @@
-import React from "react";
-import { Box, Heading, Image, Text } from "@chakra-ui/react";
+import React, { useState } from "react";
+import {
+  Box,
+  Heading,
+  Image,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import doctorIcon from "../../assets/doctor.png";
 import patientIcon from "../../assets/patient.png";
@@ -7,13 +20,26 @@ import "./SignUp.css";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userType, setUserType] = useState(""); // To determine whether it's doctor or patient
 
   const handleDoctorSignUp = () => {
-    navigate("/doctor-signup"); //unsure
+    setUserType("Doctor");
+    onOpen();
   };
 
   const handlePatientSignUp = () => {
-    navigate("/patient-signup"); //not sure, probably nav to rahats questionnaire
+    setUserType("Patient");
+    onOpen();
+  };
+
+  const confirmNavigation = () => {
+    if (userType === "Doctor") {
+      navigate("/doctor-signup"); //unsure
+    } else if (userType === "Patient") {
+      navigate("/patient-signup"); //not sure, probably nav to Rahat's questionnaire
+    }
+    onClose();
   };
 
   return (
@@ -96,6 +122,29 @@ const SignUp = () => {
           </Text>
         </Box>
       </Box>
+
+      {/* Disclaimer Popup */}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Disclaimer</ModalHeader>
+          <ModalBody>
+            <Text fontSize="lg">
+              By proceeding, you agree to our terms and conditions and consent
+              to your data being processed in accordance with our privacy
+              policy.
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={confirmNavigation}>
+              I Agree
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
