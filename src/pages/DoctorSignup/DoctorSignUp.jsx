@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebase-config"; // import both auth and db
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth"; // firebase Authentication
+import Footer from "../Home/Footer";
 
 function DoctorSignUp() {
   const navigate = useNavigate();
@@ -215,6 +216,19 @@ function DoctorSignUp() {
               >
                 Verify Credentials
               </Button>
+              <Button
+              //_hover={{ bg: "#4d7098" }}
+              color="#335d8f"
+              bg="#e6eef7"
+              onClick={() => navigate("/home")}
+              _hover={{ bg: "#e6eef7", color: "#335d8f" ,boxShadow: "2xl" }}
+               borderColor="#f1f8ff"
+               borderWidth="2px"
+          transition="all 0.3s"
+              isLoading={loading} //loading spinner while logging in
+            >
+              Back to Home
+            </Button>
             </Grid>
           ) : (
             <Grid gap={4}>
@@ -257,6 +271,7 @@ function DoctorSignUp() {
           )}
         </Box>
       </Flex>
+      <Footer/>
     </ChakraProvider>
   );
 }

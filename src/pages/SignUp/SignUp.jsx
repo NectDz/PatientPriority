@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import doctorIcon from "../../assets/doctor.png";
 import patientIcon from "../../assets/patient.png";
 import "./SignUp.css";
+import Footer from "../Home/Footer";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -160,7 +161,6 @@ const SignUp = () => {
                 Please visit our FAQ page, fill out a support ticket or contact us for further inquiries at this time.
               </Text>
             </Box>
-            
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={confirmNavigation}>
@@ -172,6 +172,25 @@ const SignUp = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      {/* Back Button */}
+      <Button
+        mt={8}
+        mb={8}
+        colorScheme="teal"
+        onClick={() => navigate("/home")}
+        bg="#335d8f"
+        color="white"
+        size="md"
+        //_hover={{ bg: "#4d7098" }}
+        borderColor="#f1f8ff"
+        borderWidth="2px"
+        _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+        transition="all 0.3s"
+      >
+        Back to Home
+      </Button>
+      <Footer/>
     </Box>
   );
 };
