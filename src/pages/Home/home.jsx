@@ -303,7 +303,18 @@ import {
 
 import { useNavigate } from "react-router-dom"; // Navigation
 
-import { FaCalendarAlt, FaFileAlt, FaUserCircle } from 'react-icons/fa'; // Icons
+import {
+  FaCalendarAlt,
+  FaFileAlt,
+  FaUserCircle,
+  FaBrain,
+  FaStethoscope,
+  FaLock,
+  FaMicrophone,
+  FaRobot,
+  FaBell,
+} from 'react-icons/fa';
+
 
 import pulseHeart from "../../assets/pulse-heart.png"; // Image asset
 import heartBeatSound from "../../assets/heartbeat-sound.mp3"; // Audio asset
@@ -593,26 +604,51 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
 
 
        <Box display="flex" flexDirection="column" alignItems="center" mt="8">
-         <Heading fontSize="4xl" color="#00366d" mb="4">
-           Our Services
-         </Heading>
-         <Box display="flex" justifyContent="center" mt="4" px={8}>
-           <ServiceBox
-             title="Online Appointment"
-             description="Getting appointment is easier than ever with our appointment management system..."
-             icon={<FaCalendarAlt />}
-           />
-           <ServiceBox
-             title="Easy Transcription"
-             description="No more miscommunication and misinterpretation, have all your conversations in one place..."
-             icon={<FaFileAlt />} 
-           />
-           <ServiceBox
-             title="Patient Profile Management"
-             description="Manage your health profile, medications and appointments with ease..."
-             icon={<FaUserCircle />} 
-           />
-         </Box>
+       <Heading fontSize="4xl" color="#00366d" mb="4">
+        Our Services
+      </Heading>
+      <Box display="flex" justifyContent="center" flexWrap="wrap" mt="4" px={8}>
+        <ServiceBox
+          title="Online Appointment"
+          description="Streamline scheduling for both doctors and patients, reducing no-shows and boosting efficiency with our integrated system."
+          icon={<FaCalendarAlt />}
+        />
+        <ServiceBox
+          title="Easy Transcription"
+          description="Save time and improve record accuracy by transcribing doctor-patient conversations with AI-powered precision."
+          icon={<FaFileAlt />}
+        />
+        <ServiceBox
+          title="Patient Profile Management"
+          description="Empower patients to actively engage in their healthcare with personalized dashboards and centralized health information."
+          icon={<FaUserCircle />}
+        />
+        <ServiceBox
+          title="Generative AI Health Insights"
+          description="Leverage AI to analyze patient profiles and provide personalized wellness tips, reminders, and proactive health recommendations."
+          icon={<FaBrain />}
+        />
+        <ServiceBox
+          title="Doctor Portal"
+          description="Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently."
+          icon={<FaStethoscope />}
+        />
+        <ServiceBox
+          title="Secure OAuth Login"
+          description="Enhance security with seamless Single Sign-On options, currently supporting Google, for both doctors and patients."
+          icon={<FaLock />}
+        />
+        <ServiceBox
+          title="Audio Upload & Transcription"
+          description="Enable on-the-go documentation with audio uploads that convert to text and structured insights for easy analysis."
+          icon={<FaMicrophone />}
+        />
+        <ServiceBox
+          title="AI Chatbot Support"
+          description="Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice."
+          icon={<FaRobot />}
+        />
+      </Box>
 
 
          <Heading fontSize="4xl" color="#00366d" mt="8" mb="4">
