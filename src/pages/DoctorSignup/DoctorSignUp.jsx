@@ -225,7 +225,7 @@ function DoctorSignUp() {
                borderColor="#f1f8ff"
                borderWidth="2px"
           transition="all 0.3s"
-              isLoading={loading} //loading spinner while logging in
+              //isLoading={loading} //loading spinner while logging in
             >
               Back to Home
             </Button>
