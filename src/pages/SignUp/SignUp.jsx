@@ -11,6 +11,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Link,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -127,17 +128,43 @@ const SignUp = () => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Disclaimer</ModalHeader>
+          <ModalHeader>Important Disclaimer</ModalHeader>
           <ModalBody>
-            <Text fontSize="lg">
-              By proceeding, you agree to our terms and conditions and consent
-              to your data being processed in accordance with our privacy
-              policy.
+            <Text fontSize="md" mb="4">
+              By creating an account on PatientPriority, you acknowledge and
+              agree to the following:
             </Text>
+            <Box pl="4">
+              <Text fontSize="sm" mb="2">
+                • Your personal data may be stored securely in our database for
+                the purpose of delivering personalized healthcare
+                recommendations.
+              </Text>
+              <Text fontSize="sm" mb="2">
+                • PatientPriority complies with HIPAA standards to protect your
+                sensitive health information.
+              </Text>
+              <Text fontSize="sm" mb="2">
+                • The platform provides AI-driven insights and recommendations
+                as a supplementary resource. These do not replace professional
+                medical advice.
+              </Text>
+              <Text fontSize="sm" mb="2">
+                • You are responsible for ensuring the accuracy of all submitted
+                information.
+              </Text>
+              <Text fontSize="sm" mb="2">
+                • PatientPriority is not liable for any harm, injury, or adverse outcomes resulting from the use of the platform.
+              </Text>
+              <Text fontSize="md" mb="4">
+                Please visit our FAQ page, fill out a support ticket or contact us for further inquiries at this time.
+              </Text>
+            </Box>
+            
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={confirmNavigation}>
-              I Agree
+              Agree and Continue
             </Button>
             <Button variant="ghost" onClick={onClose}>
               Cancel
