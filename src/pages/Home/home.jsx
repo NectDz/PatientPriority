@@ -555,15 +555,22 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
 
 
            <Text
-             fontSize="xl"
-             color="#4d7098"
-             cursor="pointer"
-             textDecoration="underline"
-             mt="4"
-             onClick={handleCreateAccount}
-           >
-             Don’t have an account? Click here to sign up!
-           </Text>
+            fontSize="xl"
+            color="#4d7098"
+            cursor="pointer"
+            mt="4"
+          >
+            Don’t have an account? Click here to {" "}
+            <Text
+              as="span"
+              color="#4d7098"
+              textDecoration="underline"
+              _hover={{ color: "#2b4d66" }}
+              onClick={handleCreateAccount}
+            >
+              sign up!
+            </Text>
+          </Text>
          </Box>
 
 
