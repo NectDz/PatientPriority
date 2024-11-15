@@ -12,8 +12,11 @@ import {
   HStack,
   Icon,
   Stack,
+  Button,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { FaHeartbeat, FaChartLine, FaLightbulb, FaUserShield } from "react-icons/fa";
+import Footer from "./Footer"; // Footer component
 
 const theme = extendTheme({
   fonts: {
@@ -51,6 +54,7 @@ const StatBox = ({ icon, stat, label }) => (
 );
 
 const AboutUs = () => {
+  const navigate = useNavigate(); // Hook for navigation
   return (
     <ChakraProvider theme={theme}>
       <Box
@@ -138,6 +142,25 @@ const AboutUs = () => {
             </Box>
           </Box>
         </VStack>
+
+        {/* Back Button */}
+        <Button
+          mt={8}
+          mb={8}
+          colorScheme="teal"
+          onClick={() => navigate("/home")}
+          bg="#335d8f"
+          color="white"
+          size="md"
+          borderColor="#f1f8ff"
+          borderWidth="2px"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+        >
+          Back to Home
+        </Button>
+
+        <Footer />
       </Box>
     </ChakraProvider>
   );

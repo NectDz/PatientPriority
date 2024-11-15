@@ -1,5 +1,3 @@
-// Support.jsx
-
 import React, { useState } from "react";
 import {
   ChakraProvider,
@@ -13,6 +11,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import Footer from "./Footer"; // Footer component
+import { useNavigate } from "react-router-dom"; // Import navigate function
 
 const theme = extendTheme({
   fonts: {
@@ -30,6 +30,7 @@ const Support = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,7 +70,6 @@ const Support = () => {
         minHeight="100vh"
         p={8}
         backgroundColor="#f1f8ff"
-        
       >
         <Heading fontSize="4xl" color="#00366d" mb="8">
           Support
@@ -82,9 +82,9 @@ const Support = () => {
           borderRadius="md"
           onSubmit={handleSubmit}
           boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-                    transition="all 0.3s"
-                    _hover={{ boxShadow: "2xl" }}
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
         >
           <Text fontSize="lg" color="#00366d" mb="4">
             Please fill out the form below, and our support team will contact you shortly.
@@ -128,7 +128,6 @@ const Support = () => {
             required
           />
           <Button
-            // colorScheme="teal"
             type="submit"
             isLoading={isSubmitting}
             width="full"
@@ -139,7 +138,25 @@ const Support = () => {
             Submit
           </Button>
         </Box>
+
+        {/* Back Button */}
+        <Button
+          mt={8}
+          mb={8}
+          colorScheme="teal"
+          onClick={() => navigate("/home")}
+          bg="#335d8f"
+          color="white"
+          size="md"
+          borderColor="#f1f8ff"
+          borderWidth="2px"
+          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+          transition="all 0.3s"
+        >
+          Back to Home
+        </Button>
       </Box>
+      <Footer />
     </ChakraProvider>
   );
 };
