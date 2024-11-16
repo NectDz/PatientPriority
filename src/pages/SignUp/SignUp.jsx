@@ -63,7 +63,7 @@ const SignUp = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Heading fontSize="6xl" color="#00366d" mb="4">
+        <Heading fontSize="6xl" color="#00366d" mt = "20" mb="4">
           Glad to have you here!
         </Heading>
         <Text fontSize="3xl" color="#335d8f">
@@ -181,12 +181,14 @@ const SignUp = () => {
         onClick={() => navigate("/home")}
         bg="#335d8f"
         color="white"
-        size="md"
+        size="lg"
         //_hover={{ bg: "#4d7098" }}
         borderColor="#f1f8ff"
         borderWidth="2px"
         _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
         transition="all 0.3s"
+        h = "150px"
+        p={3}
       >
         Back to Home
       </Button>
