@@ -71,7 +71,7 @@ const Support = () => {
         p={8}
         backgroundColor="#f1f8ff"
       >
-        <Heading fontSize="4xl" color="#00366d" mb="8">
+        <Heading fontSize="6xl" color="#00366d" mb={4} mt={8} textAlign="center">
           Support
         </Heading>
         <Box

@@ -299,6 +299,7 @@ import {
  Avatar,
  Link,
  extendTheme,
+ IconButton,
 } from "@chakra-ui/react"; // Chakra UI components
 
 import { useNavigate } from "react-router-dom"; // Navigation
@@ -313,8 +314,9 @@ import {
   FaMicrophone,
   FaRobot,
   FaBell,
+  FaChevronLeft,
+  FaChevronRight,
 } from 'react-icons/fa';
-
 
 import pulseHeart from "../../assets/pulse-heart.png"; // Image asset
 import heartBeatSound from "../../assets/heartbeat-sound.mp3"; // Audio asset
@@ -325,9 +327,6 @@ import { useInView } from 'react-intersection-observer'; // Intersection Observe
 
 import "./Home.css"; // Custom styles
 
-
-
-
 const theme = extendTheme({
  fonts: {
    heading: "Sansation, sans-serif", 
@@ -335,35 +334,72 @@ const theme = extendTheme({
  },
 });
 
-
 const Home = () => {
  const navigate = useNavigate();
-
-
  const [visibleForm, setVisibleForm] = useState(null); 
  const [isAuthenticating, setIsAuthenticating] = useState(false);
  const audioRef = useRef(null);
+ const [currentSlide, setCurrentSlide] = useState(0);
 
+ // Services data
+ const services = [
+   {
+     title: "Online Appointment",
+     description: "Streamline scheduling for both doctors and patients, reducing no-shows and boosting efficiency with our integrated system.",
+     icon: <FaCalendarAlt />
+   },
+   {
+     title: "Easy Transcription",
+     description: "Save time and improve record accuracy by transcribing doctor-patient conversations with AI-powered precision.",
+     icon: <FaFileAlt />
+   },
+   {
+     title: "Patient Profile Management",
+     description: "Empower patients to actively engage in their healthcare with personalized dashboards and centralized health information.",
+     icon: <FaUserCircle />
+   },
+   {
+     title: "Generative AI Health Insights",
+     description: "Leverage AI to analyze patient profiles and provide personalized wellness tips, reminders, and proactive health recommendations.",
+     icon: <FaBrain />
+   },
+   {
+     title: "Doctor Portal",
+     description: "Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently.",
+     icon: <FaStethoscope />
+   },
+   {
+     title: "Secure OAuth Login",
+     description: "Enhance security with seamless Single Sign-On options, currently supporting Google, for both doctors and patients.",
+     icon: <FaLock />
+   },
+   {
+     title: "Audio Upload & Transcription",
+     description: "Enable on-the-go documentation with audio uploads that convert to text and structured insights for easy analysis.",
+     icon: <FaMicrophone />
+   },
+   {
+     title: "AI Chatbot Support",
+     description: "Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice.",
+     icon: <FaRobot />
+   }
+ ];
 
  const handleDoctorLogin = () => {
    navigate("/doctor-login");
  };
 
-
  const handlePatientLogin = () => {
    navigate("/patient-login");
  };
-
 
  const handleCreateAccount = () => {
    navigate("/signUp");
  };
 
-
  const handleBack = () => {
    setVisibleForm(null);
  };
-
 
  const handleSubmit = (formType) => {
    setIsAuthenticating(true); 
@@ -383,7 +419,6 @@ const Home = () => {
    audio.loop = true;
  };
 
-
  const handleMouseLeave = () => {
    const audio = audioRef.current;
    audio.pause(); 
@@ -391,7 +426,22 @@ const Home = () => {
    audio.loop = false;
  };
 
+ const nextSlide = () => {
+   setCurrentSlide((prev) => (prev + 3 >= services.length ? 0 : prev + 3));
+ };
 
+ const prevSlide = () => {
+   setCurrentSlide((prev) => (prev - 3 < 0 ? services.length - 3 : prev - 3));
+ };
+
+ // Auto-advance carousel
+ useEffect(() => {
+   const timer = setInterval(() => {
+     nextSlide();
+   }, 5000); // Change slides every 5 seconds
+
+   return () => clearInterval(timer);
+ }, [currentSlide]);
  
  const ServiceBox = ({ title, description, icon }) => {
   const { ref, inView } = useInView({ threshold: 0.1 }); 
@@ -428,8 +478,6 @@ const Home = () => {
     </Box>
   );
 };
-
-
    
 const TeamMember = ({ name, description, link, imageUrl }) => {
   const { ref, inView } = useInView({ threshold: 0.1 }); 
@@ -479,7 +527,6 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
   );
 };
 
-
  return (
    <ChakraProvider theme={theme}>
      <Box
@@ -508,7 +555,6 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
          </Box>
        )}
 
-
        <Box
          display="flex"
          flexDirection="row"
@@ -524,11 +570,9 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
              A Place Where Care Meets Clarity...
            </Heading>
 
-
            <Text fontSize="2xl" color="#335d8f" mt="4">
             Helping doctors and patients stay informed and proactive.
            </Text>
-
 
            <Box display="flex" gap="4" mt="8">
              <Button
@@ -537,15 +581,13 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
                bg="#335d8f"
                color="white"
                size="md"
-               //_hover={{ bg: "#4d7098" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
                _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
+               transition="all 0.3s"
              >
                Login as Doctor
              </Button>
-
 
              <Button
                colorScheme="teal"
@@ -556,14 +598,11 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
                _hover={{ bg: "#e6eef7", color: "#335d8f" ,boxShadow: "2xl" }}
                borderColor="#f1f8ff"
                borderWidth="2px"
-               
-               //_hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
+               transition="all 0.3s"
              >
                Login as Patient
              </Button>
            </Box>
-
 
            <Text
             fontSize="xl"
@@ -571,7 +610,7 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
             cursor="pointer"
             mt="4"
           >
-            Don’t have an account? Click here to {" "}
+            Don't have an account? Click here to {" "}
             <Text
               as="span"
               color="#4d7098"
@@ -584,10 +623,8 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
           </Text>
          </Box>
 
-
          <Box>
            <audio ref={audioRef} src={heartBeatSound} />
-
 
            <Image
              src={pulseHeart}
@@ -602,54 +639,62 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
          </Box>
        </Box>
 
-
        <Box display="flex" flexDirection="column" alignItems="center" mt="8">
-       <Heading fontSize="4xl" color="#00366d" mb="4">
-        Our Services
-      </Heading>
-      <Box display="flex" justifyContent="center" flexWrap="wrap" mt="4" px={8}>
-        <ServiceBox
-          title="Online Appointment"
-          description="Streamline scheduling for both doctors and patients, reducing no-shows and boosting efficiency with our integrated system."
-          icon={<FaCalendarAlt />}
-        />
-        <ServiceBox
-          title="Easy Transcription"
-          description="Save time and improve record accuracy by transcribing doctor-patient conversations with AI-powered precision."
-          icon={<FaFileAlt />}
-        />
-        <ServiceBox
-          title="Patient Profile Management"
-          description="Empower patients to actively engage in their healthcare with personalized dashboards and centralized health information."
-          icon={<FaUserCircle />}
-        />
-        <ServiceBox
-          title="Generative AI Health Insights"
-          description="Leverage AI to analyze patient profiles and provide personalized wellness tips, reminders, and proactive health recommendations."
-          icon={<FaBrain />}
-        />
-        <ServiceBox
-          title="Doctor Portal"
-          description="Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently."
-          icon={<FaStethoscope />}
-        />
-        <ServiceBox
-          title="Secure OAuth Login"
-          description="Enhance security with seamless Single Sign-On options, currently supporting Google, for both doctors and patients."
-          icon={<FaLock />}
-        />
-        <ServiceBox
-          title="Audio Upload & Transcription"
-          description="Enable on-the-go documentation with audio uploads that convert to text and structured insights for easy analysis."
-          icon={<FaMicrophone />}
-        />
-        <ServiceBox
-          title="AI Chatbot Support"
-          description="Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice."
-          icon={<FaRobot />}
-        />
-      </Box>
+         <Heading fontSize="4xl" color="#00366d" mb="4">
+           Our Services
+         </Heading>
+         
+         {/* Carousel Container */}
+         <Box position="relative" width="100%" maxWidth="1200px" px="8">
+           {/* Navigation Buttons */}
+           <IconButton
+             icon={<FaChevronLeft />}
+             onClick={prevSlide}
+             position="absolute"
+             left="0"
+             top="50%"
+             transform="translateY(-50%)"
+             zIndex="2"
+             bg="rgba(255, 255, 255, 0.8)"
+             _hover={{ bg: "rgba(255, 255, 255, 0.9)" }}
+           />
+           
+           <IconButton
+             icon={<FaChevronRight />}
+             onClick={nextSlide}
+             position="absolute"
+             right="0"
+             top="50%"
+             transform="translateY(-50%)"
+             zIndex="2"
+             bg="rgba(255, 255, 255, 0.8)"
+             _hover={{ bg: "rgba(255, 255, 255, 0.9)" }}
+           />
 
+           {/* Carousel Content */}
+           <Box
+             display="flex"
+             justifyContent="center"
+             transition="transform 0.5s ease"
+             mx="auto"
+             overflow="hidden"
+           >
+             <Box
+               display="flex"
+               transform={`translateX(-${currentSlide * (100 / 3)}%)`}
+               transition="transform 0.5s ease"
+             >
+               {services.map((service, index) => (
+                 <ServiceBox
+                   key={index}
+                   title={service.title}
+                   description={service.description}
+                   icon={service.icon}
+                 />
+               ))}
+             </Box>
+           </Box>
+         </Box>
 
          <Heading fontSize="4xl" color="#00366d" mt="8" mb="4">
            Our Team
