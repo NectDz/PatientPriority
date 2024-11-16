@@ -427,21 +427,21 @@ const Home = () => {
  };
 
  const nextSlide = () => {
-   setCurrentSlide((prev) => (prev + 3 >= services.length ? 0 : prev + 3));
+   setCurrentSlide((prev) => (prev + 1) % services.length);
  };
 
  const prevSlide = () => {
-   setCurrentSlide((prev) => (prev - 3 < 0 ? services.length - 3 : prev - 3));
+   setCurrentSlide((prev) => (prev - 1 + services.length) % services.length);
  };
 
  // Auto-advance carousel
  useEffect(() => {
    const timer = setInterval(() => {
      nextSlide();
-   }, 5000); // Change slides every 5 seconds
+   }, 3000); // Change slides every 3 seconds
 
    return () => clearInterval(timer);
- }, [currentSlide]);
+ }, []);
  
  const ServiceBox = ({ title, description, icon }) => {
   const { ref, inView } = useInView({ threshold: 0.1 }); 
@@ -675,16 +675,17 @@ const TeamMember = ({ name, description, link, imageUrl }) => {
            <Box
              display="flex"
              justifyContent="center"
-             transition="transform 0.5s ease"
              mx="auto"
              overflow="hidden"
            >
              <Box
                display="flex"
-               transform={`translateX(-${currentSlide * (100 / 3)}%)`}
+               transform={`translateX(-${currentSlide * 300}px)`}
                transition="transform 0.5s ease"
+               gap={4}
              >
-               {services.map((service, index) => (
+               {/* Display all services and use transform to slide */}
+               {[...services, ...services].map((service, index) => (
                  <ServiceBox
                    key={index}
                    title={service.title}
