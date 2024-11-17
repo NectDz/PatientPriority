@@ -560,7 +560,87 @@ const Home = () => {
      title: "AI Chatbot Support",
      description: "Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice.",
      icon: <FaRobot />
-   }
+   },
+   {
+    title: "Online Appointment",
+    description: "Streamline scheduling for both doctors and patients, reducing no-shows and boosting efficiency with our integrated system.",
+    icon: <FaCalendarAlt />
+  },
+  {
+    title: "Easy Transcription",
+    description: "Save time and improve record accuracy by transcribing doctor-patient conversations with AI-powered precision.",
+    icon: <FaFileAlt />
+  },
+  {
+    title: "Patient Profile Management",
+    description: "Empower patients to actively engage in their healthcare with personalized dashboards and centralized health information.",
+    icon: <FaUserCircle />
+  },
+  {
+    title: "Generative AI Health Insights",
+    description: "Leverage AI to analyze patient profiles and provide personalized wellness tips, reminders, and proactive health recommendations.",
+    icon: <FaBrain />
+  },
+  {
+    title: "Doctor Portal",
+    description: "Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently.",
+    icon: <FaStethoscope />
+  },
+  {
+    title: "Secure OAuth Login",
+    description: "Enhance security with seamless Single Sign-On options, currently supporting Google, for both doctors and patients.",
+    icon: <FaLock />
+  },
+  {
+    title: "Audio Upload & Transcription",
+    description: "Enable on-the-go documentation with audio uploads that convert to text and structured insights for easy analysis.",
+    icon: <FaMicrophone />
+  },
+  {
+    title: "AI Chatbot Support",
+    description: "Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice.",
+    icon: <FaRobot />
+  },
+  {
+    title: "Online Appointment",
+    description: "Streamline scheduling for both doctors and patients, reducing no-shows and boosting efficiency with our integrated system.",
+    icon: <FaCalendarAlt />
+  },
+  {
+    title: "Easy Transcription",
+    description: "Save time and improve record accuracy by transcribing doctor-patient conversations with AI-powered precision.",
+    icon: <FaFileAlt />
+  },
+  {
+    title: "Patient Profile Management",
+    description: "Empower patients to actively engage in their healthcare with personalized dashboards and centralized health information.",
+    icon: <FaUserCircle />
+  },
+  {
+    title: "Generative AI Health Insights",
+    description: "Leverage AI to analyze patient profiles and provide personalized wellness tips, reminders, and proactive health recommendations.",
+    icon: <FaBrain />
+  },
+  {
+    title: "Doctor Portal",
+    description: "Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently.",
+    icon: <FaStethoscope />
+  },
+  {
+    title: "Secure OAuth Login",
+    description: "Enhance security with seamless Single Sign-On options, currently supporting Google, for both doctors and patients.",
+    icon: <FaLock />
+  },
+  {
+    title: "Audio Upload & Transcription",
+    description: "Enable on-the-go documentation with audio uploads that convert to text and structured insights for easy analysis.",
+    icon: <FaMicrophone />
+  },
+  {
+    title: "AI Chatbot Support",
+    description: "Receive instant assistance with an AI chatbot that answers questions, provides reminders, and offers personalized advice.",
+    icon: <FaRobot />
+  }
  ];
 
  const handleDoctorLogin = () => {
