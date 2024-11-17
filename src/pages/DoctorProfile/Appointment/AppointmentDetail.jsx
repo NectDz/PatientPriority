@@ -21,6 +21,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { FaMicrophone, FaStop } from "react-icons/fa"; // Import icons
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const db = getFirestore();
 
@@ -107,14 +108,17 @@ function AppointmentDetail() {
       if (response.ok) {
         const transcript = await response.text();
 
+        // Generate final response using AI model
+        const finalResponse = await generateFinalResponse(transcript);
+
         // Update appointment with the transcript in Firestore
         await updateDoc(doc(db, "appointment", id), {
-          appointmentTranscript: transcript,
+          appointmentTranscript: finalResponse,
         });
 
         setAppointment((prevAppointment) => ({
           ...prevAppointment,
-          appointmentTranscript: transcript,
+          appointmentTranscript: finalResponse,
         }));
 
         setMessage("Transcript uploaded and saved.");
@@ -127,6 +131,18 @@ function AppointmentDetail() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const generateFinalResponse = async (transcript) => {
+    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY); // Replace with your actual API key
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `
+    Please identify the speakers in the following transcription and label them as 'Doctor' and 'Patient' accordingly on top of each time stamp and make timestamp more readable by rounding up\n:\n\n${transcript}
+    `;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text();
   };
 
   // Voice recording functions
