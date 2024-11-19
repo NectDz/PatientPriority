@@ -121,11 +121,20 @@ function DoctorHome() {
         );
         const patientSnapshot = await getDocs(patientQuery);
 
-        const patientIds = patientSnapshot.docs.map((doc) => ({
-          id: doc.data().id,
-          firstName: doc.data().firstName,
-          lastName: doc.data().lastName,
-        }));
+        // const patientIds = patientSnapshot.docs.map((doc) => ({
+        //   id: doc.data().id,
+        //   firstName: doc.data().firstName,
+        //   lastName: doc.data().lastName,
+        // }));
+        const patientIds = patientSnapshot.docs
+        // filter out the patients with an ID (because new patients don't have an ID which causes an error)
+          .filter((doc) => doc.data().id) 
+          .map((doc) => ({
+            id: doc.data().id,
+            firstName: doc.data().firstName,
+            lastName: doc.data().lastName,
+            profilePicture: doc.data().profilePicture || null,
+          }));
 
         //3 - get appointments for each patient and display their first and last name
         const appointmentPromises = patientIds.map(async (patient) => {
@@ -140,6 +149,7 @@ function DoctorHome() {
             date: doc.data().appointmentDate,
             description: doc.data().appointmentDescription,
             patientName: `${patient.firstName} ${patient.lastName}`,
+            profilePicture: patient.profilePicture,
           }));
         });
 
@@ -351,6 +361,7 @@ function DoctorHome() {
               <Table variant="striped">
                 <Thead>
                   <Tr>
+                    <Th>Profile</Th>
                     <Th>Patient</Th>
                     <Th>Time</Th>
                     <Th>Description</Th>
@@ -359,6 +370,15 @@ function DoctorHome() {
                 <Tbody>
                   {todaysAppointments.map((appointment) => (
                     <Tr key={appointment.id}>
+                      <Td>
+                        <Avatar
+                          size="lg"
+                          src={
+                            appointment.profilePicture || "default-profile.png"
+                          }
+                          name={appointment.patientName}
+                        />
+                      </Td>
                       <Td>{appointment.patientName}</Td>
                       <Td>{appointment.date.toDate().toLocaleTimeString()}</Td>
                       <Td>{appointment.description}</Td>
@@ -400,6 +420,7 @@ function DoctorHome() {
               <Table variant="striped">
                 <Thead>
                   <Tr>
+                    <Th>Profile</Th>
                     <Th>Name</Th>
                     <Th>Date</Th>
                     <Th>Description</Th>
@@ -408,6 +429,15 @@ function DoctorHome() {
                 <Tbody>
                   {recentAppointments.map((appointment) => (
                     <Tr key={appointment.id}>
+                      <Td>
+                        <Avatar
+                          size="lg"
+                          src={
+                            appointment.profilePicture || "default-profile.png"
+                          }
+                          name={appointment.patientName}
+                        />
+                      </Td>
                       <Td>{appointment.patientName}</Td>
                       <Td>
                         {new Date(

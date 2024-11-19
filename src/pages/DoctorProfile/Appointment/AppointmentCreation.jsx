@@ -8,6 +8,7 @@ import {
   Button,
   Textarea,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ const db = getFirestore();
 
 function AppointmentCreation() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [date, setDate] = useState("");
@@ -89,6 +91,18 @@ function AppointmentCreation() {
     }
 
     try {
+      // First check if the selected patient has an ID (meaning if they signed up), else throw a toast to let doc know
+      if (!selectedPatient.value) {
+        toast({
+          title: "Patient Not Registered",
+          description: "This patient hasn't signed up yet.",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+        return;
+      }
+
       //get doctor ID again for this session
       const doctorQuery = query(
         collection(db, "doctor"),
