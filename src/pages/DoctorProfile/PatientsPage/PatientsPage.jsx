@@ -7,6 +7,7 @@ import {
   Button,
   Spinner,
   HStack,
+  Image,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { getAuth } from "firebase/auth";
@@ -62,6 +63,7 @@ function Patients() {
             firstName: doc.data().firstName,
             lastName: doc.data().lastName,
             doctorId: doc.data().doctor_id, //verify doctor-patient relationship
+            profilePicture: doc.data().profilePicture || null,
           }));
 
           setPatients(fetchedPatients);
@@ -122,23 +124,53 @@ function Patients() {
               borderRadius="md"
               boxShadow="md"
             >
-              <Heading as="h2" size="md" mb={2}>
-                {patient.firstName} {patient.lastName}
-              </Heading>
-              <Text>ID: {patient.id}</Text>
-              <Button
-                as={Link}
-                to={`/doctor-profile/patients/${patient.id}`}
-                colorScheme="teal"
-                mt={4}
-                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
-            color="#f1f8ff"
-            bg="#335d8f"
-              >
-                View Details
-              </Button>
+              <HStack spacing={6} align="start">
+                <Box w="100px" h="100px" flexShrink={0}>
+                  {patient.profilePicture ? ( // if a patient profile image exists then display as such
+                    <Image
+                      src={patient.profilePicture}
+                      alt={`${patient.firstName}'s profile`}
+                      borderRadius="md"
+                      objectFit="cover"
+                      w="100%"
+                      h="100%"
+                    />
+                  ) : ( // if it doesn't, display "No Image" instead
+                    <Box
+                      w="100%"
+                      h="100%"
+                      bg="gray.200"
+                      borderRadius="md"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <Text fontSize="sm" color="gray.500">
+                        No image
+                      </Text>
+                    </Box>
+                  )}
+                </Box>
+                <Box flex="1">
+                  <Heading as="h2" size="md" mb={2}>
+                    {patient.firstName} {patient.lastName}
+                  </Heading>
+                  <Text>ID: {patient.id}</Text>
+                  <Button
+                    as={Link}
+                    to={`/doctor-profile/patients/${patient.id}`}
+                    colorScheme="teal"
+                    mt={4}
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                    _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+                    transition="all 0.3s"
+                    color="#f1f8ff"
+                    bg="#335d8f"
+                  >
+                    View Details
+                  </Button>
+                </Box>
+              </HStack>
             </Box>
           ))}
         </VStack>

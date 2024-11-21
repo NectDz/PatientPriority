@@ -19,8 +19,11 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { FaPhoneAlt, FaEnvelope, FaInfoCircle, FaUserMd, FaUser } from "react-icons/fa";
+import Footer from "./Footer"; // Footer component
+import { useNavigate } from "react-router-dom";
 
 const Contact = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -249,9 +252,27 @@ const Contact = () => {
           </Text>
         </Box>
       </VStack>
+
+      {/* Back Button */}
+      <Button
+        mt={8}
+        mb={8}
+        colorScheme="teal"
+        onClick={() => navigate("/home")}
+        bg="#335d8f"
+        color="white"
+        size="md"
+        borderColor="#f1f8ff"
+        borderWidth="2px"
+        _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+        transition="all 0.3s"
+      >
+        Back to Home
+      </Button>
+      
+      <Footer />
     </Box>
   );
 };
 
 export default Contact;
-

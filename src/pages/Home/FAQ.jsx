@@ -1,5 +1,3 @@
-// FAQ.jsx
-
 import React from "react";
 import {
   Box,
@@ -10,7 +8,10 @@ import {
   Icon,
   Stack,
   useTheme,
+  Button,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import Footer from "./Footer"; // Footer component
 import {
   FaInfoCircle,
   FaCalendarCheck,
@@ -143,6 +144,7 @@ const faqData = [
 
 const FAQ = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -156,7 +158,6 @@ const FAQ = () => {
     >
       <Box height="100px" />
 
-      
       <Heading fontSize="6xl" color="#00366d" mb={4} textAlign="center">
         FAQ
       </Heading>
@@ -164,16 +165,16 @@ const FAQ = () => {
         Frequently Asked Questions
       </Text>
 
-      
       <VStack spacing={8} align="stretch" width={{ base: "90%", md: "70%", lg: "60%" }} mx="auto">
         {faqData.map((faq, index) => (
           <Box 
-          key={index} 
-          backgroundColor="rgba(255, 255, 255, 0.6)"
-           borderRadius="md" p={8} 
-           boxShadow="lg"
-           transition="transform 0.6s ease, box-shadow 0.6s ease"
-           _hover={{ transform: "scale(1.1)", boxShadow: "xl" }} 
+            key={index} 
+            backgroundColor="rgba(255, 255, 255, 0.6)"
+            borderRadius="md" 
+            p={8} 
+            boxShadow="lg"
+            transition="transform 0.6s ease, box-shadow 0.6s ease"
+            _hover={{ transform: "scale(1.1)", boxShadow: "xl" }} 
           >
             <Stack direction="row" align="center" spacing={4} mb={4}>
               <Icon as={faq.icon} boxSize="1.5em" color={theme.colors[faq.iconColor]} />
@@ -188,6 +189,26 @@ const FAQ = () => {
           </Box>
         ))}
       </VStack>
+
+      {/* Back Button */}
+      <Button
+        mt={8}
+        mb={8}
+        colorScheme="teal"
+        onClick={() => navigate("/home")}
+        bg="#335d8f"
+        color="white"
+        size="md"
+        //_hover={{ bg: "#4d7098" }}
+        borderColor="#f1f8ff"
+        borderWidth="2px"
+        _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+        transition="all 0.3s"
+      >
+        Back to Home
+      </Button>
+
+      <Footer />
     </Box>
   );
 };

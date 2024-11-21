@@ -29,8 +29,11 @@ import {
   getDocs,
   addDoc,
 } from "firebase/firestore";
+
 import { getAuth } from "firebase/auth";
 import emailjs from "emailjs-com";
+
+import defaultProfilePic from "../../assets/profile_pic.png";
 
 const db = getFirestore();
 
@@ -42,6 +45,7 @@ function AddPatient() {
     gender: "",
     phone: "",
     email: "",
+    profilePicture: defaultProfilePic, // default image
     address: {
       street: "",
       city: "",
@@ -136,7 +140,9 @@ function AddPatient() {
     }
 
     try {
-      const newPatientData = { ...formData, doctor_id: doctorId };
+      const newPatientData = { ...formData, doctor_id: doctorId, 
+        // set the default image as the one stored on the database inside the storage componenet, this is the URL for that image
+        profilePicture: "https://firebasestorage.googleapis.com/v0/b/patientpriority-3a4f2.appspot.com/o/DefaultProfilePicture.png?alt=media&token=93c510e6-99fb-459c-ad53-4fc4529286f4",};
       await addDoc(collection(db, "patients"), newPatientData);
       console.log("Patient data saved successfully!", newPatientData);
 

@@ -57,11 +57,19 @@ function Appointments() {
           );
           const patientSnapshot = await getDocs(patientQuery);
 
-          const patientIds = patientSnapshot.docs.map((doc) => ({
-            id: doc.data().id,
-            firstName: doc.data().firstName,
-            lastName: doc.data().lastName,
-          }));
+          // const patientIds = patientSnapshot.docs.map((doc) => ({
+          //   id: doc.data().id,
+          //   firstName: doc.data().firstName,
+          //   lastName: doc.data().lastName,
+          // }));
+          const patientIds = patientSnapshot.docs
+          // filter out the patients with an ID (because new patients don't have an ID which causes an error)
+            .filter((doc) => doc.data().id)
+            .map((doc) => ({
+              id: doc.data().id,
+              firstName: doc.data().firstName,
+              lastName: doc.data().lastName,
+            }));
 
           //3 - get appointments for each patient and display their first and last name
           const appointmentPromises = patientIds.map(async (patient) => {
@@ -162,10 +170,10 @@ function Appointments() {
                 // colorScheme="teal"
                 mt={4}
                 boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
-            color="#f1f8ff"
-            bg="#335d8f"
+                _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+                transition="all 0.3s"
+                color="#f1f8ff"
+                bg="#335d8f"
               >
                 View Details
               </Button>
@@ -193,12 +201,15 @@ function Appointments() {
 
       <Box display="flex" justifyContent="center" mt={8} mb={6}>
         <Link to="/doctor-profile/appointments/create-appointment">
-          <Button display="flex" alignItems="center" gap="4"
-          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-          _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
-          color="#f1f8ff"
-          bg="#335d8f"
+          <Button
+            display="flex"
+            alignItems="center"
+            gap="4"
+            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+            _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+            transition="all 0.3s"
+            color="#f1f8ff"
+            bg="#335d8f"
           >
             New Appointment
           </Button>
