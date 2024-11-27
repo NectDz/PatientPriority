@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardHeader,
   CardBody,
@@ -67,6 +68,12 @@ function DoctorHome() {
   const [loading, setLoading] = useState(true);
 
   const [doctorName, setDoctorName] = useState("");
+
+  const todayDate = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric'
+  });
 
   // Fetch doctor data (name) from Firebase
   const fetchDoctorName = async () => {
@@ -288,21 +295,34 @@ function DoctorHome() {
     <ChakraProvider>
       <Card
         mt={4}
-        borderRadius="20px"
         height="100%"
         width="100%"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         transition="all 0.3s"
         _hover={{ boxShadow: "2xl" }}
+        bg="#ddeeff"
+        borderRadius="20px"  // Rounded corners for the card
       >
-        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
-          <Heading fontSize="2xl" color="#00366d">
+        <CardHeader
+          display="flex"  // Use Flex for the layout
+          justifyContent="space-between"  // Space between the items
+          alignItems="center"  // Center vertically
+          borderRadius="20px 20px 0px 0px"
+        >
+          <Heading fontSize="2xl" color="#00366d" textAlign="left">
             <Text>
-              Hello, Dr. {doctorName || "Loading..."} ! {/* Display doctor name */}
+              Welcome to Patient Priority, Dr. {doctorName || "Loading..."} !
             </Text>
           </Heading>
+          <Box textAlign="right">
+            <Text fontSize="xl" color="gray.500">
+              {todayDate} {/* Display today's date */}
+            </Text>
+          </Box>
         </CardHeader>
       </Card>
+
+      
       {/* To-Do List */}
       <Card
         mt={4}
