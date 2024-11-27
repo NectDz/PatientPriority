@@ -15,7 +15,7 @@ import { useAuth } from "../../Context/AuthContext";
 const DoctorSidePanel = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); //url location to see which route is active
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -54,30 +54,30 @@ const DoctorSidePanel = () => {
         w="100%"
       >
         {menuItems.slice(0, -1).map((item) => (
-          <HStack
+          <ChakraLink
+            as={ReactRouterLink}
+            to={item.to}
             key={item.label}
-            spacing={4}
-            w="97.5%"
-            h="3rem"
-            px={6}
-            bg={location.pathname === item.to ? "#2A3B5C" : "transparent"}
-            borderLeft={location.pathname === item.to ? "4px solid #FFFFFF" : "none"}
-            _hover={{
-              bg: "#2A3B5C",
-              transform: "scale(1.05)",
-              transition: "0.2s",
-            }}
+            w="100%"
+            _hover={{ textDecoration: "none" }}
           >
-            <item.icon /> 
-            <ChakraLink
-              as={ReactRouterLink}
-              to={item.to}
-              fontWeight="bold"
-              textDecoration="none"
+            <HStack
+              spacing={4}
+              w="97.5%"
+              h="3rem"
+              px={6}
+              bg={location.pathname === item.to ? "#2A3B5C" : "transparent"}
+              borderLeft={location.pathname === item.to ? "4px solid #FFFFFF" : "none"}
+              _hover={{
+                bg: "#2A3B5C",
+                transform: "scale(1.05)",
+                transition: "0.2s",
+              }}
             >
-              {item.label}
-            </ChakraLink>
-          </HStack>
+              <item.icon />
+              <Box fontWeight="bold">{item.label}</Box>
+            </HStack>
+          </ChakraLink>
         ))}
         <Spacer />
       </VStack>
@@ -88,28 +88,29 @@ const DoctorSidePanel = () => {
         w="100%"
         mt={6}
       >
-        <HStack
-          spacing={4}
-          w="97.5%"
-          h="3rem"
-          px={6}
-          bg={location.pathname === "/doctor-profile/doctor-settings" ? "#2A3B5C" : "transparent"}
-          borderLeft={location.pathname === "/doctor-profile/doctor-settings" ? "4px solid #FFFFFF" : "none"}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)",
-            transition: "0.2s",
-          }}
+        <ChakraLink
+          as={ReactRouterLink}
+          to="/doctor-profile/doctor-settings"
+          w="100%"
+          _hover={{ textDecoration: "none" }}
         >
-          <SettingsIcon />
-          <ChakraLink
-            as={ReactRouterLink}
-            to="/doctor-profile/doctor-settings"
-            fontWeight="bold"
+          <HStack
+            spacing={4}
+            w="97.5%"
+            h="3rem"
+            px={6}
+            bg={location.pathname === "/doctor-profile/doctor-settings" ? "#2A3B5C" : "transparent"}
+            borderLeft={location.pathname === "/doctor-profile/doctor-settings" ? "4px solid #FFFFFF" : "none"}
+            _hover={{
+              bg: "#2A3B5C",
+              transform: "scale(1.05)",
+              transition: "0.2s",
+            }}
           >
-            Settings
-          </ChakraLink>
-        </HStack>
+            <SettingsIcon />
+            <Box fontWeight="bold">Settings</Box>
+          </HStack>
+        </ChakraLink>
 
         <HStack
           spacing={4}
@@ -123,10 +124,12 @@ const DoctorSidePanel = () => {
           px={6}
           onClick={handleLogout}
           mb={2}
+          cursor="pointer" // Add this line
         >
           <IoIosLogOut />
-          <ChakraLink fontWeight="bold">Log Out</ChakraLink>
+          <Box fontWeight="bold">Log Out</Box>
         </HStack>
+
       </Box>
     </Box>
   );
