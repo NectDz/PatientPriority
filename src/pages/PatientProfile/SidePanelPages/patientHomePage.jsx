@@ -445,6 +445,8 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Overview from "./Overview";
+import { useNavigate } from "react-router-dom";
 
 const db = getFirestore();
 const storage = getStorage();
@@ -737,6 +739,7 @@ function PatientProfile() {
           </Box>
 
           {/* Health Overview */}
+          
           <Box
             bg={bgColor}
             borderRadius="xl"
@@ -749,7 +752,29 @@ function PatientProfile() {
             padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
             transition="all 0.3s"
             _hover={{ boxShadow: "2xl" }}
+            position="relative" // Added for absolute positioning of "View More"
           >
+            {/* View More Button */}
+            <Box
+              position="absolute"
+              bottom="1rem"
+              right="1rem"
+            >
+              <Button
+                size="sm"
+                bg="#00366d"
+                color="white"
+                _hover={{ bg: "#335d8f" }}
+                transition="all 0.3s"
+                onClick={() => {
+                  console.log("Navigating to: /patient-profile/overview");
+                  navigate("/patient-profile/overview");
+                }}
+              >
+                View More
+              </Button>
+            </Box>
+
             <Heading fontSize="xl" color="#00366d" mb={4} textAlign="center">
               Health Overview
             </Heading>
@@ -760,15 +785,9 @@ function PatientProfile() {
                   <Text fontWeight="bold">Current Health Information:</Text>
                 </Flex>
                 <List spacing={1} color="#335d8f">
-                  {/* <ListItem>Blood Pressure: {patient.bloodPressure}</ListItem>
-                  <ListItem>Heart Rate: {patient.heartRate}</ListItem>
-                  <ListItem>Blood Sugar Level: {patient.bloodSugar}</ListItem> */}
-                  <ListItem> Allergies: {patient.allergies}</ListItem>
-                  <ListItem> Lifestyle: {patient.lifestyle}</ListItem>
-                  <ListItem>
-                    {" "}
-                    Physical Activity: {patient.physicalActivity}
-                  </ListItem>
+                  <ListItem>Allergies: {patient.allergies}</ListItem>
+                  <ListItem>Lifestyle: {patient.lifestyle}</ListItem>
+                  <ListItem>Physical Activity: {patient.physicalActivity}</ListItem>
                 </List>
               </Box>
               <Box>
@@ -788,6 +807,7 @@ function PatientProfile() {
               </Box>
             </Stack>
           </Box>
+
 
           {/* Reminders & Appointments */}
           <Box
