@@ -54,6 +54,7 @@ function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
 
+  
   // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -64,6 +65,27 @@ function DoctorHome() {
   const [todaysAppointments, setTodaysAppointments] = useState([]);
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [doctorName, setDoctorName] = useState("");
+
+  // Fetch doctor data (name) from Firebase
+  const fetchDoctorName = async () => {
+    if (user) {
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("email", "==", user.email)
+      );
+      const doctorSnapshot = await getDocs(doctorQuery);
+      if (!doctorSnapshot.empty) {
+        const doctorData = doctorSnapshot.docs[0].data();
+        setDoctorName(doctorData.firstName);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchDoctorName();
+  }, [user]);
 
   // Static data for doctor team
   const team = [
@@ -264,6 +286,23 @@ function DoctorHome() {
 
   return (
     <ChakraProvider>
+      <Card
+        mt={4}
+        borderRadius="20px"
+        height="100%"
+        width="100%"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+          <Heading fontSize="2xl" color="#00366d">
+            <Text>
+              Hello, Dr. {doctorName || "Loading..."} ! {/* Display doctor name */}
+            </Text>
+          </Heading>
+        </CardHeader>
+      </Card>
       {/* To-Do List */}
       <Card
         mt={4}
