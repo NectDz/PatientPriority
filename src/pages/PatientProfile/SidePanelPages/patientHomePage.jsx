@@ -399,7 +399,6 @@ import {
   Stack,
   List,
   ListItem,
-  Link,
   Icon,
   Tooltip,
   Button,
@@ -421,6 +420,7 @@ import {
   useColorMode,
   useColorModeValue,
   useToast,
+  Link
 } from "@chakra-ui/react";
 import {
   FaUserAlt,
@@ -446,7 +446,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Overview from "./Overview";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink} from "react-router-dom";
 
 const db = getFirestore();
 const storage = getStorage();
@@ -760,6 +760,7 @@ function PatientProfile() {
               bottom="1rem"
               right="1rem"
             >
+              <RouterLink to="/patient-profile/overview">
               <Button
                 size="sm"
                 bg="#00366d"
@@ -773,6 +774,7 @@ function PatientProfile() {
               >
                 View More
               </Button>
+              </RouterLink>
             </Box>
 
             <Heading fontSize="xl" color="#00366d" mb={4} textAlign="center">
