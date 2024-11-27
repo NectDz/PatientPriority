@@ -59,7 +59,7 @@ function DoctorHome() {
   // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [taskPriority, setTaskPriority] = useState("Medium");
+  const [taskPriority, setTaskPriority] = useState("Choose priority");
 
   // Appointments States
   const [appointments, setAppointments] = useState([]);
@@ -374,13 +374,14 @@ function DoctorHome() {
             ))}
             <HStack>
               <Input
-                placeholder="Add a new task..."
+                placeholder="Add a new task"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
               />
               <Select
                 value={taskPriority}
                 onChange={(e) => setTaskPriority(e.target.value)}
+                placeholder="Choose priority"
               >
                 <option value="High">High Priority</option>
                 <option value="Medium">Medium Priority</option>
