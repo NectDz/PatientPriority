@@ -41,10 +41,11 @@ const StatBox = ({ icon, stat, label }) => (
   textAlign="center"
   width={{ base: "100%", md: "250px" }}
   transition="all 0.3s ease"
+  height="200px"
   _hover={{ transform: "scale(1.05)", boxShadow: "lg" }}
 >
-  <Icon as={icon} boxSize="2em" color="highlight" mb={2} />
-  <Text fontSize="4xl" fontWeight="bold" color="highlight">
+  <Icon as={icon} boxSize="2em" color="secondary" mb={2} />
+  <Text fontSize="4xl" fontWeight="bold" color="black">
     {stat}
   </Text>
   <Text color="secondary" fontSize="lg">
@@ -97,10 +98,10 @@ const AboutUs = () => {
               We’re motivated by the critical challenges in healthcare today—communication gaps, late disease detection, and low health literacy. By empowering patients and doctors, PatientPriority aims to fill these gaps, driving better health outcomes and streamlined care.
             </Text>
             <Stack mt={6} spacing={4}>
-              <Text color="accent" fontWeight="semibold">- Poor Communication: <Text as="span" color="highlight">30%</Text> of patients report ineffective communication with healthcare providers.</Text>
-              <Text color="accent" fontWeight="semibold">- Late Disease Detection: <Text as="span" color="highlight">1 in 3</Text> cancer cases are detected at an advanced stage.</Text>
-              <Text color="accent" fontWeight="semibold">- Low Health Literacy: Roughly <Text as="span" color="highlight">36%</Text> of U.S. adults have low health literacy.</Text>
-              <Text color="accent" fontWeight="semibold">- Missed Health Reminders: Preventable hospitalizations could be reduced by <Text as="span" color="highlight">10-20%</Text> with simple, timely reminders.</Text>
+              <Text color="accent" fontWeight="semibold">• Poor Communication: <Text as="span" color="black">30%</Text> of patients report ineffective communication with healthcare providers.</Text>
+              <Text color="accent" fontWeight="semibold">• Late Disease Detection: <Text as="span" color="black">1 in 3</Text> cancer cases are detected at an advanced stage.</Text>
+              <Text color="accent" fontWeight="semibold">• Low Health Literacy: Roughly <Text as="span" color="black">36%</Text> of U.S. adults have low health literacy.</Text>
+              <Text color="accent" fontWeight="semibold">• Missed Health Reminders: Preventable hospitalizations could be reduced by <Text as="span" color="black">10-20%</Text> with simple, timely reminders.</Text>
             </Stack>
           </Box>
 
@@ -116,9 +117,28 @@ const AboutUs = () => {
             <Box mt={6}>
               <Text color="accent" fontWeight="bold" fontSize="xl">Key Features:</Text>
               <Stack spacing={4} mt={3}>
-                <Text color="secondary">- <strong>Doctor Portal:</strong> Securely upload notes and manage post-visit documentation.</Text>
-                <Text color="secondary">- <strong>Patient Dashboard:</strong> A customized space for patients to track appointments, prescriptions, and health history.</Text>
-                <Text color="secondary">- <strong>AI-Powered Insights:</strong> Generates personalized health suggestions, reminders, and preventive tips.</Text>
+              <Text color="secondary">
+                • <strong>Doctor Portal:</strong> Simplify workflows with secure tools to upload notes, manage patient profiles, and track daily tasks efficiently.
+              </Text>
+              <Text color="secondary">
+                • <strong>Patient Dashboard:</strong> Empower patients with a personalized space to monitor appointments, prescriptions, health history, and proactive care plans.
+              </Text>
+              <Text color="secondary">
+                • <strong>AI-Powered Insights:</strong> Leverage generative AI to provide personalized health suggestions, timely reminders, and preventive care recommendations tailored to each patient.
+              </Text>
+              <Text color="secondary">
+                • <strong>Easy Transcription:</strong> Save time with AI-powered transcription of doctor-patient conversations, ensuring accurate and actionable records.
+              </Text>
+              <Text color="secondary">
+                • <strong>Secure OAuth Login:</strong> Enhance security and ease of access for doctors and patients through seamless Single Sign-On with Google.
+              </Text>
+              <Text color="secondary">
+                • <strong>Audio Upload & Transcription:</strong> Allow on-the-go documentation with audio uploads that are transcribed into actionable text.
+              </Text>
+              <Text color="secondary">
+                • <strong>AI Chatbot Support:</strong> Enjoy instant assistance with an AI chatbot that answers questions, provides reminders, and delivers personalized advice.
+              </Text>
+
               </Stack>
             </Box>
           </Box>
@@ -130,14 +150,29 @@ const AboutUs = () => {
             </Heading>
             <Divider mb={4} borderColor="secondary" />
             <Text fontSize="lg" color="secondary" lineHeight="1.7">
-              PatientPriority is not just another health platform; we prioritize personalization and proactive care. Leveraging AI technology, we deliver a unique experience that stands out in today’s healthcare landscape.
+              At PatientPriority, we go beyond traditional healthcare platforms. By combining cutting-edge AI with a human-centric approach, we create a seamless and proactive healthcare experience tailored to every individual.
             </Text>
             <Box mt={6}>
               <Text color="accent" fontWeight="bold" fontSize="xl">Why Choose Us:</Text>
               <Stack spacing={4} mt={3}>
-                <Text color="secondary">- <strong>AI-Driven Personalization:</strong> Personalized insights and recommendations based on patient profiles.</Text>
-                <Text color="secondary">- <strong>User-Friendly Design:</strong> Accessible interface designed for all levels of tech experience.</Text>
-                <Text color="secondary">- <strong>Proactive Health Management:</strong> Health reminders and preventive alerts that encourage proactive care.</Text>
+                <Text color="secondary">
+                  • <strong>AI-Powered Insights:</strong> Leverage generative AI to provide actionable health tips, personalized reminders, and wellness recommendations.
+                </Text>
+                <Text color="secondary">
+                  • <strong>Streamlined Appointments:</strong> Effortlessly schedule and manage appointments with integrated tools designed to reduce no-shows and improve efficiency.
+                </Text>
+                <Text color="secondary">
+                  • <strong>Patient-Centric Design:</strong> Empower patients with an intuitive dashboard for tracking appointments, health history, and prescriptions.
+                </Text>
+                <Text color="secondary">
+                  • <strong>Secure & Seamless Access:</strong> Enjoy peace of mind with robust security through OAuth login and an easy-to-use interface for all users.
+                </Text>
+                <Text color="secondary">
+                  • <strong>Enhanced Doctor Tools:</strong> Simplify workflows with transcription services, task management, and centralized patient profiles.
+                </Text>
+                <Text color="secondary">
+                  • <strong>Proactive Health Management:</strong> Stay ahead with timely health reminders, preventive alerts, and AI-driven chatbot support.
+                </Text>
               </Stack>
             </Box>
           </Box>

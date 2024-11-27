@@ -8,15 +8,14 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import { IoIosLogOut } from "react-icons/io";
-import { FaHome } from "react-icons/fa";
-import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { FaHome, FaCalendarAlt, FaUserCircle } from "react-icons/fa";
+import { Link as ReactRouterLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
-import { FaCalendarAlt, FaFileAlt, FaUserCircle } from 'react-icons/fa'; // Icons
-
 
 const DoctorSidePanel = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -26,6 +25,14 @@ const DoctorSidePanel = () => {
       console.error("Failed to log out", error);
     }
   };
+
+  //made this into an array
+  const menuItems = [
+    { label: "Home", icon: FaHome, to: "/doctor-profile/home" },
+    { label: "Appointments", icon: FaCalendarAlt, to: "/doctor-profile/appointments" },
+    { label: "Patients", icon: FaUserCircle, to: "/doctor-profile/patients" },
+    { label: "Settings", icon: SettingsIcon, to: "/doctor-profile/doctor-settings" },
+  ];
 
   return (
     <Box
@@ -46,58 +53,32 @@ const DoctorSidePanel = () => {
         flexGrow={1}
         w="100%"
       >
-        {/* Updated Home Link */}
-        <HStack
-          spacing={4}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)",
-            transition: "0.2s",
-          }}
-          w="97.5%"
-          h="3rem"
-          px={6}
-        >
-          <FaHome />
-          <ChakraLink as={ReactRouterLink} to="/doctor-profile/home" fontWeight="bold">
-            Home
+        {menuItems.slice(0, -1).map((item) => (
+          <ChakraLink
+            as={ReactRouterLink}
+            to={item.to}
+            key={item.label}
+            w="100%"
+            _hover={{ textDecoration: "none" }}
+          >
+            <HStack
+              spacing={4}
+              w="97.5%"
+              h="3rem"
+              px={6}
+              bg={location.pathname === item.to ? "#2A3B5C" : "transparent"}
+              borderLeft={location.pathname === item.to ? "4px solid #FFFFFF" : "none"}
+              _hover={{
+                bg: "#2A3B5C",
+                transform: "scale(1.05)",
+                transition: "0.2s",
+              }}
+            >
+              <item.icon />
+              <Box fontWeight="bold">{item.label}</Box>
+            </HStack>
           </ChakraLink>
-        </HStack>
-
-        <HStack
-          spacing={4}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)", 
-            transition: "0.2s", 
-          }}
-          w="97.5%"
-          h="3rem"
-          px={6} 
-        >
-          <FaCalendarAlt />
-          <ChakraLink as={ReactRouterLink} to="/doctor-profile/appointments" fontWeight="bold">
-            Appointments
-          </ChakraLink>
-        </HStack>
-
-        <HStack
-          spacing={4}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)", 
-            transition: "0.2s", 
-          }}
-          w="97.5%"
-          h="3rem"
-          px={6} 
-        >
-          <FaUserCircle />
-          <ChakraLink as={ReactRouterLink} to="/doctor-profile/patients" fontWeight="bold">
-            Patients
-          </ChakraLink>
-        </HStack>
-
+        ))}
         <Spacer />
       </VStack>
 
@@ -105,45 +86,50 @@ const DoctorSidePanel = () => {
         border="1px"
         borderColor="whiteAlpha.300"
         w="100%"
-        // p={4}
         mt={6}
       >
-        <HStack
-          spacing={4}
-          _hover={{
-            bg: "#2A3B5C",
-            transform: "scale(1.05)", 
-            transition: "0.2s", 
-          }}
-          w="97.5%"
-          h="3rem"
-          px={6} 
-          mt={2}
+        <ChakraLink
+          as={ReactRouterLink}
+          to="/doctor-profile/doctor-settings"
+          w="100%"
+          _hover={{ textDecoration: "none" }}
         >
-          <SettingsIcon />
-          <ChakraLink as={ReactRouterLink} to="/doctor-profile/doctor-settings" fontWeight="bold">
-            Settings
-          </ChakraLink>
-        </HStack>
+          <HStack
+            spacing={4}
+            w="97.5%"
+            h="3rem"
+            px={6}
+            bg={location.pathname === "/doctor-profile/doctor-settings" ? "#2A3B5C" : "transparent"}
+            borderLeft={location.pathname === "/doctor-profile/doctor-settings" ? "4px solid #FFFFFF" : "none"}
+            _hover={{
+              bg: "#2A3B5C",
+              transform: "scale(1.05)",
+              transition: "0.2s",
+            }}
+          >
+            <SettingsIcon />
+            <Box fontWeight="bold">Settings</Box>
+          </HStack>
+        </ChakraLink>
 
         <HStack
           spacing={4}
           _hover={{
             bg: "#FF2C2C75",
             transform: "scale(1.05)",
-            transition: "0.2s", 
+            transition: "0.2s",
           }}
           w="97.5%"
           h="3rem"
           px={6}
-          onClick={handleLogout} // Adding logout functionality
+          onClick={handleLogout}
           mb={2}
+          cursor="pointer" // Add this line
         >
           <IoIosLogOut />
-          <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold">
-            Log Out
-          </ChakraLink>
+          <Box fontWeight="bold">Log Out</Box>
         </HStack>
+
       </Box>
     </Box>
   );
