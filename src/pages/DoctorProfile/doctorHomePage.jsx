@@ -24,6 +24,8 @@ import {
   Checkbox,
   useToast,
   Stack,
+  Image,
+  Flex,
 } from "@chakra-ui/react";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
@@ -43,6 +45,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import Deedat from "../../assets/Team/Deedat.png";
 import Abir from "../../assets/Team/Abir.png";
@@ -51,11 +54,12 @@ import Kazi from "../../assets/Team/Kazi.png";
 import Kevin from "../../assets/Team/Kevin.png";
 import Lubna from "../../assets/Team/Lubna.png";
 
+const storage = getStorage();
+
 function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
 
-  
   // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -68,15 +72,16 @@ function DoctorHome() {
   const [loading, setLoading] = useState(true);
 
   const [doctorName, setDoctorName] = useState("");
+  const [doctorImage, setDoctorImage] = useState("");
 
-  const todayDate = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric'
+  const todayDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
   });
 
-  // Fetch doctor data (name) from Firebase
-  const fetchDoctorName = async () => {
+  // Fetch doctor data (name, image) from Firebase
+  const fetchDoctorInfo = async () => {
     if (user) {
       const doctorQuery = query(
         collection(db, "doctor"),
@@ -86,12 +91,13 @@ function DoctorHome() {
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         setDoctorName(doctorData.firstName);
+        // setDoctorImage(doctorData.profilePicture);
       }
     }
   };
 
   useEffect(() => {
-    fetchDoctorName();
+    fetchDoctorInfo();
   }, [user]);
 
   // Static data for doctor team
@@ -142,6 +148,7 @@ function DoctorHome() {
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         const doctorId = doctorData.id;
+        setDoctorImage(doctorData.profilePicture);
 
         //2 - get patients associated with this doctor
         const patientQuery = query(
@@ -156,8 +163,8 @@ function DoctorHome() {
         //   lastName: doc.data().lastName,
         // }));
         const patientIds = patientSnapshot.docs
-        // filter out the patients with an ID (because new patients don't have an ID which causes an error)
-          .filter((doc) => doc.data().id) 
+          // filter out the patients with an ID (because new patients don't have an ID which causes an error)
+          .filter((doc) => doc.data().id)
           .map((doc) => ({
             id: doc.data().id,
             firstName: doc.data().firstName,
@@ -295,34 +302,61 @@ function DoctorHome() {
     <ChakraProvider>
       <Card
         mt={4}
-        height="100%"
+        pl={2}
+        height="90%"
         width="100%"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         transition="all 0.3s"
         _hover={{ boxShadow: "2xl" }}
         bg="#ddeeff"
-        borderRadius="20px"  // Rounded corners for the card
+        borderRadius="20px"
       >
         <CardHeader
-          display="flex"  // Use Flex for the layout
-          justifyContent="space-between"  // Space between the items
-          alignItems="center"  // Center vertically
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
           borderRadius="20px 20px 0px 0px"
         >
-          <Heading fontSize="2xl" color="#00366d" textAlign="left">
-            <Text>
-              Welcome to Patient Priority, Dr. {doctorName || "Loading..."} !
-            </Text>
+          {doctorImage ? (
+            <Image
+              borderRadius="full"
+              boxSize="120px"
+              src={doctorImage}
+              alt="Profile"
+              mr={4}
+              border="4px solid"
+              borderColor="#00366d"
+            />
+          ) : (
+            <Box
+              borderRadius="full"
+              boxSize="120px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="center"
+              bg="gray.200"
+              color="gray.600"
+              fontSize="sm"
+              mr={4}
+              border="4px solid"
+              borderColor="#00366d"
+            >
+              No Image Available
+            </Box>
+          )}
+
+          <Heading fontSize="2xl" color="#00366d" flex="1">
+            Welcome to Patient Priority, Dr. {doctorName || "Loading..."} !
           </Heading>
-          <Box textAlign="right">
-            <Text fontSize="xl" color="gray.500">
-              {todayDate} {/* Display today's date */}
-            </Text>
-          </Box>
+
+          <Text fontSize="xl" color="gray.500">
+            {todayDate}
+          </Text>
         </CardHeader>
       </Card>
 
-      
+
       {/* To-Do List */}
       <Card
         mt={4}
