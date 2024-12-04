@@ -24,6 +24,15 @@ import {
   Checkbox,
   useToast,
   Stack,
+  Image,
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
@@ -43,6 +52,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase-config";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import Deedat from "../../assets/Team/Deedat.png";
 import Abir from "../../assets/Team/Abir.png";
@@ -51,11 +61,16 @@ import Kazi from "../../assets/Team/Kazi.png";
 import Kevin from "../../assets/Team/Kevin.png";
 import Lubna from "../../assets/Team/Lubna.png";
 
+const storage = getStorage();
+
 function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
 
-  
+  // Image States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -68,15 +83,17 @@ function DoctorHome() {
   const [loading, setLoading] = useState(true);
 
   const [doctorName, setDoctorName] = useState("");
+  const [doctorID, setDoctorID] = useState("");
+  const [doctorImage, setDoctorImage] = useState("");
 
-  const todayDate = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric'
+  const todayDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "2-digit",
+    year: "numeric",
   });
 
-  // Fetch doctor data (name) from Firebase
-  const fetchDoctorName = async () => {
+  // Fetch doctor data (name, id) from Firebase
+  const fetchDoctorInfo = async () => {
     if (user) {
       const doctorQuery = query(
         collection(db, "doctor"),
@@ -91,7 +108,7 @@ function DoctorHome() {
   };
 
   useEffect(() => {
-    fetchDoctorName();
+    fetchDoctorInfo();
   }, [user]);
 
   // Static data for doctor team
@@ -142,6 +159,9 @@ function DoctorHome() {
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         const doctorId = doctorData.id;
+        setDoctorID(doctorId);
+        // console.log("Doctor ID:" + doctorId);
+        setDoctorImage(doctorData.profilePicture);
 
         //2 - get patients associated with this doctor
         const patientQuery = query(
@@ -156,8 +176,8 @@ function DoctorHome() {
         //   lastName: doc.data().lastName,
         // }));
         const patientIds = patientSnapshot.docs
-        // filter out the patients with an ID (because new patients don't have an ID which causes an error)
-          .filter((doc) => doc.data().id) 
+          // filter out the patients with an ID (because new patients don't have an ID which causes an error)
+          .filter((doc) => doc.data().id)
           .map((doc) => ({
             id: doc.data().id,
             firstName: doc.data().firstName,
@@ -291,38 +311,229 @@ function DoctorHome() {
     });
   };
 
+  // Image Upload
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the first file from the file input
+    if (file) {
+      setSelectedImage(file); // Store the file object in state for uploading
+    }
+  };
+
+  // Save Changes
+  const saveChanges = async () => {
+    if (!selectedImage) {
+      toast({
+        title: "Error",
+        description: "No image uploaded",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      // create unique file name for image
+      const fileName = `${doctorName}_profile_picture`;
+      // create a ref path for the image
+      const imageRef = ref(storage, `ProfileImages/${fileName}`);
+      await uploadBytes(imageRef, selectedImage);
+      // get the firebase Storage URL
+      const downloadURL = await getDownloadURL(imageRef);
+
+      // query the firestore to find the patient document
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("id", "==", doctorID)
+      );
+
+      const doctorSnapshot = await getDocs(doctorQuery);
+
+      if (!doctorSnapshot.empty) {
+        // get the first document from the patientSnapshot array (there should only be one thing in the array anyways)
+        const doctorDoc = doctorSnapshot.docs[0];
+        // get the path reference for the patient document
+        const doctorDocRef = doc(db, "doctor", doctorDoc.id);
+
+        // update the profilePicture field in Firestore
+        await updateDoc(doctorDocRef, {
+          profilePicture: downloadURL,
+        });
+
+        //update the patient state
+        setDoctorImage(downloadURL);
+
+        toast({
+          title: "Success",
+          description: "Profile picture updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        setIsModalOpen(false);
+      } else {
+        toast({
+          title: "Error",
+          description: "Patient document not found in Firestore.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile picture.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <ChakraProvider>
       <Card
         mt={4}
-        height="100%"
+        pl={2}
+        height="90%"
         width="100%"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         transition="all 0.3s"
         _hover={{ boxShadow: "2xl" }}
         bg="#ddeeff"
-        borderRadius="20px"  // Rounded corners for the card
+        borderRadius="20px"
       >
         <CardHeader
-          display="flex"  // Use Flex for the layout
-          justifyContent="space-between"  // Space between the items
-          alignItems="center"  // Center vertically
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
           borderRadius="20px 20px 0px 0px"
         >
-          <Heading fontSize="2xl" color="#00366d" textAlign="left">
-            <Text>
-              Welcome to Patient Priority, Dr. {doctorName || "Loading..."} !
-            </Text>
+          {doctorImage ? (
+            <Box
+              position="relative"
+              borderRadius="full"
+              boxSize="120px"
+              mr={4}
+              overflow="hidden"
+              _hover={{
+                "& .edit-overlay": {
+                  opacity: 1,
+                  visibility: "visible",
+                },
+              }}
+            >
+              <Image
+                borderRadius="full"
+                boxSize="120px"
+                src={doctorImage}
+                alt="Profile"
+                border="4px solid"
+                borderColor="#00366d"
+                objectFit="cover"
+              />
+              <Box
+                className="edit-overlay"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height="40%"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bg="rgba(0,0,0,0.5)"
+                color="white"
+                borderBottomRadius="full"
+                opacity={0}
+                visibility="hidden"
+                transition="opacity 0.2s, visibility 0.2s"
+                cursor="pointer"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Edit
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              position="relative"
+              borderRadius="full"
+              boxSize="120px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              textAlign="center"
+              bg="gray.200"
+              color="gray.600"
+              fontSize="sm"
+              mr={4}
+              border="4px solid"
+              borderColor="#00366d"
+              _hover={{
+                "& .edit-overlay": {
+                  opacity: 1,
+                  visibility: "visible",
+                },
+              }}
+            >
+              <Text>No Image Available</Text>
+              <Box
+                className="edit-overlay"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height="40%"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bg="rgba(0,0,0,0.5)"
+                color="white"
+                borderBottomRadius="full"
+                opacity={0}
+                visibility="hidden"
+                transition="opacity 0.2s, visibility 0.2s"
+                cursor="pointer"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Edit
+              </Box>
+            </Box>
+          )}
+
+          <Heading fontSize="2xl" color="#00366d" flex="1">
+            Welcome to Patient Priority, Dr. {doctorName || "Loading..."} !
           </Heading>
-          <Box textAlign="right">
-            <Text fontSize="xl" color="gray.500">
-              {todayDate} {/* Display today's date */}
-            </Text>
-          </Box>
+
+          <Text fontSize="xl" color="gray.500">
+            {todayDate}
+          </Text>
         </CardHeader>
       </Card>
 
-      
+      {/* Edit Image Modal*/}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Profile</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input type="file" onChange={handleImageUpload} />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="#335d8f" mr={3} onClick={saveChanges}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       {/* To-Do List */}
       <Card
         mt={4}

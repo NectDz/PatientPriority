@@ -596,7 +596,7 @@ function PatientProfile() {
 
     try {
       // create unique file name for image 
-      const fileName = `${patient.id}_profile_picture`;
+      const fileName = `${patient.firstName}_profile_picture`;
       // create a ref path for the image
       const imageRef = ref(storage, `ProfileImages/${fileName}`);
       await uploadBytes(imageRef, selectedImage);

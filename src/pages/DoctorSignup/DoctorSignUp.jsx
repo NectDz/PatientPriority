@@ -130,6 +130,7 @@ function DoctorSignUp() {
         credential_id: doctorInfo.credentials,
         email: doctorInfo.email, //add the doctor's email here
         accountCreatedDate: new Date(), //set current date as the account creation date
+        profilePicture: "https://firebasestorage.googleapis.com/v0/b/patientpriority-3a4f2.appspot.com/o/DefaultDoctorImage.jpg?alt=media&token=b31af210-2402-49f2-b60e-1211b9e55fa3"
       });
 
       toast({
