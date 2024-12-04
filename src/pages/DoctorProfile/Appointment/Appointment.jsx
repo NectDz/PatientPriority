@@ -90,6 +90,10 @@ function Appointments() {
           const fetchedAppointments = (
             await Promise.all(appointmentPromises)
           ).flat();
+
+          // Sort appointments chronologically by appointment date
+          fetchedAppointments.sort((a, b) => a.date.seconds - b.date.seconds);
+
           setAppointments(fetchedAppointments);
         }
         setLoading(false);
