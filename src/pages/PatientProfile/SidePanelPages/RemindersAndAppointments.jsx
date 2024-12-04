@@ -146,7 +146,7 @@ function RemindersAndAppointments() {
                                                     <Avatar
                                                         size="lg"
                                                         src={
-                                                            appointment.profilePicture || "No Image"
+                                                            doctor.profilePicture || "No Image"
                                                         }
                                                         name={`${doctor.firstName} ${doctor.lastName}`}
                                                     />
@@ -195,7 +195,7 @@ function RemindersAndAppointments() {
                                                     <Avatar
                                                         size="lg"
                                                         src={
-                                                            appointment.profilePicture || "default-profile.png"
+                                                            doctor.profilePicture || "No Image"
                                                         }
                                                         name={`${doctor.firstName} ${doctor.lastName}}`}
                                                     />
