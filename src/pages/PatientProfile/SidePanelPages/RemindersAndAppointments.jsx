@@ -1,7 +1,7 @@
 import { ChakraProvider, Box, VStack, Heading, Text, Divider, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Avatar } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";  // To get the current logged-in user
+import { getAuth } from "firebase/auth";  //get current logged-in user
 
 function RemindersAndAppointments() {
     const [appointments, setAppointments] = useState([]);
@@ -20,8 +20,8 @@ function RemindersAndAppointments() {
                 if (!patientSnapshot.empty) {
                     const patientDoc = patientSnapshot.docs[0];
                     const patientData = patientDoc.data();
-                    console.log('Patient found:', patientData); // Log patient data
-                    setPatientId(patientData.id);  // Set the logged-in user's patient ID
+                    //console.log('Patient found:', patientData); /pateint data
+                    setPatientId(patientData.id);  //set the logged-in user's patient ID
                 }
             }
         };
@@ -32,14 +32,14 @@ function RemindersAndAppointments() {
     useEffect(() => {
         const fetchAppointments = async () => {
             if (patientId) {
-                console.log('Fetching appointments for patient:', patientId);  // Check if patientId is correct
+                //console.log('Fetching appointments for patient:', patientId);  /check if patientId is correct
                 const db = getFirestore();
                 const appointmentRef = collection(db, "appointment");
                 const appointmentQuery = query(appointmentRef, where("patient_id", "==", patientId));
                 const appointmentSnapshot = await getDocs(appointmentQuery);
     
                 if (appointmentSnapshot.empty) {
-                    console.log('No appointments found for this patient');
+                    //console.log('No appointments found for this patient');
                 }
     
                 const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
@@ -47,14 +47,14 @@ function RemindersAndAppointments() {
                     ...doc.data(),
                 }));
     
-                console.log('Fetched appointments:', fetchedAppointments);  // Check if appointments are fetched correctly
+                //console.log('Fetched appointments:', fetchedAppointments);  //check if appointments are fetched correctly
                 setAppointments(fetchedAppointments);
                 setLoading(false);
             }
         };
     
         fetchAppointments();
-    }, [patientId]);  // Trigger fetching when patientId is set
+    }, [patientId]);  //trigger fetching when patientId is set
     
 
     return (
