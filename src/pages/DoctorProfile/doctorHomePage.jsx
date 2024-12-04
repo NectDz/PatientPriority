@@ -26,6 +26,13 @@ import {
   Stack,
   Image,
   Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
@@ -60,6 +67,10 @@ function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
 
+  // Image States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   // To-Do List States
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -72,6 +83,7 @@ function DoctorHome() {
   const [loading, setLoading] = useState(true);
 
   const [doctorName, setDoctorName] = useState("");
+  const [doctorID, setDoctorID] = useState("");
   const [doctorImage, setDoctorImage] = useState("");
 
   const todayDate = new Date().toLocaleDateString("en-US", {
@@ -80,7 +92,7 @@ function DoctorHome() {
     year: "numeric",
   });
 
-  // Fetch doctor data (name, image) from Firebase
+  // Fetch doctor data (name, id) from Firebase
   const fetchDoctorInfo = async () => {
     if (user) {
       const doctorQuery = query(
@@ -91,7 +103,6 @@ function DoctorHome() {
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         setDoctorName(doctorData.firstName);
-        // setDoctorImage(doctorData.profilePicture);
       }
     }
   };
@@ -148,6 +159,8 @@ function DoctorHome() {
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         const doctorId = doctorData.id;
+        setDoctorID(doctorId);
+        // console.log("Doctor ID:" + doctorId);
         setDoctorImage(doctorData.profilePicture);
 
         //2 - get patients associated with this doctor
@@ -298,6 +311,88 @@ function DoctorHome() {
     });
   };
 
+  // Image Upload
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the first file from the file input
+    if (file) {
+      setSelectedImage(file); // Store the file object in state for uploading
+    }
+  };
+
+  // Save Changes
+  const saveChanges = async () => {
+    if (!selectedImage) {
+      toast({
+        title: "Error",
+        description: "No image uploaded",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      // create unique file name for image
+      const fileName = `${doctorName}_profile_picture`;
+      // create a ref path for the image
+      const imageRef = ref(storage, `ProfileImages/${fileName}`);
+      await uploadBytes(imageRef, selectedImage);
+      // get the firebase Storage URL
+      const downloadURL = await getDownloadURL(imageRef);
+
+      // query the firestore to find the patient document
+      const doctorQuery = query(
+        collection(db, "doctor"),
+        where("id", "==", doctorID)
+      );
+
+      const doctorSnapshot = await getDocs(doctorQuery);
+
+      if (!doctorSnapshot.empty) {
+        // get the first document from the patientSnapshot array (there should only be one thing in the array anyways)
+        const doctorDoc = doctorSnapshot.docs[0];
+        // get the path reference for the patient document
+        const doctorDocRef = doc(db, "doctor", doctorDoc.id);
+
+        // update the profilePicture field in Firestore
+        await updateDoc(doctorDocRef, {
+          profilePicture: downloadURL,
+        });
+
+        //update the patient state
+        setDoctorImage(downloadURL);
+
+        toast({
+          title: "Success",
+          description: "Profile picture updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        setIsModalOpen(false);
+      } else {
+        toast({
+          title: "Error",
+          description: "Patient document not found in Firestore.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile picture.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <ChakraProvider>
       <Card
@@ -318,17 +413,53 @@ function DoctorHome() {
           borderRadius="20px 20px 0px 0px"
         >
           {doctorImage ? (
-            <Image
+            <Box
+              position="relative"
               borderRadius="full"
               boxSize="120px"
-              src={doctorImage}
-              alt="Profile"
               mr={4}
-              border="4px solid"
-              borderColor="#00366d"
-            />
+              overflow="hidden"
+              _hover={{
+                "& .edit-overlay": {
+                  opacity: 1,
+                  visibility: "visible",
+                },
+              }}
+            >
+              <Image
+                borderRadius="full"
+                boxSize="120px"
+                src={doctorImage}
+                alt="Profile"
+                border="4px solid"
+                borderColor="#00366d"
+                objectFit="cover"
+              />
+              <Box
+                className="edit-overlay"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height="40%"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bg="rgba(0,0,0,0.5)"
+                color="white"
+                borderBottomRadius="full"
+                opacity={0}
+                visibility="hidden"
+                transition="opacity 0.2s, visibility 0.2s"
+                cursor="pointer"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Edit
+              </Box>
+            </Box>
           ) : (
             <Box
+              position="relative"
               borderRadius="full"
               boxSize="120px"
               display="flex"
@@ -341,8 +472,35 @@ function DoctorHome() {
               mr={4}
               border="4px solid"
               borderColor="#00366d"
+              _hover={{
+                "& .edit-overlay": {
+                  opacity: 1,
+                  visibility: "visible",
+                },
+              }}
             >
-              No Image Available
+              <Text>No Image Available</Text>
+              <Box
+                className="edit-overlay"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                height="40%"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                bg="rgba(0,0,0,0.5)"
+                color="white"
+                borderBottomRadius="full"
+                opacity={0}
+                visibility="hidden"
+                transition="opacity 0.2s, visibility 0.2s"
+                cursor="pointer"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Edit
+              </Box>
             </Box>
           )}
 
@@ -356,6 +514,25 @@ function DoctorHome() {
         </CardHeader>
       </Card>
 
+      {/* Edit Image Modal*/}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Profile</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input type="file" onChange={handleImageUpload} />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="#335d8f" mr={3} onClick={saveChanges}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       {/* To-Do List */}
       <Card
