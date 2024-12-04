@@ -7,6 +7,8 @@ function RemindersAndAppointments() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [patientId, setPatientId] = useState(null);
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [pastAppointments, setPastAppointments] = useState([]);
 
     useEffect(() => {
         const fetchPatient = async () => {
@@ -20,8 +22,7 @@ function RemindersAndAppointments() {
                 if (!patientSnapshot.empty) {
                     const patientDoc = patientSnapshot.docs[0];
                     const patientData = patientDoc.data();
-                    //console.log('Patient found:', patientData); /pateint data
-                    setPatientId(patientData.id);  //set the logged-in user's patient ID
+                    setPatientId(patientData.id);  // set the logged-in user's patient ID
                 }
             }
         };
@@ -32,30 +33,44 @@ function RemindersAndAppointments() {
     useEffect(() => {
         const fetchAppointments = async () => {
             if (patientId) {
-                //console.log('Fetching appointments for patient:', patientId);  /check if patientId is correct
                 const db = getFirestore();
                 const appointmentRef = collection(db, "appointment");
                 const appointmentQuery = query(appointmentRef, where("patient_id", "==", patientId));
                 const appointmentSnapshot = await getDocs(appointmentQuery);
-    
-                if (appointmentSnapshot.empty) {
-                    //console.log('No appointments found for this patient');
-                }
-    
+
                 const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-    
-                //console.log('Fetched appointments:', fetchedAppointments);  //check if appointments are fetched correctly
-                setAppointments(fetchedAppointments);
+
+                // Get current date at midnight for date comparison
+                const currentDate = new Date();
+                const today = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    currentDate.getDate()
+                );
+
+                // Filter upcoming appointments
+                const upcoming = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate >= today;
+                }).sort((a, b) => a.appointmentDate.toDate() - b.appointmentDate.toDate()); // Sort by date ascending
+
+                // Filter past appointments
+                const past = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate < today;
+                }).sort((a, b) => b.appointmentDate.toDate() - a.appointmentDate.toDate()); // Sort by date descending
+
+                setUpcomingAppointments(upcoming);
+                setPastAppointments(past);
                 setLoading(false);
             }
         };
-    
+
         fetchAppointments();
-    }, [patientId]);  //trigger fetching when patientId is set
-    
+    }, [patientId]);
 
     return (
         <ChakraProvider>
@@ -114,7 +129,7 @@ function RemindersAndAppointments() {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {appointments.map((appointment) => (
+                                        {upcomingAppointments.map((appointment) => (
                                             <Tr key={appointment.id}>
                                                 <Td>
                                                     <Avatar
@@ -161,33 +176,26 @@ function RemindersAndAppointments() {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {appointments
-                                            .filter(
-                                                (appointment) =>
-                                                    new Date(
+                                        {pastAppointments.map((appointment) => (
+                                            <Tr key={appointment.id}>
+                                                <Td>
+                                                    <Avatar
+                                                        size="lg"
+                                                        src={
+                                                            appointment.profilePicture || "default-profile.png"
+                                                        }
+                                                        name={`${appointment.firstName} ${appointment.lastName}`}
+                                                    />
+                                                </Td>
+                                                <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
+                                                <Td>
+                                                    {new Date(
                                                         appointment.appointmentDate.seconds * 1000
-                                                    ) < new Date()
-                                            )
-                                            .map((appointment) => (
-                                                <Tr key={appointment.id}>
-                                                    <Td>
-                                                        <Avatar
-                                                            size="lg"
-                                                            src={
-                                                                appointment.profilePicture || "default-profile.png"
-                                                            }
-                                                            name={`${appointment.firstName} ${appointment.lastName}`}
-                                                        />
-                                                    </Td>
-                                                    <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
-                                                    <Td>
-                                                        {new Date(
-                                                            appointment.appointmentDate.seconds * 1000
-                                                        ).toLocaleString()}
-                                                    </Td>
-                                                    <Td>{appointment.appointmentDescription}</Td>
-                                                </Tr>
-                                            ))}
+                                                    ).toLocaleString()}
+                                                </Td>
+                                                <Td>{appointment.appointmentDescription}</Td>
+                                            </Tr>
+                                        ))}
                                     </Tbody>
                                 </Table>
                             </TableContainer>
