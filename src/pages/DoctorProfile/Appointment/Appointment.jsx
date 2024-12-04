@@ -24,7 +24,10 @@ const db = getFirestore();
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
+  const [currentPageUpcoming, setCurrentPageUpcoming] = useState(1);
+  const [currentPagePast, setCurrentPagePast] = useState(1);
   const appointmentsPerPage = 3; //number of appointments per page
 
   const auth = getAuth();
@@ -57,14 +60,8 @@ function Appointments() {
           );
           const patientSnapshot = await getDocs(patientQuery);
 
-          // const patientIds = patientSnapshot.docs.map((doc) => ({
-          //   id: doc.data().id,
-          //   firstName: doc.data().firstName,
-          //   lastName: doc.data().lastName,
-          // }));
           const patientIds = patientSnapshot.docs
-          // filter out the patients with an ID (because new patients don't have an ID which causes an error)
-            .filter((doc) => doc.data().id)
+            .filter((doc) => doc.data().id) // filter out patients without an ID
             .map((doc) => ({
               id: doc.data().id,
               firstName: doc.data().firstName,
@@ -90,7 +87,30 @@ function Appointments() {
           const fetchedAppointments = (
             await Promise.all(appointmentPromises)
           ).flat();
-          setAppointments(fetchedAppointments);
+
+          // Sort appointments by date in descending order (reverse chronological)
+          fetchedAppointments.sort((a, b) => b.date.seconds - a.date.seconds);
+
+          // Filter upcoming and past appointments
+          const currentDate = new Date();
+          const today = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
+
+          const upcoming = fetchedAppointments.filter((appointment) => {
+            const appointmentDate = appointment.date.toDate();
+            return appointmentDate >= today;
+          });
+
+          const past = fetchedAppointments.filter((appointment) => {
+            const appointmentDate = appointment.date.toDate();
+            return appointmentDate < today;
+          });
+
+          setUpcomingAppointments(upcoming);
+          setPastAppointments(past);
         }
         setLoading(false);
       } catch (error) {
@@ -102,25 +122,47 @@ function Appointments() {
     fetchAppointments();
   }, [user]);
 
-  // Pagination logic
-  const indexOfLastAppointment = currentPage * appointmentsPerPage;
-  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-  const currentAppointments = appointments.slice(
-    indexOfFirstAppointment,
-    indexOfLastAppointment
+  // Pagination logic for upcoming appointments
+  const indexOfLastUpcomingAppointment = currentPageUpcoming * appointmentsPerPage;
+  const indexOfFirstUpcomingAppointment = indexOfLastUpcomingAppointment - appointmentsPerPage;
+  const currentUpcomingAppointments = upcomingAppointments.slice(
+    indexOfFirstUpcomingAppointment,
+    indexOfLastUpcomingAppointment
   );
 
-  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
+  const totalUpcomingPages = Math.ceil(upcomingAppointments.length / appointmentsPerPage);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+  const nextPageUpcoming = () => {
+    if (currentPageUpcoming < totalUpcomingPages) {
+      setCurrentPageUpcoming(currentPageUpcoming + 1);
     }
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const prevPageUpcoming = () => {
+    if (currentPageUpcoming > 1) {
+      setCurrentPageUpcoming(currentPageUpcoming - 1);
+    }
+  };
+
+  // Pagination logic for past appointments
+  const indexOfLastPastAppointment = currentPagePast * appointmentsPerPage;
+  const indexOfFirstPastAppointment = indexOfLastPastAppointment - appointmentsPerPage;
+  const currentPastAppointments = pastAppointments.slice(
+    indexOfFirstPastAppointment,
+    indexOfLastPastAppointment
+  );
+
+  const totalPastPages = Math.ceil(pastAppointments.length / appointmentsPerPage);
+
+  const nextPagePast = () => {
+    if (currentPagePast < totalPastPages) {
+      setCurrentPagePast(currentPagePast + 1);
+    }
+  };
+
+  const prevPagePast = () => {
+    if (currentPagePast > 1) {
+      setCurrentPagePast(currentPagePast - 1);
     }
   };
 
@@ -142,78 +184,129 @@ function Appointments() {
       <Heading as="h1" size="xl" mb={6}>
         Appointments
       </Heading>
-      {currentAppointments.length > 0 ? (
-        <VStack spacing={6} align="stretch">
-          {currentAppointments.map((appointment) => (
-            <Box
-              key={appointment.id}
-              p={6}
-              bg="white"
-              borderRadius="md"
-              boxShadow="md"
-            >
-              <Heading as="h2" size="md" mb={2}>
-                {appointment.patientName}
-              </Heading>
-              <Text>
-                Date:{" "}
-                {new Date(appointment.date.seconds * 1000).toLocaleDateString()}
-              </Text>
-              <Text>
-                Time:{" "}
-                {new Date(appointment.date.seconds * 1000).toLocaleTimeString()}
-              </Text>
-              <Text>Description: {appointment.description}</Text>
-              <Button
-                as={Link}
-                to={`/doctor-profile/appointments/${appointment.id}`}
-                // colorScheme="teal"
-                mt={4}
-                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-                _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-                transition="all 0.3s"
-                color="#f1f8ff"
-                bg="#335d8f"
+
+      {/* Upcoming Appointments */}
+      <Box mb={8}>
+        <Heading as="h2" size="lg" mb={4}>
+          Upcoming Appointments
+        </Heading>
+        {currentUpcomingAppointments.length > 0 ? (
+          <VStack spacing={6} align="stretch">
+            {currentUpcomingAppointments.map((appointment) => (
+              <Box
+                key={appointment.id}
+                p={6}
+                bg="white"
+                borderRadius="md"
+                boxShadow="md"
               >
-                View Details
-              </Button>
-            </Box>
-          ))}
-        </VStack>
-      ) : (
-        <Text>No appointments scheduled.</Text>
-      )}
+                <Heading as="h3" size="md" mb={2}>
+                  {appointment.patientName}
+                </Heading>
+                <Text>
+                  Date:{" "}
+                  {new Date(appointment.date.seconds * 1000).toLocaleDateString()}
+                </Text>
+                <Text>
+                  Time:{" "}
+                  {new Date(appointment.date.seconds * 1000).toLocaleTimeString()}
+                </Text>
+                <Text>Description: {appointment.description}</Text>
+                <Button
+                  as={Link}
+                  to={`/doctor-profile/appointments/${appointment.id}`}
+                  mt={4}
+                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                  _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+                  transition="all 0.3s"
+                  color="#f1f8ff"
+                  bg="#335d8f"
+                >
+                  View Details
+                </Button>
+              </Box>
+            ))}
+          </VStack>
+        ) : (
+          <Text>No upcoming appointments.</Text>
+        )}
 
-      {/* Pagination Controls */}
-      {appointments.length > appointmentsPerPage && (
-        <HStack mt={6} justify="center">
-          <Button onClick={prevPage} disabled={currentPage === 1}>
-            Previous
-          </Button>
-          <Text>
-            Page {currentPage} of {totalPages}
-          </Text>
-          <Button onClick={nextPage} disabled={currentPage === totalPages}>
-            Next
-          </Button>
-        </HStack>
-      )}
+        {/* Pagination Controls for Upcoming */}
+        {upcomingAppointments.length > appointmentsPerPage && (
+          <HStack mt={6} justify="center">
+            <Button onClick={prevPageUpcoming} disabled={currentPageUpcoming === 1}>
+              Previous
+            </Button>
+            <Text>
+              Page {currentPageUpcoming} of {totalUpcomingPages}
+            </Text>
+            <Button onClick={nextPageUpcoming} disabled={currentPageUpcoming === totalUpcomingPages}>
+              Next
+            </Button>
+          </HStack>
+        )}
+      </Box>
 
-      <Box display="flex" justifyContent="center" mt={8} mb={6}>
-        <Link to="/doctor-profile/appointments/create-appointment">
-          <Button
-            display="flex"
-            alignItems="center"
-            gap="4"
-            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-            _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-            transition="all 0.3s"
-            color="#f1f8ff"
-            bg="#335d8f"
-          >
-            New Appointment
-          </Button>
-        </Link>
+      {/* Past Appointments */}
+      <Box>
+        <Heading as="h2" size="lg" mb={4}>
+          Past Appointments
+        </Heading>
+        {currentPastAppointments.length > 0 ? (
+          <VStack spacing={6} align="stretch">
+            {currentPastAppointments.map((appointment) => (
+              <Box
+                key={appointment.id}
+                p={6}
+                bg="white"
+                borderRadius="md"
+                boxShadow="md"
+              >
+                <Heading as="h3" size="md" mb={2}>
+                  {appointment.patientName}
+                </Heading>
+                <Text>
+                  Date:{" "}
+                  {new Date(appointment.date.seconds * 1000).toLocaleDateString()}
+                </Text>
+                <Text>
+                  Time:{" "}
+                  {new Date(appointment.date.seconds * 1000).toLocaleTimeString()}
+                </Text>
+                <Text>Description: {appointment.description}</Text>
+                <Button
+                  as={Link}
+                  to={`/doctor-profile/appointments/${appointment.id}`}
+                  mt={4}
+                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+                  _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+                  transition="all 0.3s"
+                  color="#f1f8ff"
+                  bg="#335d8f"
+                >
+                  View Details
+                </Button>
+              </Box>
+            ))}
+          </VStack>
+        ) : (
+          <Text>No past appointments.</Text>
+        )}
+
+        {/* Pagination Controls for Past */}
+        {pastAppointments.length > appointmentsPerPage && (
+          <HStack mt={6} justify="center">
+            <Button onClick={prevPagePast} disabled={currentPagePast === 1}>
+              Previous
+            </Button>
+            <Text>
+              Page {currentPagePast} of {totalPastPages}
+            </Text>
+            <Button onClick={nextPagePast} disabled={currentPagePast === totalPastPages}>
+              Next
+            </Button>
+          </HStack>
+        )}
       </Box>
     </Box>
   );
