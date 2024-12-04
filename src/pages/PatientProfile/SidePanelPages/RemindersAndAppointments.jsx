@@ -1,7 +1,62 @@
-// import will go up here
-import { ChakraProvider, Box, VStack, Heading, Text, Divider } from "@chakra-ui/react";
+import { ChakraProvider, Box, VStack, Heading, Text, Divider, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Avatar } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";  // To get the current logged-in user
 
 function RemindersAndAppointments() {
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [patientId, setPatientId] = useState(null);
+
+    useEffect(() => {
+        const fetchPatient = async () => {
+            const user = getAuth().currentUser;
+            if (user) {
+                const db = getFirestore();
+                const patientRef = collection(db, "patients");
+                const patientQuery = query(patientRef, where("email", "==", user.email));
+                const patientSnapshot = await getDocs(patientQuery);
+
+                if (!patientSnapshot.empty) {
+                    const patientDoc = patientSnapshot.docs[0];
+                    const patientData = patientDoc.data();
+                    console.log('Patient found:', patientData); // Log patient data
+                    setPatientId(patientData.id);  // Set the logged-in user's patient ID
+                }
+            }
+        };
+
+        fetchPatient();
+    }, []);
+
+    useEffect(() => {
+        const fetchAppointments = async () => {
+            if (patientId) {
+                console.log('Fetching appointments for patient:', patientId);  // Check if patientId is correct
+                const db = getFirestore();
+                const appointmentRef = collection(db, "appointments");
+                const appointmentQuery = query(appointmentRef, where("patient_id", "==", patientId));
+                const appointmentSnapshot = await getDocs(appointmentQuery);
+    
+                if (appointmentSnapshot.empty) {
+                    console.log('No appointments found for this patient');
+                }
+    
+                const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+    
+                console.log('Fetched appointments:', fetchedAppointments);  // Check if appointments are fetched correctly
+                setAppointments(fetchedAppointments);
+                setLoading(false);
+            }
+        };
+    
+        fetchAppointments();
+    }, [patientId]);  // Trigger fetching when patientId is set
+    
+
     return (
         <ChakraProvider>
             <Box 
@@ -45,9 +100,44 @@ function RemindersAndAppointments() {
                         <Heading as="h2" size="md" color="#00366d" mb={2}>
                             Upcoming Appointments
                         </Heading>
-                        <Text>- Dental Check-up: October 30, 2024 at 2:00 PM</Text>
-                        <Text>- Physical Therapy: November 5, 2024 at 11:00 AM</Text>
-                        <Text>- Cardiologist Visit: November 20, 2024 at 10:00 AM</Text>
+                        {loading ? (
+                            <Text>Loading...</Text>
+                        ) : (
+                            <TableContainer>
+                                <Table variant="striped">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>Profile</Th>
+                                            <Th>Patient</Th>
+                                            <Th>Date</Th>
+                                            <Th>Description</Th>
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {appointments.map((appointment) => (
+                                            <Tr key={appointment.id}>
+                                                <Td>
+                                                    <Avatar
+                                                        size="lg"
+                                                        src={
+                                                            appointment.profilePicture || "default-profile.png"
+                                                        }
+                                                        name={`${appointment.firstName} ${appointment.lastName}`}
+                                                    />
+                                                </Td>
+                                                <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
+                                                <Td>
+                                                    {new Date(
+                                                        appointment.appointmentDate.seconds * 1000
+                                                    ).toLocaleString()}
+                                                </Td>
+                                                <Td>{appointment.appointmentDescription}</Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            </TableContainer>
+                        )}
                     </Box>
 
                     <Divider />
@@ -57,9 +147,51 @@ function RemindersAndAppointments() {
                         <Heading as="h2" size="md" color="#00366d" mb={2}>
                             Past Appointments
                         </Heading>
-                        <Text>- Annual Physical: October 10, 2024</Text>
-                        <Text>- Eye Exam: September 15, 2024</Text>
-                        <Text>- Dermatology Consultation: August 28, 2024</Text>
+                        {loading ? (
+                            <Text>Loading...</Text>
+                        ) : (
+                            <TableContainer>
+                                <Table variant="striped">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>Profile</Th>
+                                            <Th>Patient</Th>
+                                            <Th>Date</Th>
+                                            <Th>Description</Th>
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {appointments
+                                            .filter(
+                                                (appointment) =>
+                                                    new Date(
+                                                        appointment.appointmentDate.seconds * 1000
+                                                    ) < new Date()
+                                            )
+                                            .map((appointment) => (
+                                                <Tr key={appointment.id}>
+                                                    <Td>
+                                                        <Avatar
+                                                            size="lg"
+                                                            src={
+                                                                appointment.profilePicture || "default-profile.png"
+                                                            }
+                                                            name={`${appointment.firstName} ${appointment.lastName}`}
+                                                        />
+                                                    </Td>
+                                                    <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
+                                                    <Td>
+                                                        {new Date(
+                                                            appointment.appointmentDate.seconds * 1000
+                                                        ).toLocaleString()}
+                                                    </Td>
+                                                    <Td>{appointment.appointmentDescription}</Td>
+                                                </Tr>
+                                            ))}
+                                    </Tbody>
+                                </Table>
+                            </TableContainer>
+                        )}
                     </Box>
                 </VStack>
             </Box>
