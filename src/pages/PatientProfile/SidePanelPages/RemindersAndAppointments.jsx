@@ -9,6 +9,7 @@ function RemindersAndAppointments() {
     const [patientId, setPatientId] = useState(null);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
     const [pastAppointments, setPastAppointments] = useState([]);
+    const [doctor, setDoctor] = useState(null); //storing doctor details
 
     useEffect(() => {
         const fetchPatient = async () => {
@@ -23,6 +24,16 @@ function RemindersAndAppointments() {
                     const patientDoc = patientSnapshot.docs[0];
                     const patientData = patientDoc.data();
                     setPatientId(patientData.id);  // set the logged-in user's patient ID
+
+                    //fetch the doctor's data
+                    const doctorRef = collection(db, "doctor");
+                    const doctorQuery = query(doctorRef, where("id", "==", patientData.doctor_id));
+                    const doctorSnapshot = await getDocs(doctorQuery);
+                    if (!doctorSnapshot.empty) {
+                        const doctorDoc = doctorSnapshot.docs[0];
+                        const doctorData = doctorDoc.data();
+                        setDoctor(doctorData); //set doctor details in state
+                    }
                 }
             }
         };
@@ -43,7 +54,7 @@ function RemindersAndAppointments() {
                     ...doc.data(),
                 }));
 
-                // Get current date at midnight for date comparison
+                //get current date at midnight for date comparison
                 const currentDate = new Date();
                 const today = new Date(
                     currentDate.getFullYear(),
@@ -51,13 +62,13 @@ function RemindersAndAppointments() {
                     currentDate.getDate()
                 );
 
-                // Filter upcoming appointments
+                //filter upcoming appointments
                 const upcoming = fetchedAppointments.filter((appointment) => {
                     const appointmentDate = appointment.appointmentDate.toDate();
                     return appointmentDate >= today;
                 }).sort((a, b) => a.appointmentDate.toDate() - b.appointmentDate.toDate()); // Sort by date ascending
 
-                // Filter past appointments
+                //filter past appointments
                 const past = fetchedAppointments.filter((appointment) => {
                     const appointmentDate = appointment.appointmentDate.toDate();
                     return appointmentDate < today;
@@ -123,7 +134,7 @@ function RemindersAndAppointments() {
                                     <Thead>
                                         <Tr>
                                             <Th>Profile</Th>
-                                            <Th>Patient</Th>
+                                            <Th>Doctor</Th>
                                             <Th>Date</Th>
                                             <Th>Description</Th>
                                         </Tr>
@@ -135,12 +146,14 @@ function RemindersAndAppointments() {
                                                     <Avatar
                                                         size="lg"
                                                         src={
-                                                            appointment.profilePicture || "default-profile.png"
+                                                            appointment.profilePicture || "No Image"
                                                         }
-                                                        name={`${appointment.firstName} ${appointment.lastName}`}
+                                                        name={`${doctor.firstName} ${doctor.lastName}`}
                                                     />
                                                 </Td>
-                                                <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
+                                                <Td>
+                                                    {doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Loading...'}
+                                                </Td>
                                                 <Td>
                                                     {new Date(
                                                         appointment.appointmentDate.seconds * 1000
@@ -170,7 +183,7 @@ function RemindersAndAppointments() {
                                     <Thead>
                                         <Tr>
                                             <Th>Profile</Th>
-                                            <Th>Patient</Th>
+                                            <Th>Doctor</Th>
                                             <Th>Date</Th>
                                             <Th>Description</Th>
                                         </Tr>
@@ -184,10 +197,12 @@ function RemindersAndAppointments() {
                                                         src={
                                                             appointment.profilePicture || "default-profile.png"
                                                         }
-                                                        name={`${appointment.firstName} ${appointment.lastName}`}
+                                                        name={`${doctor.firstName} ${doctor.lastName}}`}
                                                     />
                                                 </Td>
-                                                <Td>{`${appointment.firstName} ${appointment.lastName}`}</Td>
+                                                <Td>
+                                                    {doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Loading...'}
+                                                </Td>
                                                 <Td>
                                                     {new Date(
                                                         appointment.appointmentDate.seconds * 1000
