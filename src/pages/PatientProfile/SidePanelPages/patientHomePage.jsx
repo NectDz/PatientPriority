@@ -432,6 +432,7 @@ import {
 } from "react-icons/fa";
 import { MdHealthAndSafety } from "react-icons/md";
 import { BiMap, BiSun, BiMoon } from "react-icons/bi";
+import { VStack } from "@chakra-ui/react";
 
 import {
   getFirestore,
@@ -1158,72 +1159,63 @@ function PatientProfile() {
           </List>
         </Box>
 
-        {/* Update Profile Modal */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {/* Edit Image Modal */}
+        <Modal isOpen={isModalOpen} onClose={() => {
+          setIsModalOpen(false);
+          setSelectedImage(null);
+        }}>
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Update Profile</ModalHeader>
-            <ModalCloseButton />
+          <ModalContent borderRadius="lg" maxWidth="400px">
+            <ModalHeader color="#00366d" fontWeight="bold">Update Profile Picture</ModalHeader>
+            <ModalCloseButton color="#00366d"/>
             <ModalBody>
-              <Input type="file" onChange={handleImageUpload} />
-              {/* <Input
-                placeholder="Name"
-                mb={4}
-                name="name"
-                value={newProfile.name}
-                onChange={handleChange}
+            <VStack spacing={4} width="full" alignItems="flex-start">
+              <Input 
+                type="file" 
+                p={0}
+                border="none"
+                sx={{
+                  '::file-selector-button': {
+                    height: '40px',
+                    marginRight: '15px',
+                    background: '#deeffe',
+                    color: '#00366d',
+                    border: 'none',
+                    borderRadius: 'md',
+                    cursor: 'pointer'
+                  }
+                }}
+                onChange={handleImageUpload}
               />
-              <Input
-                placeholder="Age"
-                mb={4}
-                name="age"
-                value={newProfile.age}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Address"
-                mb={4}
-                name="address"
-                value={newProfile.address}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Phone"
-                mb={4}
-                name="phone"
-                value={newProfile.phone}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Blood Pressure"
-                mb={4}
-                name="bloodPressure"
-                value={newProfile.bloodPressure}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Heart Rate"
-                mb={4}
-                name="heartRate"
-                value={newProfile.heartRate}
-                onChange={handleChange}
-              />
-              <Input
-                placeholder="Blood Sugar Level"
-                mb={4}
-                name="bloodSugar"
-                value={newProfile.bloodSugar}
-                onChange={handleChange}
-              /> */}
-            </ModalBody>
-            <ModalFooter>
-              <Button color="#335d8f" mr={3} onClick={saveChanges}>
-                Save
-              </Button>
-              <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-            </ModalFooter>
+              {selectedImage && (
+                <Flex width="full" alignItems="center">
+                  <Text mr={2} color="gray.600">{selectedImage.name}</Text>
+                  <Text color="gray.500" fontSize="sm">({(selectedImage.size / 1024).toFixed(2)} KB)</Text>
+                </Flex>
+              )}
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <Button 
+              variant="ghost" 
+              mr={3} 
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedImage(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              color="white" 
+              bg="#00366d" 
+              _hover={{ bg: "#335d8f" }}
+              onClick={saveChanges}
+              isDisabled={!selectedImage}
+            >
+              Save Changes
+            </Button>
+          </ModalFooter>
           </ModalContent>
         </Modal>
       </Flex>

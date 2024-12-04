@@ -515,20 +515,60 @@ function DoctorHome() {
       </Card>
 
       {/* Edit Image Modal*/}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={isModalOpen} onClose={() => {
+        setIsModalOpen(false);
+        setSelectedImage(null);
+      }}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Update Profile</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent borderRadius="lg" maxWidth="400px">
+          <ModalHeader color="#00366d" fontWeight="bold">Update Profile Picture</ModalHeader>
+          <ModalCloseButton color="#00366d" />
           <ModalBody>
-            <Input type="file" onChange={handleImageUpload} />
+            <VStack spacing={4} width="full" alignItems="flex-start">
+              <Input 
+                type="file" 
+                p={0}
+                border="none"
+                sx={{
+                  '::file-selector-button': {
+                    height: '40px',
+                    marginRight: '15px',
+                    background: '#deeffe',
+                    color: '#00366d',
+                    border: 'none',
+                    borderRadius: 'md',
+                    cursor: 'pointer'
+                  }
+                }}
+                onChange={handleImageUpload}
+              />
+              {selectedImage && (
+                <Flex width="full" alignItems="center">
+                  <Text mr={2} color="gray.600">{selectedImage.name}</Text>
+                  <Text color="gray.500" fontSize="sm">({(selectedImage.size / 1024).toFixed(2)} KB)</Text>
+                </Flex>
+              )}
+            </VStack>
           </ModalBody>
           <ModalFooter>
-            <Button color="#335d8f" mr={3} onClick={saveChanges}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+            <Button 
+              variant="ghost" 
+              mr={3} 
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedImage(null);
+              }}
+            >
               Cancel
+            </Button>
+            <Button 
+              color="white" 
+              bg="#00366d" 
+              _hover={{ bg: "#335d8f" }}
+              onClick={saveChanges}
+              isDisabled={!selectedImage}
+            >
+              Save Changes
             </Button>
           </ModalFooter>
         </ModalContent>
