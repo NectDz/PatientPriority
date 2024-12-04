@@ -34,7 +34,7 @@ function RemindersAndAppointments() {
             if (patientId) {
                 console.log('Fetching appointments for patient:', patientId);  // Check if patientId is correct
                 const db = getFirestore();
-                const appointmentRef = collection(db, "appointments");
+                const appointmentRef = collection(db, "appointment");
                 const appointmentQuery = query(appointmentRef, where("patient_id", "==", patientId));
                 const appointmentSnapshot = await getDocs(appointmentQuery);
     
