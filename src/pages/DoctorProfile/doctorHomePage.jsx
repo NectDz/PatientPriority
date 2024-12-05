@@ -1,65 +1,65 @@
-// import {
-//   Box,
-//   Card,
-//   CardHeader,
-//   CardBody,
-//   ChakraProvider,
-//   Heading,
-//   Icon,
-//   Text,
-//   Avatar,
-//   VStack,
-//   HStack,
-//   Divider,
-//   Table,
-//   Thead,
-//   Tbody,
-//   Tr,
-//   Th,
-//   Td,
-//   TableContainer,
-//   Button,
-//   Input,
-//   Select,
-//   Checkbox,
-//   useToast,
-//   Stack,
-//   Image,
-//   Flex,
-//   Modal,
-//   ModalOverlay,
-//   ModalContent,
-//   ModalHeader,
-//   ModalFooter,
-//   ModalBody,
-//   ModalCloseButton,
-// } from "@chakra-ui/react";
-// import { CalendarIcon } from "@chakra-ui/icons";
-// import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
+import {
+  Box,
+  Card,
+  CardHeader,
+  CardBody,
+  ChakraProvider,
+  Heading,
+  Icon,
+  Text,
+  Avatar,
+  VStack,
+  HStack,
+  Divider,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Button,
+  Input,
+  Select,
+  Checkbox,
+  useToast,
+  Stack,
+  Image,
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from "@chakra-ui/react";
+import { CalendarIcon } from "@chakra-ui/icons";
+import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
 
-// import React, { useEffect, useState } from "react";
-// import { getAuth } from "firebase/auth";
-// import {
-//   getFirestore,
-//   collection,
-//   query,
-//   where,
-//   getDocs,
-//   addDoc,
-//   deleteDoc,
-//   updateDoc,
-//   doc,
-// } from "firebase/firestore";
-// import { auth, db } from "../../firebase-config";
-// import { useAuthState } from "react-firebase-hooks/auth";
-// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import React, { useEffect, useState } from "react";
+import { getAuth } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+import { auth, db } from "../../firebase-config";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-// import Deedat from "../../assets/Team/Deedat.png";
-// import Abir from "../../assets/Team/Abir.png";
-// import Rahat from "../../assets/Team/Rahat.png";
-// import Kazi from "../../assets/Team/Kazi.png";
-// import Kevin from "../../assets/Team/Kevin.png";
-// import Lubna from "../../assets/Team/Lubna.png";
+import Deedat from "../../assets/Team/Deedat.png";
+import Abir from "../../assets/Team/Abir.png";
+import Rahat from "../../assets/Team/Rahat.png";
+import Kazi from "../../assets/Team/Kazi.png";
+import Kevin from "../../assets/Team/Kevin.png";
+import Lubna from "../../assets/Team/Lubna.png";
 
 // const storage = getStorage();
 
@@ -799,94 +799,20 @@
 // }
 
 // export default DoctorHome;
-import {
-  Box,
-  Card,
-  CardHeader,
-  CardBody,
-  ChakraProvider,
-  Heading,
-  Icon,
-  Text,
-  Avatar,
-  VStack,
-  HStack,
-  Divider,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Button,
-  Input,
-  Select,
-  Checkbox,
-  useToast,
-  Stack,
-  Image,
-  Flex,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react";
-import { CalendarIcon } from "@chakra-ui/icons";
-import { FaUserFriends, FaUserMd, FaBell } from "react-icons/fa";
 
-import React, { useEffect, useState } from "react";
-import {
-  getFirestore,
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
-import { auth, db } from "../../firebase-config";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const storage = getStorage();
 
 function DoctorHome() {
   const toast = useToast();
   const [user] = useAuthState(auth);
 
-  // Image States
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  // To-Do List States
-  const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState("");
-  const [taskPriority, setTaskPriority] = useState("Choose priority");
-
-  // Appointments States
-  const [appointments, setAppointments] = useState([]);
-  const [todaysAppointments, setTodaysAppointments] = useState([]);
-  const [recentAppointments, setRecentAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [doctorName, setDoctorName] = useState("");
   const [doctorID, setDoctorID] = useState("");
   const [doctorImage, setDoctorImage] = useState("");
-  const [hospitalID, setHospitalID] = useState("");
+  const [hospitalName, setHospitalName] = useState("");
+  const [team, setTeam] = useState([]);
 
-  const todayDate = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    day: "2-digit",
-    year: "numeric",
-  });
-
-  // Fetch doctor data (name, id, hospital) from Firebase
+  // Fetch logged-in doctor info
   const fetchDoctorInfo = async () => {
     if (user) {
       const doctorQuery = query(
@@ -894,175 +820,28 @@ function DoctorHome() {
         where("email", "==", user.email)
       );
       const doctorSnapshot = await getDocs(doctorQuery);
+
       if (!doctorSnapshot.empty) {
         const doctorData = doctorSnapshot.docs[0].data();
         setDoctorName(doctorData.firstName);
         setDoctorID(doctorData.id);
-        setHospitalID(doctorData.hospitalID);
+        setHospitalName(doctorData.hospitalName);
         setDoctorImage(doctorData.profilePicture || null);
       }
     }
   };
 
-  useEffect(() => {
-    fetchDoctorInfo();
-  }, [user]);
-
-  // Fetch tasks from Firestore
-  const fetchTasks = async () => {
-    if (user) {
-      const tasksRef = collection(db, "users", user.uid, "tasks");
-      const snapshot = await getDocs(tasksRef);
-      const fetchedTasks = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setTasks(
-        fetchedTasks.sort((a, b) => {
-          const priorityOrder = { High: 1, Medium: 2, Low: 3 };
-          return priorityOrder[a.priority] - priorityOrder[b.priority];
-        })
-      );
-    }
-  };
-
-  // Fetch appointments from Firestore
-  const fetchAppointments = async () => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-      const doctorEmail = user.email;
-
-      const doctorQuery = query(
-        collection(db, "doctor"),
-        where("email", "==", doctorEmail)
-      );
-      const doctorSnapshot = await getDocs(doctorQuery);
-
-      if (!doctorSnapshot.empty) {
-        const doctorData = doctorSnapshot.docs[0].data();
-        const doctorId = doctorData.id;
-        setDoctorID(doctorId);
-
-        const patientQuery = query(
-          collection(db, "patients"),
-          where("doctor_id", "==", doctorId)
-        );
-        const patientSnapshot = await getDocs(patientQuery);
-
-        const patientIds = patientSnapshot.docs
-          .filter((doc) => doc.data().id)
-          .map((doc) => ({
-            id: doc.data().id,
-            firstName: doc.data().firstName,
-            lastName: doc.data().lastName,
-            profilePicture: doc.data().profilePicture || null,
-          }));
-
-        const appointmentPromises = patientIds.map(async (patient) => {
-          const appointmentQuery = query(
-            collection(db, "appointment"),
-            where("patient_id", "==", patient.id)
-          );
-          const appointmentSnapshot = await getDocs(appointmentQuery);
-
-          return appointmentSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            date: doc.data().appointmentDate,
-            description: doc.data().appointmentDescription,
-            patientName: `${patient.firstName} ${patient.lastName}`,
-            profilePicture: patient.profilePicture,
-          }));
-        });
-
-        const fetchedAppointments = (
-          await Promise.all(appointmentPromises)
-        ).flat();
-
-        const currentDate = new Date();
-        const today = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate()
-        );
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-
-        const todaysAppointments = fetchedAppointments
-          .filter((appointment) => {
-            const appointmentDate = appointment.date.toDate();
-            return appointmentDate >= today && appointmentDate < tomorrow;
-          })
-          .sort((a, b) => a.date.toDate() - b.date.toDate());
-
-        const pastAppointments = fetchedAppointments.filter(
-          (appointment) => appointment.date.toDate() < today
-        );
-
-        const latestAppointments = pastAppointments
-          .sort((a, b) => b.date.toDate() - a.date.toDate())
-          .slice(0, 5);
-
-        setAppointments(fetchedAppointments);
-        setRecentAppointments(latestAppointments);
-        setTodaysAppointments(todaysAppointments);
-      }
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      toast({
-        title: "Error loading appointments.",
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-    fetchAppointments();
-  }, [user]);
-
-  // Add a new task
-  const addTask = async () => {
-    if (newTask.trim() === "") {
-      toast({
-        title: "Task cannot be empty",
-        status: "warning",
-        duration: 2000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    const taskObj = { text: newTask, priority: taskPriority, completed: false };
-    if (user) {
-      await addDoc(collection(db, "users", user.uid, "tasks"), taskObj);
-      fetchTasks();
-      setNewTask("");
-      toast({
-        title: "Task added successfully!",
-        status: "success",
-        duration: 2000,
-        isClosable: true,
-      });
-    }
-  };
-
-  // Fetch team dynamically (same hospital)
-  const [team, setTeam] = useState([]);
+  // Fetch doctors from the same hospital
   const fetchTeam = async () => {
     try {
-      if (!hospitalID) return;
+      if (!hospitalName || !doctorID) return;
 
       const teamQuery = query(
         collection(db, "doctor"),
-        where("hospitalID", "==", hospitalID),
+        where("hospitalName", "==", hospitalName),
         where("id", "!=", doctorID)
       );
+
       const teamSnapshot = await getDocs(teamQuery);
 
       if (!teamSnapshot.empty) {
@@ -1073,11 +852,14 @@ function DoctorHome() {
           profilePicture: doc.data().profilePicture,
         }));
         setTeam(teamData);
+      } else {
+        console.log("No team members found in Firestore.");
       }
     } catch (error) {
       console.error("Error fetching team:", error);
       toast({
         title: "Error loading team.",
+        description: "Could not fetch team members.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -1086,12 +868,15 @@ function DoctorHome() {
   };
 
   useEffect(() => {
+    fetchDoctorInfo();
+  }, [user]);
+
+  useEffect(() => {
     fetchTeam();
-  }, [hospitalID]);
+  }, [hospitalName]);
 
   return (
     <ChakraProvider>
-      {/* Doctor Team Section */}
       <Card
         mt={8}
         borderRadius="20px"
@@ -1108,7 +893,7 @@ function DoctorHome() {
         </CardHeader>
         <CardBody>
           {team.length === 0 ? (
-            <Text>No team members found.</Text>
+            <Text>No team members found in {hospitalName}.</Text>
           ) : (
             <HStack spacing={10} justifyContent="center">
               {team.map((doctor) => (
