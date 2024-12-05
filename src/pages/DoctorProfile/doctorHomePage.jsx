@@ -813,36 +813,55 @@ import {
         </Card>
   
         {/* Doctor Team NOW DYNAMIC*/}
-        <Card
-          mt={8}
-          borderRadius="20px"
-          height="100%"
-          width="100%"
-          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-          transition="all 0.3s"
-          _hover={{ boxShadow: "2xl" }}
-        >
-          <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
-            <Heading fontSize="2xl" color="#00366d">
-              <Icon as={FaUserFriends} mr={2} />
-              My Team at {currentHospital}
-            </Heading>
-          </CardHeader>
-          <CardBody>
-            <HStack spacing={10} justifyContent="center">
-              {teamDoctors.map((doctor) => (
-                <VStack key={doctor.id}>
-                  <Avatar 
-                    src={doctor.profilePicture || undefined} 
-                    size="2xl" 
-                    name={`${doctor.firstName} ${doctor.lastName}`}
-                  />
-                  <Text>{`Dr. ${doctor.firstName} ${doctor.lastName}`}</Text>
-                </VStack>
-              ))}
-            </HStack>
-          </CardBody>
-        </Card>
+  <Card
+  mt={8}
+  borderRadius="20px"
+  height="100%"
+  width="100%"
+  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+  transition="all 0.3s"
+  _hover={{ boxShadow: "2xl" }}
+>
+  <CardHeader bg="#ddeeff" borderRadius="20px 20px 0px 0px">
+    <Heading fontSize="2xl" color="#00366d">
+      <Icon as={FaUserFriends} mr={2} />
+      My Team at {currentHospital}
+    </Heading>
+  </CardHeader>
+  <CardBody>
+    <HStack spacing={10} justifyContent="center">
+      {teamDoctors.map((doctor) => (
+        <Box
+          key={doctor.id}
+          role="group"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          textAlign="center"
+          width="150px"
+          cursor="pointer"
+          _hover={{
+            transform: "scale(1.05)",
+            transition: "transform 0.2s ease-in-out",
+          }}
+        >
+          {/* Avatar with hover shadow */}
+          <Avatar
+            src={doctor.profilePicture || undefined}
+            size="2xl"
+            name={`${doctor.firstName} ${doctor.lastName}`}
+            _groupHover={{
+              boxShadow: "0 0 20px rgba(0, 54, 109, 0.6)",
+              transition: "box-shadow 0.2s ease-in-out",
+            }}
+          />
+          <Text mt={2} fontWeight="bold">{`Dr. ${doctor.firstName} ${doctor.lastName}`}</Text>
+        </Box>
+      ))}
+    </HStack>
+  </CardBody>
+</Card>
+
       </ChakraProvider>
     );
   }
