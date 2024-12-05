@@ -684,7 +684,10 @@ import {
                   <option value="Medium">Medium Priority</option>
                   <option value="Low">Low Priority</option>
                 </Select>
-                <Button colorScheme="blue" onClick={addTask} minWidth="120px">
+                <Button onClick={addTask} minWidth="120px"
+              _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"> 
                   Add Task
                 </Button>
               </HStack>
