@@ -162,6 +162,7 @@ import PatientSignUp from "./pages/PatientSignup/PatientSignUp.jsx";
 import PatientDetails from "./pages/DoctorProfile/PatientsPage/PatientDetails.jsx";
 import DoctorHomePage from "./pages/DoctorProfile/doctorHomePage.jsx";
 import AddPatient from "./pages/Patients/AddPatient";
+import DoctorSettings from "./pages/DoctorProfile/DoctorSettings.jsx";
 
 //support
 import Support from "./pages/Home/Support";
@@ -286,6 +287,7 @@ ReactDOM.createRoot(rootElement).render(
                 <Route path="patients" element={<PatientsPage />} />
                 <Route path="patients/:id" element={<PatientDetails />} />
                 <Route path="patients/add-new-patient" element={<AddPatient />} />
+                <Route path="doctor-settings" element={<DoctorSettings />}/>
                 {/* Redirect to home if no sub-route specified */}
                 <Route index element={<Navigate to="home" replace />} />
               </Route>

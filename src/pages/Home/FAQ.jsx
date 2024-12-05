@@ -14,132 +14,96 @@ import { useNavigate } from "react-router-dom";
 import Footer from "./Footer"; // Footer component
 import {
   FaInfoCircle,
-  FaCalendarCheck,
-  FaCommentDots,
-  FaLock,
-  FaFileMedical,
-  FaAmbulance,
-  FaUserEdit,
-  FaSyncAlt,
-  FaExclamationCircle,
-  FaVideo,
-  FaQuestionCircle,
-  FaHandsHelping,
-  FaBalanceScale,
+  FaPhoneAlt,
+  FaStethoscope,
+  FaUserCircle,
+  FaShareAlt,
   FaShieldAlt,
-  FaAddressCard,
+  FaHeartbeat,
+  FaLifeRing,
+  FaExclamationTriangle,
+  FaHospital,
+  FaEnvelope,
 } from "react-icons/fa";
 
 const faqData = [
   {
     question: "What is Patient Priority?",
     answer:
-      "Patient Priority is a platform designed to streamline communication between patients and healthcare providers, making it easier for patients to book appointments, ask questions, track health records, and receive timely responses from their doctors. Our goal is to improve your overall experience and ensure that you receive the care you need efficiently.",
+      "Patient Priority is a next-generation healthcare platform designed to enhance communication and streamline interactions between doctors and patients. Our AI-driven tools support scheduling, transcription, personalized health insights, and more — empowering both patients and healthcare providers to focus on what truly matters: better health outcomes.",
     icon: FaInfoCircle,
     iconColor: "primary",
   },
   {
     question: "How do I book an appointment with my doctor?",
     answer:
-      "To book an appointment, simply log in to your Patient Priority account, search for your healthcare provider, and choose an available time slot that works for you. You can schedule in-person or virtual appointments, depending on your provider's availability.",
-    icon: FaCalendarCheck,
+      "Patients schedule appointments as usual by calling their doctor's office. The receptionist will confirm the date and time, and the appointment will then be reflected on the patient’s side of the platform for easy tracking and reminders.",
+    icon: FaPhoneAlt,
     iconColor: "highlight",
   },
   {
-    question: "Can I message my doctor directly through the platform?",
+    question: "What features are available for doctors?",
     answer:
-      "Yes, you can message your doctor securely through our messaging system. Whether you need clarification on a prescription, ask follow-up questions, or discuss symptoms, you can contact your doctor at any time. Responses will typically be provided within 24 hours.",
-    icon: FaCommentDots,
+      "Doctors can leverage the Doctor Portal, which provides a dashboard to manage daily tasks, secure tools for uploading meeting notes, AI-powered transcription of patient conversations & streamlined patient profile management. These features simplify workflows and enhance care delivery.",
+    icon: FaStethoscope,
     iconColor: "secondary",
   },
   {
-    question: "Is my personal health information safe on Patient Priority?",
+    question: "What is included in the patient dashboard?",
     answer:
-      "Absolutely. Patient Priority is committed to protecting your privacy. All personal and health information is encrypted and stored in compliance with healthcare regulations like HIPAA (Health Insurance Portability and Accountability Act), ensuring that your data is safe and confidential.",
-    icon: FaLock,
+      "Patients have access to a personalized dashboard where they can track appointments, prescriptions, and health history, receive health reminders and AI-driven wellness insights while also being able to manage and update their profile in one convenient space.",
+    icon: FaUserCircle,
     iconColor: "accent",
   },
   {
-    question: "How do I get my medical records?",
+    question: "How secure is Patient Priority?",
     answer:
-      "You can access your medical records directly through the Patient Priority portal. Simply log in to your account and navigate to the “Health Records” section. If you need any help retrieving or understanding your records, our support team is available to assist.",
-    icon: FaFileMedical,
-    iconColor: "primary",
-  },
-  {
-    question: "What should I do if I have an emergency and can’t reach my doctor?",
-    answer:
-      "If you have a medical emergency, please call emergency services or go to the nearest emergency room. Patient Priority is designed for non-urgent consultations and follow-ups, so for emergencies, immediate medical attention is necessary.",
-    icon: FaAmbulance,
-    iconColor: "highlight",
-  },
-  {
-    question: "Can I switch doctors or update my healthcare provider on Patient Priority?",
-    answer:
-      "Yes, you can easily update your healthcare provider within your Patient Priority account settings. If you want to change doctors or need to update your provider’s details, just follow the instructions in your account or contact our support team for assistance.",
-    icon: FaUserEdit,
-    iconColor: "secondary",
-  },
-  {
-    question: "How do I cancel or reschedule an appointment?",
-    answer:
-      "You can cancel or reschedule your appointment directly from the platform. Simply log in, navigate to your upcoming appointments, and select the option to reschedule or cancel. We recommend doing this at least 24 hours in advance to avoid cancellation fees (if applicable).",
-    icon: FaSyncAlt,
-    iconColor: "accent",
-  },
-  {
-    question: "What happens if I don't get a response from my doctor in time?",
-    answer:
-      "If you haven’t received a response within the expected timeframe, you can follow up with a gentle reminder through the platform. If the issue is urgent, please seek advice from another healthcare professional or contact our support team for further assistance.",
-    icon: FaExclamationCircle,
-    iconColor: "primary",
-  },
-  {
-    question: "Are telemedicine appointments available?",
-    answer:
-      "Yes, many of our healthcare providers offer telemedicine consultations via video calls. When scheduling an appointment, you’ll be able to select whether you'd prefer an in-person or virtual visit.",
-    icon: FaVideo,
-    iconColor: "highlight",
-  },
-  {
-    question: "What should I do if I’m having trouble navigating the platform?",
-    answer:
-      "If you’re experiencing any technical issues or need help navigating the platform, please visit our help section or contact customer support. Our team is available to assist you with any questions or problems you may encounter.",
-    icon: FaQuestionCircle,
-    iconColor: "secondary",
-  },
-  {
-    question: "How does Patient Priority improve communication with my doctor?",
-    answer:
-      "Patient Priority enhances communication by offering secure messaging, easy appointment scheduling, and reminders, as well as facilitating the sharing of medical records and follow-up care instructions. This ensures your doctor has the information they need, and you have more direct access to care.",
-    icon: FaHandsHelping,
-    iconColor: "accent",
-  },
-  {
-    question: "Can I get a second opinion through Patient Priority?",
-    answer:
-      "Yes, if you're considering a second opinion, you can reach out to different healthcare providers available on the platform. You can schedule a consultation with another specialist or provider to discuss your health concerns and receive additional advice.",
-    icon: FaBalanceScale,
-    iconColor: "primary",
-  },
-  {
-    question: "How do I know if my insurance is accepted?",
-    answer:
-      "You can verify whether your insurance is accepted by checking your provider’s profile on Patient Priority. If you need further assistance, you can also contact our support team, who can help confirm your insurance details.",
+      "Your privacy and data security are our top priorities. We use encrypted storage and comply with healthcare regulations like HIPAA to ensure your information remains confidential. Our OAuth login system adds an extra layer of security, offering seamless and safe access.",
     icon: FaShieldAlt,
+    iconColor: "primary",
+  },
+  {
+    question: "Does Patient Priority offer personalized health recommendations?",
+    answer:
+      "Absolutely. Our AI analyzes patient profiles to provide tailored health tips, reminders, and proactive wellness suggestions—helping you stay ahead of potential health issues.",
+    icon: FaHeartbeat,
     iconColor: "highlight",
   },
   {
-    question: "How do I update my contact or insurance information?",
+    question: "How do I invite my doctor/hospital to join Patient Priority?",
     answer:
-      "You can easily update your contact information and insurance details in your Patient Priority account settings. Make sure your details are up-to-date to ensure smooth communication and billing.",
-    icon: FaAddressCard,
+      "If your doctor isn't on Patient Priority yet, let them know about our platform! They can visit our website to learn more and sign up.",
+    icon: FaShareAlt,
+    iconColor: "primary",
+  },
+  {
+    question: "How does the sign-up and account creation process work for doctors and patients?",
+    answer:
+      "The sign-up process begins when a hospital registers with Patient Priority and provides a doctor with login credentials. The doctor then creates an account using their first name, last name, hospital name, and credentials. Afterward, the doctor can add a patient from their side, and a verification code is emailed to the patient. The patient uses this code, along with their first name, last name, and email, to complete the sign-up process. Both doctors and patients will log in using their email and password once their accounts are created.",
+    icon: FaHospital,
+    iconColor: "primary",
+  },  
+  {
+    question: "What should I do if I’m having trouble using the platform?",
+    answer:
+      "If you encounter any issues, our support team is here to help. Visit the “Support” section on our website or email us at contact.patientpriority@gmail.com for assistance.",
+    icon: FaLifeRing,
     iconColor: "secondary",
   },
-{
-  Question: "Looking for something else?",
-  answer: "Email us at contact.patientpriority@gmail.com",
-},
+  {
+    question: "What should I do in case of an emergency?",
+    answer:
+      "Patient Priority is designed for non-urgent healthcare needs. If you have a medical emergency, please contact emergency services or go to the nearest emergency room immediately.",
+    icon: FaExclamationTriangle,
+    iconColor: "accent",
+  },
+  {
+    question: "Looking for something else?",
+    answer:
+      "Email us at contact.patientpriority@gmail.com",
+    icon: FaEnvelope,
+    iconColor: "secondary",
+  },
 ];
 
 const FAQ = () => {
