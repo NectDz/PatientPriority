@@ -123,11 +123,22 @@
 // export default SidePanel;
 
 import React from "react";
-import { Box, VStack, HStack, Link as ChakraLink, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  HStack,
+  Link as ChakraLink,
+  Spacer,
+  Text,
+} from "@chakra-ui/react";
 import { HamburgerIcon, SettingsIcon } from "@chakra-ui/icons";
 import { IoIosLogOut } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
-import { Link as ReactRouterLink, useNavigate, useLocation } from "react-router-dom";
+import {
+  Link as ReactRouterLink,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import { FaCalendarAlt, FaFileAlt, FaUserCircle } from "react-icons/fa"; // Icons
 import { FaRegNoteSticky } from "react-icons/fa6";
@@ -166,25 +177,27 @@ const SidePanel = () => {
     >
       <VStack pt="30%" spacing={5} align="start" flexGrow={1} w="100%">
         <HStack
-          as={ReactRouterLink}  // Make the whole HStack clickable
+          as={ReactRouterLink} // Make the whole HStack clickable
           to="/patient-profile/home"
           spacing={4}
           w="97.5%"
           h="3rem"
           px={6}
-          cursor="pointer"  // Add cursor pointer for the entire area
+          cursor="pointer" // Add cursor pointer for the entire area
           _hover={{
             bg: "#2A3B5C",
             transform: "scale(1.05)",
             transition: "0.2s",
           }}
           bg={isActive("/patient-profile/home") ? "#2A3B5C" : "transparent"} // Highlight active link
-          borderLeft={isActive("/patient-profile/home") ? "4px solid white" : "none"} // Left border for active link
+          borderLeft={
+            isActive("/patient-profile/home") ? "4px solid white" : "none"
+          } // Left border for active link
         >
           <FaHome />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             Home
-          </ChakraLink>
+          </Text>
         </HStack>
 
         <HStack
@@ -201,12 +214,14 @@ const SidePanel = () => {
             transition: "0.2s",
           }}
           bg={isActive("/patient-profile/overview") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/overview") ? "4px solid white" : "none"}
+          borderLeft={
+            isActive("/patient-profile/overview") ? "4px solid white" : "none"
+          }
         >
           <GrOverview />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             Overview
-          </ChakraLink>
+          </Text>
         </HStack>
 
         <HStack
@@ -222,13 +237,21 @@ const SidePanel = () => {
             transform: "scale(1.05)",
             transition: "0.2s",
           }}
-          bg={isActive("/patient-profile/reminders-and-appointments") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/reminders-and-appointments") ? "4px solid white" : "none"}
+          bg={
+            isActive("/patient-profile/reminders-and-appointments")
+              ? "#2A3B5C"
+              : "transparent"
+          }
+          borderLeft={
+            isActive("/patient-profile/reminders-and-appointments")
+              ? "4px solid white"
+              : "none"
+          }
         >
           <FaCalendarAlt />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             Reminders & Appointments
-          </ChakraLink>
+          </Text>
         </HStack>
 
         <HStack
@@ -244,13 +267,21 @@ const SidePanel = () => {
             transform: "scale(1.05)",
             transition: "0.2s",
           }}
-          bg={isActive("/patient-profile/meeting-summaries") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/meeting-summaries") ? "4px solid white" : "none"}
+          bg={
+            isActive("/patient-profile/meeting-summaries")
+              ? "#2A3B5C"
+              : "transparent"
+          }
+          borderLeft={
+            isActive("/patient-profile/meeting-summaries")
+              ? "4px solid white"
+              : "none"
+          }
         >
           <FaRegNoteSticky />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             Meeting Summaries
-          </ChakraLink>
+          </Text>
         </HStack>
 
         <HStack
@@ -266,13 +297,19 @@ const SidePanel = () => {
             transform: "scale(1.05)",
             transition: "0.2s",
           }}
-          bg={isActive("/patient-profile/ai-insights") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/ai-insights") ? "4px solid white" : "none"}
+          bg={
+            isActive("/patient-profile/ai-insights") ? "#2A3B5C" : "transparent"
+          }
+          borderLeft={
+            isActive("/patient-profile/ai-insights")
+              ? "4px solid white"
+              : "none"
+          }
         >
           <FaBrain />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             AI Insights
-          </ChakraLink>
+          </Text>
         </HStack>
 
         {/* AI Chatbot */}
@@ -289,13 +326,17 @@ const SidePanel = () => {
             transform: "scale(1.05)",
             transition: "0.2s",
           }}
-          bg={isActive("/patient-profile/ai-chatbot") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/ai-chatbot") ? "4px solid white" : "none"}
+          bg={
+            isActive("/patient-profile/ai-chatbot") ? "#2A3B5C" : "transparent"
+          }
+          borderLeft={
+            isActive("/patient-profile/ai-chatbot") ? "4px solid white" : "none"
+          }
         >
           <FaRobot />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
             AI Chatbot
-          </ChakraLink>
+          </Text>
         </HStack>
 
         <Spacer />
@@ -323,12 +364,12 @@ const SidePanel = () => {
             transition: "0.2s",
           }}
           bg={isActive("/patient-profile/settings") ? "#2A3B5C" : "transparent"}
-          borderLeft={isActive("/patient-profile/settings") ? "4px solid white" : "none"}
+          borderLeft={
+            isActive("/patient-profile/settings") ? "4px solid white" : "none"
+          }
         >
           <SettingsIcon />
-          <ChakraLink fontWeight="bold" _hover={{ textDecoration: 'none' }}>
-            Settings
-          </ChakraLink>
+          <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>Settings</Text>
         </HStack>
 
         {/* Logout */}
@@ -347,9 +388,14 @@ const SidePanel = () => {
           onClick={handleLogout}
         >
           <IoIosLogOut />
-          <ChakraLink as={ReactRouterLink} to="/" fontWeight="bold" _hover={{ textDecoration: 'none' }}>
+          <Text
+            as={ReactRouterLink}
+            to="/"
+            fontWeight="bold"
+            _hover={{ textDecoration: "none" }}
+          >
             Log Out
-          </ChakraLink>
+          </Text>
         </HStack>
       </Box>
     </Box>
