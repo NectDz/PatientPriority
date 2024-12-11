@@ -114,48 +114,58 @@ import {
       fetchDoctorInfo();
     }, [user]);
   
-    useEffect(() => {
-      const fetchDoctorTeam = async () => {
-        if (user) {
-          try {
-            //find current doctor's hospital
-            const doctorQuery = query(
-              collection(db, "doctor"),
-              where("email", "==", user.email) //match thru email
-            );
-            const doctorSnapshot = await getDocs(doctorQuery);
-    
-            if (!doctorSnapshot.empty) {
-              const currentDoctorData = doctorSnapshot.docs[0].data();
-              const hospital = currentDoctorData.hospitalName; //save hospital here to then match against fb
-              setCurrentHospital(hospital);
-    
-              //get all doctors from the same hospital
-              const teamQuery = query(
-                collection(db, "doctor"),
-                where("hospitalName", "==", hospital)
-              );
-              const teamSnapshot = await getDocs(teamQuery);
-    
-              const doctors = teamSnapshot.docs
-                .filter(doc => doc.data().email !== user.email) //dont include current doc
-                .map(doc => ({
-                  id: doc.id,
-                  firstName: doc.data().firstName,
-                  lastName: doc.data().lastName,
-                  profilePicture: doc.data().profilePicture || null
-                }));
-    
-              setTeamDoctors(doctors);
-            }
-          } catch (error) {
-            console.error("Error fetching doctor team:", error);
-          }
-        }
-      };
-    
-      fetchDoctorTeam();
-    }, [user]);
+  useEffect(() => {
+    const fetchDoctorTeam = async () => {
+      if (user) {
+        try {
+          //find current doctor's hospital and department now
+          const doctorQuery = query(
+            collection(db, "doctor"),
+            where("email", "==", user.email) //match thru email
+          );
+          const doctorSnapshot = await getDocs(doctorQuery);
+      
+          if (!doctorSnapshot.empty) {
+            const currentDoctorData = doctorSnapshot.docs[0].data();
+            const hospital = currentDoctorData.hospitalName; //save hospital here to then match against fb
+            const department = currentDoctorData.department; //get current doctor's department
+            
+            setCurrentHospital(hospital);
+      
+            //get all doctors from the same hospital AND department!
+            const teamQuery = query(
+              collection(db, "doctor"),
+              where("hospitalName", "==", hospital),
+              where("department", "==", department)
+            );
+            const teamSnapshot = await getDocs(teamQuery);
+      
+            const doctors = teamSnapshot.docs
+              .filter(doc => doc.data().email !== user.email) //dont include current doc
+              .map(doc => ({
+                id: doc.id,
+                firstName: doc.data().firstName,
+                lastName: doc.data().lastName,
+                department: doc.data().department,
+                profilePicture: doc.data().profilePicture || null
+              }));
+      
+            setTeamDoctors(doctors);
+          }
+        } catch (error) {
+          console.error("Error fetching doctor team:", error);
+          toast({
+            title: "Error fetching team members",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      }
+    };
+      
+    fetchDoctorTeam();
+  }, [user]);
   
     // Static data for doctor team
     const team = [
