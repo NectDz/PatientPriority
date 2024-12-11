@@ -118,7 +118,7 @@ import {
     const fetchDoctorTeam = async () => {
       if (user) {
         try {
-          //find current doctor's hospital and department now
+          //find current doctor's hospital and department
           const doctorQuery = query(
             collection(db, "doctor"),
             where("email", "==", user.email) //match thru email
@@ -128,38 +128,40 @@ import {
           if (!doctorSnapshot.empty) {
             const currentDoctorData = doctorSnapshot.docs[0].data();
             const hospital = currentDoctorData.hospitalName; //save hospital here to then match against fb
-            const department = currentDoctorData.department; //get current doctor's department
-            
             setCurrentHospital(hospital);
       
-            //get all doctors from the same hospital AND department!
+            //get all doctors from the same hospital
             const teamQuery = query(
               collection(db, "doctor"),
-              where("hospitalName", "==", hospital),
-              where("department", "==", department)
+              where("hospitalName", "==", hospital)
             );
             const teamSnapshot = await getDocs(teamQuery);
       
-            const doctors = teamSnapshot.docs
+            // Group doctors by department
+            const departmentMap = teamSnapshot.docs
               .filter(doc => doc.data().email !== user.email) //dont include current doc
-              .map(doc => ({
-                id: doc.id,
-                firstName: doc.data().firstName,
-                lastName: doc.data().lastName,
-                department: doc.data().department,
-                profilePicture: doc.data().profilePicture || null
-              }));
+              .reduce((acc, doc) => {
+                const doctorData = doc.data();
+                const department = doctorData.department;
+                
+                if (!acc[department]) {
+                  acc[department] = [];
+                }
+                
+                acc[department].push({
+                  id: doc.id,
+                  firstName: doctorData.firstName,
+                  lastName: doctorData.lastName,
+                  profilePicture: doctorData.profilePicture || null
+                });
+                
+                return acc;
+              }, {});
       
-            setTeamDoctors(doctors);
+            setTeamDoctors(departmentMap);
           }
         } catch (error) {
           console.error("Error fetching doctor team:", error);
-          toast({
-            title: "Error fetching team members",
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
         }
       }
     };
@@ -826,7 +828,8 @@ import {
         </Card>
   
         {/* Doctor Team NOW DYNAMIC*/}
-  <Card
+{/* Doctor Team NOW DYNAMIC*/}
+<Card
   mt={8}
   borderRadius="20px"
   height="100%"
@@ -842,36 +845,43 @@ import {
     </Heading>
   </CardHeader>
   <CardBody>
-    <HStack spacing={10} justifyContent="center">
-      {teamDoctors.map((doctor) => (
-        <Box
-          key={doctor.id}
-          role="group"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          textAlign="center"
-          width="150px"
-          cursor="pointer"
-          _hover={{
-            transform: "scale(1.05)",
-            transition: "transform 0.2s ease-in-out",
-          }}
-        >
-          {/* Avatar with hover shadow */}
-          <Avatar
-            src={doctor.profilePicture || undefined}
-            size="2xl"
-            name={`${doctor.firstName} ${doctor.lastName}`}
-            _groupHover={{
-              boxShadow: "0 0 20px rgba(0, 54, 109, 0.6)",
-              transition: "box-shadow 0.2s ease-in-out",
-            }}
-          />
-          <Text mt={2} fontWeight="bold">{`Dr. ${doctor.firstName} ${doctor.lastName}`}</Text>
-        </Box>
-      ))}
-    </HStack>
+    {Object.entries(teamDoctors).map(([department, doctors]) => (
+      <Box key={department} mb={6}>
+        <Heading fontSize="lg" color="#00366d" mb={4}>
+          {department.charAt(0).toUpperCase() + department.slice(1)} Department
+        </Heading>
+        <HStack spacing={10} justifyContent="flex-start" overflowX="auto">
+          {doctors.map((doctor) => (
+            <Box
+              key={doctor.id}
+              role="group"
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              textAlign="center"
+              width="150px"
+              cursor="pointer"
+              _hover={{
+                transform: "scale(1.05)",
+                transition: "transform 0.2s ease-in-out",
+              }}
+            >
+              <Avatar
+                src={doctor.profilePicture || undefined}
+                size="2xl"
+                name={`${doctor.firstName} ${doctor.lastName}`}
+                _groupHover={{
+                  boxShadow: "0 0 20px rgba(0, 54, 109, 0.6)",
+                  transition: "box-shadow 0.2s ease-in-out",
+                  borderRadius: "50%"
+                }}
+              />
+              <Text mt={2} fontWeight="bold">{`Dr. ${doctor.firstName} ${doctor.lastName}`}</Text>
+            </Box>
+          ))}
+        </HStack>
+      </Box>
+    ))}
   </CardBody>
 </Card>
 
