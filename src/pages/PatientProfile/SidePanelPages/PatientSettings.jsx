@@ -28,7 +28,12 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "firebase/auth";
+import {
+  getAuth,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  updatePassword,
+} from "firebase/auth";
 
 const db = getFirestore();
 const auth = getAuth();
@@ -37,7 +42,7 @@ function PatientSettings() {
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [docID, setDocID] = useState(null);  
+  const [docID, setDocID] = useState(null);
 
   // state for managing password input
   const [newPassword, setNewPassword] = useState("");
@@ -85,9 +90,8 @@ function PatientSettings() {
           const patientDoc = patientSnapshot.docs[0];
           setPatient({ id: patientDoc.id, ...patientDoc.data() });
 
-        setDocID(patientDoc.id);
-        //   console.log("Document ID:", patientDoc.id);
-
+          setDocID(patientDoc.id);
+          //   console.log("Document ID:", patientDoc.id);
         } else {
           throw new Error("No patient data found for this email");
         }
@@ -185,8 +189,8 @@ function PatientSettings() {
         },
       };
 
-    //   console.log("Update Data:", updateData);
-      
+      //   console.log("Update Data:", updateData);
+
       // Update Firestore document
       await updateDoc(doc(db, "patients", docID), updateData);
 
@@ -226,40 +230,43 @@ function PatientSettings() {
 
   const handlePasswordChange = async () => {
     try {
-        const user = auth.currentUser;
-  
-        if (!user) {
-          throw new Error("No user is logged in.");
-        }
-  
-        // Reauthenticate the user
-        const credential = EmailAuthProvider.credential(user.email, currentPassword);
-        await reauthenticateWithCredential(user, credential);
-  
-        // Update the password
-        await updatePassword(user, newPassword);
-  
-        // Reset the password fields
-        setNewPassword("");
-        setCurrentPassword("");
-  
-        toast({
-          title: "Password Updated",
-          description: "Your password has been successfully updated.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      } catch (error) {
-        console.error("Error updating password:", error);
-        toast({
-          title: "Error",
-          description: error.message || "Failed to update password.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+      const user = auth.currentUser;
+
+      if (!user) {
+        throw new Error("No user is logged in.");
       }
+
+      // Reauthenticate the user
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Update the password
+      await updatePassword(user, newPassword);
+
+      // Reset the password fields
+      setNewPassword("");
+      setCurrentPassword("");
+
+      toast({
+        title: "Password Updated",
+        description: "Your password has been successfully updated.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update password.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handlePatientDeletion = () => {
@@ -545,36 +552,39 @@ function PatientSettings() {
 
           {/* Change Password Section */}
           <Box mb={8}>
-      <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
-        Change Password
-      </Heading>
-      <Grid templateColumns={isMobile ? "1fr" : "1fr 1fr"} gap={4}>
-        <FormControl>
-          <FormLabel>Current Password:</FormLabel>
-          <Input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>New Password:</FormLabel>
-          <Input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </FormControl>
-      </Grid>
-      <Button
-        mt={4}
-        colorScheme="blue"
-        onClick={handlePasswordChange}
-        leftIcon={<FaKey />}
-      >
-        Update Password
-      </Button>
-    </Box>
+            <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
+              Change Password
+            </Heading>
+            <Grid templateColumns={isMobile ? "1fr" : "1fr 1fr"} gap={4}>
+              <FormControl>
+                <FormLabel>Current Password:</FormLabel>
+                <Input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>New Password:</FormLabel>
+                <Input
+                  mb={4}
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </FormControl>
+            </Grid>
+            <Button
+              leftIcon={<FaKey />}
+              width="full"
+              _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"
+              onClick={handlePasswordChange}
+            >
+              Update Password
+            </Button>
+          </Box>
 
           {/* Delete Patient Section */}
           <Box mb={8}>
