@@ -54,12 +54,16 @@ function PatientSettings() {
 
   // Refs for profile editing
   const profileRefs = {
-    email: useRef(),
     phone: useRef(),
     emergencyContactName: useRef(),
     emergencyContactEmail: useRef(),
     emergencyContactPhone: useRef(),
     emergencyContactRelationship: useRef(),
+    addressCity: useRef(),
+    addressState: useRef(),
+    addressStreet: useRef(),
+    addressZip: useRef(),
+    insuranceProvider: useRef(),
   };
 
   useEffect(() => {
@@ -162,6 +166,13 @@ function PatientSettings() {
           } else {
             profileRefs[key].current.value = patient[key] || "";
           }
+
+          if (key.startsWith("address")) {
+            const refKey = key.replace("address", "").toLowerCase();
+            profileRefs[key].current.value = patient.address?.[refKey] || "";
+          } else {
+            profileRefs[key].current.value = patient[key] || "";
+          }
         }
       });
     }
@@ -171,8 +182,10 @@ function PatientSettings() {
     try {
       // Prepare the update object
       const updateData = {
-        email: profileRefs.email.current?.value || patient.email,
         phone: profileRefs.phone.current?.value || patient.phone,
+        insuranceProvider:
+          profileRefs.insuranceProvider.current?.value ||
+          patient.insuranceProvider,
         emergencyContact: {
           name:
             profileRefs.emergencyContactName.current?.value ||
@@ -186,6 +199,14 @@ function PatientSettings() {
           relationship:
             profileRefs.emergencyContactRelationship.current?.value ||
             patient.emergencyContact?.relationship,
+        },
+        address: {
+          city: profileRefs.addressCity.current?.value || patient.address?.city,
+          state:
+            profileRefs.addressState.current?.value || patient.address?.state,
+          street:
+            profileRefs.addressStreet.current?.value || patient.address?.street,
+          zip: profileRefs.addressZip.current?.value || patient.address?.zip,
         },
       };
 
@@ -261,7 +282,7 @@ function PatientSettings() {
       console.error("Error updating password:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update password.",
+        description: "Failed to update password." || error.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -359,12 +380,12 @@ function PatientSettings() {
                   </Text>
                   <Text>{patient.firstName + " " + patient.lastName}</Text>
                 </Box>
-                <FormControl>
-                  <FormLabel fontWeight="bold" color="gray.700">
+                <Box>
+                  <Text fontWeight="bold" color="gray.700">
                     Email:
-                  </FormLabel>
-                  <Input ref={profileRefs.email} defaultValue={patient.email} />
-                </FormControl>
+                  </Text>
+                  <Text>{patient.email}</Text>
+                </Box>
                 <FormControl>
                   <FormLabel fontWeight="bold" color="gray.700">
                     Phone Number
@@ -412,45 +433,6 @@ function PatientSettings() {
             )}
 
             {/* Emergency Contact Details */}
-            {/* <Box mb={6} p={4} bg="gray.50" rounded="md" shadow="sm" wordBreak="break-word">
-              <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
-                Emergency Contact
-              </Heading>
-              <Grid templateColumns={isMobile ? "1fr" : "1fr 1fr"} gap={4}>
-                <Box>
-                  <Text fontWeight="bold" color="gray.700">
-                    Name:
-                  </Text>
-                  <Text>
-                    {patient.emergencyContact?.name || "Not Provided"}
-                  </Text>
-                </Box>
-                <Box>
-                  <Text fontWeight="bold" color="gray.700">
-                    Email:
-                  </Text>
-                  <Text>
-                    {patient.emergencyContact?.email || "Not Provided"}
-                  </Text>
-                </Box>
-                <Box>
-                  <Text fontWeight="bold" color="gray.700">
-                    Phone:
-                  </Text>
-                  <Text>
-                    {patient.emergencyContact?.phone || "Not Provided"}
-                  </Text>
-                </Box>
-                <Box>
-                  <Text fontWeight="bold" color="gray.700">
-                    Relationship:
-                  </Text>
-                  <Text>
-                    {patient.emergencyContact?.relationship || "Not Provided"}
-                  </Text>
-                </Box>
-              </Grid>
-            </Box> */}
             <Box
               mb={6}
               p={4}
@@ -536,6 +518,126 @@ function PatientSettings() {
               )}
             </Box>
 
+            <Box>
+              <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
+                Address
+              </Heading>
+              {isEditing ? (
+                <Grid
+                  templateColumns={isMobile ? "1fr" : "1fr 1fr"}
+                  gap={4}
+                  mb={6}
+                >
+                  <FormControl>
+                    <FormLabel fontWeight="bold" color="gray.700">
+                      Street:
+                    </FormLabel>
+                    <Input
+                      ref={profileRefs.addressStreet}
+                      defaultValue={patient.address.street}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel fontWeight="bold" color="gray.700">
+                      City:
+                    </FormLabel>
+                    <Input
+                      ref={profileRefs.addressCity}
+                      defaultValue={patient.address.city}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel fontWeight="bold" color="gray.700">
+                      State:
+                    </FormLabel>
+                    <Input
+                      ref={profileRefs.addressState}
+                      defaultValue={patient.address.state}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel fontWeight="bold" color="gray.700">
+                      Zip:
+                    </FormLabel>
+                    <Input
+                      ref={profileRefs.addressZip}
+                      defaultValue={patient.address.zip}
+                    />
+                  </FormControl>
+                </Grid>
+              ) : (
+                <Grid
+                  templateColumns={isMobile ? "1fr" : "1fr 1fr"}
+                  gap={4}
+                  mb={6}
+                >
+                  <Box>
+                    <Text fontWeight="bold" color="gray.700">
+                      Street:
+                    </Text>
+                    <Text>{patient.address.street}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold" color="gray.700">
+                      City:
+                    </Text>
+                    <Text>{patient.address.city}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold" color="gray.700">
+                      State:
+                    </Text>
+                    <Text>{patient.address.state}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold" color="gray.700">
+                      Zip:
+                    </Text>
+                    <Text>{patient.address.zip}</Text>
+                  </Box>
+                </Grid>
+              )}
+            </Box>
+
+            <Box>
+              <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
+                Insurance
+              </Heading>
+
+              {isEditing ? (
+                <Grid
+                  templateColumns={isMobile ? "1fr" : "1fr 1fr"}
+                  gap={4}
+                  mb={6}
+                >
+                  <Box>
+                    <FormControl>
+                      <FormLabel fontWeight="bold" color="gray.700">
+                        Provider:
+                      </FormLabel>
+                      <Input
+                        ref={profileRefs.insuranceProvider}
+                        defaultValue={patient.insuranceProvider}
+                      />
+                    </FormControl>
+                  </Box>
+                </Grid>
+              ) : (
+                <Grid
+                  templateColumns={isMobile ? "1fr" : "1fr 1fr"}
+                  gap={4}
+                  mb={6}
+                >
+                  <Box>
+                    <Text fontWeight="bold" color="gray.700">
+                      Provider:
+                    </Text>
+                    <Text>{patient.insuranceProvider}</Text>
+                  </Box>
+                </Grid>
+              )}
+            </Box>
+
             {/* Update Button */}
 
             <Button
@@ -589,14 +691,14 @@ function PatientSettings() {
           {/* Delete Patient Section */}
           <Box mb={8}>
             <Heading as="h2" fontSize="2xl" mb={4} color="#335d8f">
-              Delete Patient
+              Delete Account
             </Heading>
-            <Input
+            {/* <Input
               type="text"
               placeholder="Enter patient ID"
               mb={4}
               focusBorderColor="#4d7098"
-            />
+            /> */}
             <Button
               leftIcon={<FaTrashAlt />}
               colorScheme="red"
@@ -605,12 +707,12 @@ function PatientSettings() {
               _hover={{ bg: "red" }}
               onClick={handleStartEditing}
             >
-              Delete Patient
+              Delete
             </Button>
           </Box>
 
           {/* Notification Settings */}
-          <Box mb={8}>
+          {/* <Box mb={8}>
             <Heading as="h2" fontSize="2xl" mb={4} color="#335d8f">
               Notification Settings
             </Heading>
@@ -642,10 +744,10 @@ function PatientSettings() {
             >
               Save Notification Preferences
             </Button>
-          </Box>
+          </Box> */}
 
           {/* Save All Changes */}
-          <Box textAlign="center">
+          {/* <Box textAlign="center">
             <Button
               leftIcon={<FaSave />}
               width="full"
@@ -665,7 +767,7 @@ function PatientSettings() {
             >
               Save All Changes
             </Button>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     </ChakraProvider>
