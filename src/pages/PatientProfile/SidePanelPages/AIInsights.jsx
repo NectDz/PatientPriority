@@ -150,7 +150,7 @@ function AIInsights() {
                 <ModalOverlay />
                 <ModalContent
                     p={8}
-                    bg="blue.900"
+                    bg="#f1f8ff"
                     color="white"
                     borderRadius="md"
                     boxShadow="2xl"
@@ -167,10 +167,10 @@ function AIInsights() {
                         boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.4)"
                     }}
                 >
-                    <ModalHeader textAlign="center" fontSize="4xl" fontWeight="bold" color="white">
+                    <ModalHeader textAlign="center" fontSize="4xl" fontWeight="bold" color="#00366d">
                         Important Notice
                     </ModalHeader>
-                    <ModalBody textAlign="center" fontSize="2xl">
+                    <ModalBody textAlign="center" fontSize="2xl" color="#00366d">
                         <Text mb={6}>
                             The AI Insights feature provides general health information based on the provided data.
                             The insights are AI-generated and are not a substitute for professional medical advice.
