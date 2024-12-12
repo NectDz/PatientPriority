@@ -60,6 +60,7 @@ import {
   import Kazi from "../../assets/Team/Kazi.png";
   import Kevin from "../../assets/Team/Kevin.png";
   import Lubna from "../../assets/Team/Lubna.png";
+  import { auto } from "@popperjs/core";
   
   const storage = getStorage();
   
@@ -850,7 +851,8 @@ import {
         <Heading fontSize="lg" color="#00366d" mb={4}>
           {department.charAt(0).toUpperCase() + department.slice(1)} Department
         </Heading>
-        <HStack spacing={10} justifyContent="flex-start" overflowX="auto">
+        <HStack spacing={8} justifyContent="flex-start" overflowX="auto"
+        VStack padding={18}>
           {doctors.map((doctor) => (
             <Box
               key={doctor.id}
