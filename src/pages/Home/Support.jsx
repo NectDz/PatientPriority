@@ -1,3 +1,4 @@
+// Updated Support.jsx
 import React, { useState } from "react";
 import {
   ChakraProvider,
@@ -37,27 +38,47 @@ const Support = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    //setIsSubmitting(true);
 
-    // Simulate submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch("http://localhost:5175/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Support Request Submitted",
+          description: "Our support team will get back to you shortly.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        setFormData({
+          name: "",
+          email: "",
+          issueType: "",
+          message: "",
+        });
+      } else {
+        throw new Error("Failed to send email");
+      }
+    } catch (error) {
       toast({
-        title: "Support Request Submitted",
-        description: "Our support team will get back to you shortly.",
-        status: "success",
+        title: "Submission Failed",
+        description: "There was an error sending your request. Please try again later.",
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
-      setFormData({
-        name: "",
-        email: "",
-        issueType: "",
-        message: "",
-      });
-    }, 2000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

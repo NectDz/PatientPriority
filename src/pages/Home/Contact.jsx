@@ -77,13 +77,13 @@ const Contact = () => {
   const getEmailAddress = (inquiryType) => {
     switch (inquiryType) {
       case "General Inquiry":
-        return "general.patientpriority@gmail.com";
+        return "contact.patientpriority@gmail.com";
       case "Patient Support":
-        return "patientsupport.patientpriority@gmail.com";
+        return "hr.patientpriority@gmail.com";
       case "Doctor Support":
-        return "doctorsupport.patientpriority@gmail.com";
+        return "hr.patientpriority@gmail.com";
       default:
-        return "general.patientpriority@gmail.com";
+        return "contact.patientpriority@gmail.com";
     }
   };
 
@@ -209,12 +209,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:general.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              general.patientpriority@gmail.com
+            <Link href="mailto:contact.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              contact.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7890
+            <Icon as={FaPhoneAlt} mr={2} /> (347) 264-9232
           </Text>
 
           <Divider my={4} />
@@ -226,12 +226,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:patientsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              patientsupport.patientpriority@gmail.com
+            <Link href="mailto:hr.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              hr.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7891
+            <Icon as={FaPhoneAlt} mr={2} /> (929) 235-4770
           </Text>
 
           <Divider my={4} />
@@ -243,12 +243,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:doctorsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              doctorsupport.patientpriority@gmail.com
+            <Link href="mailto:hr.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              hr.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7892
+            <Icon as={FaPhoneAlt} mr={2} /> (929) 235-4770
           </Text>
         </Box>
       </VStack>
