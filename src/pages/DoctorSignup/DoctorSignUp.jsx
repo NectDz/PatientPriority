@@ -121,7 +121,7 @@ function DoctorSignUp() {
 
       const user = userCredential.user;
 
-      //add doctor info to Firestore, including email
+      //add doctor info to Firestore, including email and then lubna added profile pic and kazi added department
       await addDoc(collection(db, "doctor"), {
         id: user.uid, //use the user's unique Firebase ID
         firstName: doctorInfo.firstName,
@@ -130,7 +130,8 @@ function DoctorSignUp() {
         credential_id: doctorInfo.credentials,
         email: doctorInfo.email, //add the doctor's email here
         accountCreatedDate: new Date(), //set current date as the account creation date
-        profilePicture: "https://firebasestorage.googleapis.com/v0/b/patientpriority-3a4f2.appspot.com/o/DefaultDoctorImage.jpg?alt=media&token=b31af210-2402-49f2-b60e-1211b9e55fa3"
+        profilePicture: "https://firebasestorage.googleapis.com/v0/b/patientpriority-3a4f2.appspot.com/o/DefaultDoctorImage.jpg?alt=media&token=b31af210-2402-49f2-b60e-1211b9e55fa3",
+        department: doctorInfo.department
       });
 
       toast({
@@ -206,6 +207,15 @@ function DoctorSignUp() {
                   value={doctorInfo.hospital}
                   onChange={handleChange}
                   placeholder="Hospital Name"
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel color="#335d8f">Department</FormLabel>
+                <Input
+                  name="department"
+                  value={doctorInfo.department}
+                  onChange={handleChange}
+                  placeholder="Department"
                 />
               </FormControl>
               <Button
