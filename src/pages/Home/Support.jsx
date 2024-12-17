@@ -91,6 +91,11 @@ const Support = () => {
         minHeight="100vh"
         p={8}
         backgroundColor="#f1f8ff"
+        backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')" // Replace with your image path
+      backgroundSize="175px" // Ensures the image covers the entire area
+      backgroundPosition="center" // Centers the image
+      backgroundRepeat="no-repeat" // Prevents repeating the image
+      backgroundAttachment="fixed" // Keeps the image fixed during scroll
       >
         <Heading fontSize="6xl" color="#00366d" mb={4} mt={8} textAlign="center">
           Support
@@ -101,6 +106,7 @@ const Support = () => {
           p="8"
           backgroundColor="white"
           borderRadius="md"
+          opacity={0.9}
           onSubmit={handleSubmit}
           boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
           padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
@@ -132,6 +138,7 @@ const Support = () => {
             name="issueType"
             value={formData.issueType}
             onChange={handleInputChange}
+            color="#7f8ba0"
             mb="4"
             required
           >

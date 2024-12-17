@@ -96,6 +96,11 @@ const Contact = () => {
       minHeight="100vh"
       p={8}
       backgroundColor="#f1f8ff"
+      backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')" // Replace with your image path
+      backgroundSize="175px" // Ensures the image covers the entire area
+      backgroundPosition="center" // Centers the image
+      backgroundRepeat="no-repeat" // Prevents repeating the image
+      backgroundAttachment="fixed" // Keeps the image fixed during scroll
     >
       <Box height="100px" />
 
@@ -114,6 +119,7 @@ const Contact = () => {
         p="8"
         backgroundColor="white"
         borderRadius="md"
+        opacity={0.9}
         onSubmit={handleSubmit}
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
                   padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
@@ -201,6 +207,7 @@ const Contact = () => {
           p={6}
           boxShadow="lg"
           width="100%"
+          opacity={0.95}
         >
           <HStack spacing={4} align="center" mb={4}>
             <Icon as={FaInfoCircle} boxSize="2em" color="#00366d" />
