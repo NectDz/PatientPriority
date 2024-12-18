@@ -331,64 +331,6 @@ function AppointmentDetail() {
       <Divider my={6} />
 
       <Heading as="h1" size="xl" mb={6} color="#00366d">
-        Appointment Transcript
-      </Heading>
-      <Box
-        p={6}
-        bg="gray.50"
-        borderRadius="md"
-        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-        transition="all 0.3s"
-        _hover={{ boxShadow: "2xl" }}
-      >
-        {appointment.appointmentTranscript ? (
-          <Box
-            p={4}
-            bg="white"
-            borderWidth="1px"
-            borderRadius="md"
-            overflow="auto"
-            maxH="450px"
-          >
-            <Text whiteSpace="pre-wrap">
-              {appointment.appointmentTranscript}
-            </Text>
-          </Box>
-        ) : (
-          <Text>No transcript available for this appointment.</Text>
-        )}
-      </Box>
-
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
-        Appointment Summary
-      </Heading>
-      <Box
-        p={6}
-        bg="gray.50"
-        borderRadius="md"
-        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-        transition="all 0.3s"
-        _hover={{ boxShadow: "2xl" }}
-      >
-        {appointment.appointmentSummary ? (
-          <Box
-            p={4}
-            bg="white"
-            borderWidth="1px"
-            borderRadius="md"
-            overflow="auto"
-            maxH="450px"
-          >
-            <Text whiteSpace="pre-wrap">{appointment.appointmentSummary}</Text>
-          </Box>
-        ) : (
-          <Text>No summary available for this appointment.</Text>
-        )}
-      </Box>
-
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
         Important Appointment Items
       </Heading>
       <Box
@@ -435,6 +377,64 @@ function AppointmentDetail() {
           <Text>
             <strong>Referrals:</strong> {appointment.Referrals}
           </Text>
+        )}
+      </Box>
+
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
+        Appointment Summary
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {appointment.appointmentSummary ? (
+          <Box
+            p={4}
+            bg="white"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="auto"
+            maxH="450px"
+          >
+            <Text whiteSpace="pre-wrap">{appointment.appointmentSummary}</Text>
+          </Box>
+        ) : (
+          <Text>No summary available for this appointment.</Text>
+        )}
+      </Box>
+
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
+        Appointment Transcript
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {appointment.appointmentTranscript ? (
+          <Box
+            p={4}
+            bg="white"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="auto"
+            maxH="450px"
+          >
+            <Text whiteSpace="pre-wrap">
+              {appointment.appointmentTranscript}
+            </Text>
+          </Box>
+        ) : (
+          <Text>No transcript available for this appointment.</Text>
         )}
       </Box>
 
