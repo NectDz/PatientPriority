@@ -52,6 +52,7 @@ async function generateContentWithRetry(prompt, maxRetries = 3) {
   }
 }
 
+// Modify generateFinalResponseAndSummary function
 const generateFinalResponseAndSummary = async (transcript) => {
   const finalResponsePrompt = `
   Identify the speakers in the following transcription and label them as 'Doctor' and 'Patient' accordingly. Make sure to correctly determine what the doctor says and the patient is saying using context and that makes logical sense\n:\n\n${transcript}
@@ -69,7 +70,42 @@ const generateFinalResponseAndSummary = async (transcript) => {
   // Generate summary next
   const summary = await generateContentWithRetry(summaryPrompt);
 
-  return { finalResponse, summary };
+  // New prompt to extract items
+  const extractItemsPrompt = `
+    Extract the following items from the medical transcription and output them in plain JSON format without any additional text or formatting:
+
+    - VisitReason
+    - Prescription
+    - Dosage
+    - Advice
+    - NextAppointmentDate
+    - NextAppointmentTime
+    - Diagnosis
+    - Referrals
+
+    Do not include any explanations or extra text, only output the JSON.
+
+    Transcript:
+    ${transcript}
+  `;
+
+  // Generate extracted items
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  let extractedItemsJson = await generateContentWithRetry(extractItemsPrompt);
+
+  // Clean up the response to ensure it's valid JSON
+  extractedItemsJson = extractedItemsJson.trim();
+  // Remove any markdown code block syntax if present
+  if (extractedItemsJson.startsWith("```")) {
+    extractedItemsJson = extractedItemsJson
+      .replace(/^```[a-z]*\n/, "")
+      .replace(/```$/, "");
+  }
+
+  const extractedItems = JSON.parse(extractedItemsJson);
+
+  // Return finalResponse, summary, and extractedItems
+  return { finalResponse, summary, extractedItems };
 };
 
 function AppointmentDetail() {
@@ -149,18 +185,20 @@ function AppointmentDetail() {
 
       if (response.ok) {
         const transcript = await response.text();
-        const { finalResponse, summary } =
+        const { finalResponse, summary, extractedItems } =
           await generateFinalResponseAndSummary(transcript);
 
         await updateDoc(doc(db, "appointment", id), {
           appointmentTranscript: finalResponse,
           appointmentSummary: summary,
+          ...extractedItems,
         });
 
         setAppointment((prevAppointment) => ({
           ...prevAppointment,
           appointmentTranscript: finalResponse,
           appointmentSummary: summary,
+          ...extractedItems,
         }));
 
         setMessage("Transcript uploaded and saved.");
@@ -293,7 +331,7 @@ function AppointmentDetail() {
       <Divider my={6} />
 
       <Heading as="h1" size="xl" mb={6} color="#00366d">
-        Appointment Transcript
+        Important Appointment Items
       </Heading>
       <Box
         p={6}
@@ -304,21 +342,41 @@ function AppointmentDetail() {
         transition="all 0.3s"
         _hover={{ boxShadow: "2xl" }}
       >
-        {appointment.appointmentTranscript ? (
-          <Box
-            p={4}
-            bg="white"
-            borderWidth="1px"
-            borderRadius="md"
-            overflow="auto"
-            maxH="450px"
-          >
-            <Text whiteSpace="pre-wrap">
-              {appointment.appointmentTranscript}
-            </Text>
-          </Box>
-        ) : (
-          <Text>No transcript available for this appointment.</Text>
+        {appointment.VisitReason && (
+          <Text>
+            <strong>Visit Reason:</strong> {appointment.VisitReason}
+          </Text>
+        )}
+        {appointment.Prescription && (
+          <Text>
+            <strong>Prescription:</strong> {appointment.Prescription}
+          </Text>
+        )}
+        {appointment.Dosage && (
+          <Text>
+            <strong>Dosage:</strong> {appointment.Dosage}
+          </Text>
+        )}
+        {appointment.Advice && (
+          <Text>
+            <strong>Advice:</strong> {appointment.Advice}
+          </Text>
+        )}
+        {appointment.NextAppointmentDate && appointment.NextAppointmentTime && (
+          <Text>
+            <strong>Next Appointment:</strong> {appointment.NextAppointmentDate}{" "}
+            at {appointment.NextAppointmentTime}
+          </Text>
+        )}
+        {appointment.Diagnosis && (
+          <Text>
+            <strong>Diagnosis:</strong> {appointment.Diagnosis}
+          </Text>
+        )}
+        {appointment.Referrals && (
+          <Text>
+            <strong>Referrals:</strong> {appointment.Referrals}
+          </Text>
         )}
       </Box>
 
@@ -347,6 +405,36 @@ function AppointmentDetail() {
           </Box>
         ) : (
           <Text>No summary available for this appointment.</Text>
+        )}
+      </Box>
+
+      <Heading as="h1" size="xl" mb={6} color="#00366d">
+        Appointment Transcript
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {appointment.appointmentTranscript ? (
+          <Box
+            p={4}
+            bg="white"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="auto"
+            maxH="450px"
+          >
+            <Text whiteSpace="pre-wrap">
+              {appointment.appointmentTranscript}
+            </Text>
+          </Box>
+        ) : (
+          <Text>No transcript available for this appointment.</Text>
         )}
       </Box>
 
