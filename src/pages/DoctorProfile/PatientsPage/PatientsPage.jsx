@@ -64,6 +64,7 @@ function Patients() {
             lastName: doc.data().lastName,
             doctorId: doc.data().doctor_id, //verify doctor-patient relationship
             profilePicture: doc.data().profilePicture || null,
+            patientID: doc.data().id,
           }));
 
           setPatients(fetchedPatients);
@@ -155,7 +156,7 @@ function Patients() {
                   <Heading as="h2" size="md" mb={2}>
                     {patient.firstName} {patient.lastName}
                   </Heading>
-                  <Text>ID: {patient.id}</Text>
+                  <Text>ID: {patient.patientID}</Text>
                   <Button
                     as={Link}
                     to={`/doctor-profile/patients/${patient.id}`}
