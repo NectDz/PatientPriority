@@ -26,7 +26,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const db = getFirestore();
 
 // Initialize GoogleGenerativeAI and model once
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY);
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY_2);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Helper function to retry on RATE_LIMIT_EXCEEDED errors
