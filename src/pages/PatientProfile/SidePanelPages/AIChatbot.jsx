@@ -31,9 +31,10 @@ function AIChatbot() {
     const [loading, setLoading] = useState(false);
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
     const [patientData, setPatientData] = useState(null);
-    const [fetchingPatient, setFetchingPatient] = useState(true);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
     const [pastAppointments, setPastAppointments] = useState([]);
+    const [meetingSummaries, setMeetingSummaries] = useState([]);
+    const [fetchingPatient, setFetchingPatient] = useState(true);
 
     useEffect(() => {
         const fetchPatientData = async () => {
@@ -52,6 +53,7 @@ function AIChatbot() {
                             const patient = { id: patientDoc.id, ...patientDoc.data() };
                             setPatientData(patient);
                             await fetchAppointments(patient.id);
+                            await fetchMeetingSummaries(patient.id);
                         } else {
                             console.error("No patient data found");
                         }
@@ -102,6 +104,32 @@ function AIChatbot() {
             }
         };
 
+        const fetchMeetingSummaries = async (patientId) => {
+            try {
+                const db = getFirestore();
+                const appointmentRef = collection(db, "appointment");
+                const summaryQuery = query(
+                    appointmentRef,
+                    where("patient_id", "==", patientId)
+                );
+                const summarySnapshot = await getDocs(summaryQuery);
+
+                const summaries = summarySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    date: new Date(doc.data().appointmentDate.seconds * 1000).toLocaleDateString(),
+                    doctorName: doc.data().doctorName || "Unknown",
+                    summary: doc.data().appointmentSummary || "No summary available.",
+                    nextAppointment: doc.data().NextAppointmentDate
+                        ? `${doc.data().NextAppointmentDate} at ${doc.data().NextAppointmentTime}`
+                        : "None scheduled",
+                }));
+
+                setMeetingSummaries(summaries);
+            } catch (error) {
+                console.error("Error fetching meeting summaries:", error);
+            }
+        };
+
         fetchPatientData();
     }, []);
 
@@ -118,7 +146,8 @@ function AIChatbot() {
                 conversationContext,
                 patientData,
                 upcomingAppointments,
-                pastAppointments
+                pastAppointments,
+                meetingSummaries
             );
 
             setConversationContext((prevContext) => [
@@ -140,7 +169,7 @@ function AIChatbot() {
         }
     };
 
-    const generateFinalResponse = async (question, context, patient, upcoming, past) => {
+    const generateFinalResponse = async (question, context, patient, upcoming, past, summaries) => {
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -149,6 +178,12 @@ function AIChatbot() {
             const contextString = recentContext
                 .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
                 .join("\n\n");
+
+            const medicationsContext = patient?.medications
+                ? Object.entries(patient.medications).map(
+                      ([key, med]) => `${med.name} (${med.dosage}, ${med.frequency})`
+                  ).join(", ")
+                : "None reported";
 
             const appointmentsContext = `
                 Upcoming Appointments:
@@ -172,14 +207,31 @@ function AIChatbot() {
                     .join("\n") || "None"}
             `;
 
+            const meetingSummariesContext = `
+                Meeting Summaries:
+                ${summaries
+                    .map(
+                        (summary) =>
+                            `- Date: ${summary.date}, Doctor: ${summary.doctorName}\n  Summary: ${
+                                summary.summary
+                            }\n  Next Appointment: ${summary.nextAppointment}`
+                    )
+                    .join("\n\n") || "No meeting summaries available."}
+            `;
+
             const patientContext = patient
                 ? `
                 Patient Information:
                 Name: ${patient.firstName} ${patient.lastName}
                 Age: ${patient.age}
                 Gender: ${patient.gender}
+                Diet: ${patient.diet || "Not provided"}
+                Physical Activity: ${patient.physicalActivity || "Not provided"}
+                Lifestyle: ${patient.lifestyle || "Not provided"}
+                Alcohol Consumption: ${patient.alcoholConsumption || "Not provided"}
                 Conditions: ${patient.conditions || "None reported"}
                 Allergies: ${patient.allergies || "None reported"}
+                Medications: ${medicationsContext}
                 `
                 : "No patient information available.";
 
@@ -192,6 +244,9 @@ function AIChatbot() {
 
             Appointments context:
             ${appointmentsContext}
+
+            Meeting summaries context:
+            ${meetingSummariesContext}
 
             Now, the user asks: "${question}"
             Provide a simple, short, and clear response.
