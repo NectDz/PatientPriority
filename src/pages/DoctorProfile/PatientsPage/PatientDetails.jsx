@@ -87,10 +87,24 @@ function PatientDetails() {
 
   const handleStartEditing = () => {
     setIsEditing(true);
-    //set initial values when entering edit mode
+    // Set initial values when entering edit mode
     Object.keys(formRefs).forEach(key => {
-      if (formRefs[key].current) {
+      if (key !== 'medications' && formRefs[key].current) {
         formRefs[key].current.value = patient[key] || '';
+      }
+    });
+    
+    //set medication count based on existing medications
+    const medicationKeys = Object.keys(patient.medications || {});
+    setMedicationCount(Math.max(medicationKeys.length, 1));
+    
+    //initialize medication refs
+    medicationKeys.forEach((key, index) => {
+      const medNum = index + 1;
+      if (!formRefs.medications[`name${medNum}`]) {
+        formRefs.medications[`name${medNum}`] = React.createRef();
+        formRefs.medications[`dosage${medNum}`] = React.createRef();
+        formRefs.medications[`frequency${medNum}`] = React.createRef();
       }
     });
   };
@@ -279,53 +293,55 @@ function PatientDetails() {
               </FormControl>
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
-            <FormControl>
-              <FormLabel>Medications</FormLabel>
-              {[...Array(medicationCount)].map((_, index) => {
-                const medNum = index + 1;
-                // Create refs for this medication set if they don't exist
-                if (!formRefs.medications[`name${medNum}`]) {
-                  formRefs.medications[`name${medNum}`] = useRef();
-                  formRefs.medications[`dosage${medNum}`] = useRef();
-                  formRefs.medications[`frequency${medNum}`] = useRef();
-                }
-                
-                return (
-                  <Grid key={medNum} templateColumns="repeat(3, 1fr)" gap={4} mb={4}>
-                    <Input
-                      ref={formRefs.medications[`name${medNum}`]}
-                      name={`medications.name${medNum}`}
-                      defaultValue={patient.medications?.[`med${medNum}`]?.name}
-                      placeholder="Medication Name"
-                      bg="white"
-                    />
-                    <Input
-                      ref={formRefs.medications[`dosage${medNum}`]}
-                      name={`medications.dosage${medNum}`}
-                      defaultValue={patient.medications?.[`med${medNum}`]?.dosage}
-                      placeholder="Dosage"
-                      bg="white"
-                    />
-                    <Input
-                      ref={formRefs.medications[`frequency${medNum}`]}
-                      name={`medications.frequency${medNum}`}
-                      defaultValue={patient.medications?.[`med${medNum}`]?.frequency}
-                      placeholder="Frequency"
-                      bg="white"
-                    />
-                  </Grid>
-                );
-              })}
-              <Button
-                size="sm"
-                colorScheme="green"
-                onClick={addMedication}
-                mt={2}
-              >
-                Add Another Medication
-              </Button>
-            </FormControl>
-          </GridItem>
+              <FormControl>
+                <FormLabel>Medications</FormLabel>
+                {[...Array(medicationCount)].map((_, index) => {
+                  const medNum = index + 1;
+                  const medKey = `med${medNum}`;
+
+                  // Ensure refs exist for this medication
+                  if (!formRefs.medications[`name${medNum}`]) {
+                    formRefs.medications[`name${medNum}`] = React.createRef();
+                    formRefs.medications[`dosage${medNum}`] = React.createRef();
+                    formRefs.medications[`frequency${medNum}`] = React.createRef();
+                  }
+
+                  return (
+                    <Grid key={medNum} templateColumns="repeat(3, 1fr)" gap={4} mb={4}>
+                      <Input
+                        ref={formRefs.medications[`name${medNum}`]}
+                        name={`medications.name${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.name || ''}
+                        placeholder="Medication Name"
+                        bg="white"
+                      />
+                      <Input
+                        ref={formRefs.medications[`dosage${medNum}`]}
+                        name={`medications.dosage${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.dosage || ''}
+                        placeholder="Dosage"
+                        bg="white"
+                      />
+                      <Input
+                        ref={formRefs.medications[`frequency${medNum}`]}
+                        name={`medications.frequency${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.frequency || ''}
+                        placeholder="Frequency"
+                        bg="white"
+                      />
+                    </Grid>
+                  );
+                })}
+                <Button
+                  size="sm"
+                  colorScheme="green"
+                  onClick={addMedication}
+                  mt={2}
+                >
+                  Add Another Medication
+                </Button>
+              </FormControl>
+            </GridItem>
           </>
         ) : (
           <>
