@@ -463,6 +463,7 @@ function PatientProfile() {
   const [doctorLastName, setDoctorLastName] = useState(null);
   const [doctorEmail, setDoctorEmail] = useState(null);
   const [doctorPFP, setDoctorPFP] = useState(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
 
   // State for Health Goals
   const [stepsGoal, setStepsGoal] = useState(69);
@@ -606,6 +607,50 @@ function PatientProfile() {
     fetchDoctorInfo();
   }, [patient]);
   
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (patient) {
+        try {
+          const db = getFirestore();
+          const appointmentRef = collection(db, "appointment");
+          const appointmentQuery = query(
+            appointmentRef,
+            where("patient_id", "==", patient.id)
+          );
+          const appointmentSnapshot = await getDocs(appointmentQuery);
+  
+          const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+  
+          // Get current date at midnight for date comparison
+          const currentDate = new Date();
+          const today = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate()
+          );
+  
+          // Filter and sort upcoming appointments
+          const upcoming = fetchedAppointments
+            .filter((appointment) => {
+              const appointmentDate = appointment.appointmentDate.toDate();
+              return appointmentDate >= today;
+            })
+            .sort(
+              (a, b) => a.appointmentDate.toDate() - b.appointmentDate.toDate()
+            );
+  
+          setUpcomingAppointments(upcoming);
+        } catch (error) {
+          console.error("Error fetching appointments:", error);
+        }
+      }
+    };
+  
+    fetchAppointments();
+  }, [patient]);
 
   // Color mode for dark/light theme
   const { toggleColorMode } = useColorMode();
@@ -767,7 +812,7 @@ function PatientProfile() {
           {useColorModeValue(<BiMoon />, <BiSun />)}
         </Button>
 
-        {/* Left Side - Patient Info, Health Overview, and Reminders */}
+        {/* Left Side - Patient Info, Health Overview, and Appointments */}
         <Box flex="2" pr={8}>
           {/* Patient Info */}
           <Box
@@ -982,7 +1027,7 @@ function PatientProfile() {
             </Stack>
           </Box>
 
-          {/* Reminders & Appointments */}
+          {/* Upcoming Appointments */}
           <Box
             bg={bgColor}
             borderRadius="xl"
@@ -994,69 +1039,55 @@ function PatientProfile() {
             padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
             transition="all 0.3s"
             _hover={{ boxShadow: "2xl" }}
+            position="relative"
           >
+            <Box position="absolute" bottom="1rem" right="1rem">
+              <RouterLink to="/patient-profile/reminders-and-appointments">
+                <Button
+                  size="sm"
+                  bg="#00366d"
+                  color="white"
+                  _hover={{ bg: "#335d8f" }}
+                  transition="all 0.3s"
+                >
+                  View More
+                </Button>
+              </RouterLink>
+            </Box>
+
             <Heading fontSize="xl" color="#00366d" mb={4} textAlign="center">
-              Reminders & Appointments
+              Upcoming Appointments
             </Heading>
-            <List spacing={3} color="#335d8f">
-              <ListItem>
-                <Flex align="center">
-                  <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                  <Badge color="#335d8f" mr={2}>
-                    Oct 20, 2024
-                  </Badge>
-                  <Tooltip label="Add to Google Calendar" placement="top">
-                    <Link
-                      href="https://calendar.google.com/calendar/r/eventedit"
-                      isExternal
-                      color="#335d8f"
-                      fontWeight="bold"
-                      _hover={{ color: "#00366d" }}
-                    >
-                      General Checkup
-                    </Link>
-                  </Tooltip>
-                </Flex>
-              </ListItem>
-              <ListItem>
-                <Flex align="center">
-                  <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                  <Badge color="#335d8f" mr={2}>
-                    Nov 1, 2024
-                  </Badge>
-                  <Tooltip label="Add to Google Calendar" placement="top">
-                    <Link
-                      href="https://calendar.google.com/calendar/r/eventedit"
-                      isExternal
-                      color="#335d8f"
-                      fontWeight="bold"
-                      _hover={{ color: "#00366d" }}
-                    >
-                      Blood Test Follow-up
-                    </Link>
-                  </Tooltip>
-                </Flex>
-              </ListItem>
-              <ListItem>
-                <Flex align="center">
-                  <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
-                  <Badge color="#335d8f" mr={2}>
-                    Dec 5, 2024
-                  </Badge>
-                  <Tooltip label="Add to Google Calendar" placement="top">
-                    <Link
-                      href="https://calendar.google.com/calendar/r/eventedit"
-                      isExternal
-                      color="#335d8f"
-                      fontWeight="bold"
-                      _hover={{ color: "#00366d" }}
-                    >
-                      Vaccination
-                    </Link>
-                  </Tooltip>
-                </Flex>
-              </ListItem>
-            </List>
+            
+            {loading ? (
+              <Text color="gray.600">Loading...</Text>
+            ) : upcomingAppointments.length === 0 ? (
+              <Text color="gray.600">No upcoming appointments</Text>
+            ) : (
+              <List spacing={3} color="#335d8f">
+                {upcomingAppointments.slice(0, 3).map((appointment) => (
+                  <ListItem key={appointment.id}>
+                    <Flex align="center">
+                      <Icon as={FaCalendarAlt} color="gray.600" mr={2} />
+                      <Badge color="#335d8f" mr={2}>
+                        {new Date(appointment.appointmentDate.seconds * 1000).toLocaleDateString()}
+                      </Badge>
+                      <Tooltip label="Add to Google Calendar" placement="top">
+                        <Link
+                          href="https://calendar.google.com/calendar/r/eventedit"
+                          isExternal
+                          color="#335d8f"
+                          fontWeight="bold"
+                          _hover={{ color: "#00366d" }}
+                        >
+                          {appointment.appointmentDescription}
+                        </Link>
+                      </Tooltip>
+                    </Flex>
+                  </ListItem>
+                ))}
+              </List>
+            )}
           </Box>
         </Box>
 
