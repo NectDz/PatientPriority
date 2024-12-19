@@ -1,4 +1,3 @@
-// Updated Support.jsx
 import React, { useState } from "react";
 import {
   ChakraProvider,
@@ -10,10 +9,14 @@ import {
   Button,
   Select,
   useToast,
+  VStack,
+  Icon,
+  Flex,
 } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import Footer from "./Footer"; // Footer component
 import { useNavigate } from "react-router-dom"; // Import navigate function
+import { FaUser, FaEnvelope, FaQuestionCircle, FaCommentAlt, FaPaperPlane, FaArrowLeft, FaHeadset } from "react-icons/fa";
 
 const theme = extendTheme({
   fonts: {
@@ -92,14 +95,38 @@ const Support = () => {
         p={8}
         backgroundColor="#f1f8ff"
         backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')" // Replace with your image path
-      backgroundSize="175px" // Ensures the image covers the entire area
-      backgroundPosition="center" // Centers the image
-      backgroundRepeat="no-repeat" // Prevents repeating the image
-      backgroundAttachment="fixed" // Keeps the image fixed during scroll
+        backgroundSize="175px" // Ensures the image covers the entire area
+        backgroundPosition="center" // Centers the image
+        backgroundRepeat="no-repeat" // Prevents repeating the image
+        backgroundAttachment="fixed" // Keeps the image fixed during scroll
       >
-        <Heading fontSize="6xl" color="#00366d" mb={4} mt={8} textAlign="center">
-          Support
-        </Heading>
+        <Box
+          position="relative"
+          mb={8}
+          mt={12}
+          textAlign="center"
+          _before={{
+            content: '""',
+            position: "absolute",
+            bottom: "-10px",
+            left: "50%",
+            width: "60%",
+            height: "4px",
+            background: "linear-gradient(to right, #00366d, #4d7098)",
+            transform: "translateX(-50%)",
+            borderRadius: "2px",
+          }}
+        >
+          <Heading
+            fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+            color="#00366d"
+            fontWeight="bold"
+            textTransform="uppercase"
+            letterSpacing="wide"
+          >
+            Support Center
+          </Heading>
+        </Box>
         <Box
           as="form"
           width={{ base: "90%", md: "500px" }}
@@ -113,58 +140,69 @@ const Support = () => {
           transition="all 0.3s"
           _hover={{ boxShadow: "2xl" }}
         >
-          <Text fontSize="lg" color="#00366d" mb="4">
+          <Text fontSize="lg" color="#00366d" mb="6" textAlign="center">
             Please fill out the form below, and our support team will contact you shortly.
           </Text>
-          <Input
-            placeholder="Full Name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            mb="4"
-            required
-          />
-          <Input
-            placeholder="Email Address"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            mb="4"
-            required
-          />
-          <Select
-            placeholder="Select Issue Type"
-            name="issueType"
-            value={formData.issueType}
-            onChange={handleInputChange}
-            color="#7f8ba0"
-            mb="4"
-            required
-          >
-            <option value="login">Login Issues</option>
-            <option value="account">Account Management</option>
-            <option value="appointment">Appointment Scheduling</option>
-            <option value="other">Other</option>
-          </Select>
-          <Textarea
-            placeholder="Describe your issue here..."
-            name="message"
-            value={formData.message}
-            onChange={handleInputChange}
-            mb="4"
-            required
-          />
-          <Button
-            type="submit"
-            isLoading={isSubmitting}
-            width="full"
-            _hover={{ bg: "#4d7098" }}
-            color="#f1f8ff"
-            bg="#335d8f"
-          >
-            Submit
-          </Button>
+          <VStack spacing={4}>
+            <Flex align="center" w="100%">
+              <Icon as={FaUser} mr={2} color="#335d8f" />
+              <Input
+                placeholder="Full Name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+            </Flex>
+            <Flex align="center" w="100%">
+              <Icon as={FaEnvelope} mr={2} color="#335d8f" />
+              <Input
+                placeholder="Email Address"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </Flex>
+            <Flex align="center" w="100%">
+              <Icon as={FaQuestionCircle} mr={2} color="#335d8f" />
+              <Select
+                placeholder="Select Issue Type"
+                name="issueType"
+                value={formData.issueType}
+                onChange={handleInputChange}
+                color="#7f8ba0"
+                required
+              >
+                <option value="login">Login Issues</option>
+                <option value="account">Account Management</option>
+                <option value="appointment">Appointment Scheduling</option>
+                <option value="other">Other</option>
+              </Select>
+            </Flex>
+            <Flex align="flex-start" w="100%">
+              <Icon as={FaCommentAlt} mr={2} mt={2} color="#335d8f" />
+              <Textarea
+                placeholder="Describe your issue here..."
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
+                required
+              />
+            </Flex>
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              width="full"
+              _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"
+              leftIcon={<FaPaperPlane />}
+            >
+              Submit
+            </Button>
+          </VStack>
         </Box>
 
         {/* Back Button */}
@@ -180,6 +218,7 @@ const Support = () => {
           borderWidth="2px"
           _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
           transition="all 0.3s"
+          leftIcon={<FaArrowLeft />}
         >
           Back to Home
         </Button>
@@ -190,3 +229,4 @@ const Support = () => {
 };
 
 export default Support;
+
