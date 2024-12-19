@@ -7,7 +7,6 @@ import {
     Text,
     Divider,
     Input,
-    Textarea,
     Button,
     Icon,
     Flex,
@@ -23,67 +22,71 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
-    const [additionalDetails, setAdditionalDetails] = useState("");
     const [responses, setResponses] = useState([]);
+    const [conversationContext, setConversationContext] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [awaitingDetails, setAwaitingDetails] = useState(false);
-    const [initialQuestion, setInitialQuestion] = useState("");
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
 
-    const handleInitialSubmit = async () => {
+    const handleSubmit = async () => {
         if (!question.trim()) return;
+        
         setLoading(true);
-
-        const newResponses = [...responses, { question, response: "Can you give me some more details?" }];
-        setResponses(newResponses);
-        setInitialQuestion(question);
-        setQuestion("");
-
-        setAwaitingDetails(true);
-        setLoading(false);
-    };
-
-    const handleDetailsSubmit = async () => {
-        if (!additionalDetails.trim()) return;
-        setLoading(true);
-
-        const newResponses = [...responses, { question: additionalDetails, response: "Thinking..." }];
+        const newResponses = [...responses, { question, response: "Thinking..." }];
         setResponses(newResponses);
 
         try {
-            const finalResponse = await generateFinalResponse(initialQuestion, additionalDetails);
+            const finalResponse = await generateFinalResponse(question, conversationContext);
+            
+            // Append to conversation memory
+            setConversationContext((prevContext) => [
+                ...prevContext,
+                { user: question, bot: finalResponse },
+            ]);
+
             newResponses[newResponses.length - 1].response = finalResponse;
             setResponses(newResponses);
-            resetChatState();
+            setQuestion("");
         } catch (error) {
             console.error("Error:", error);
-            newResponses[newResponses.length - 1].response = "Sorry, I couldn't process your question. Please try again.";
+            
+            if (error.message.includes("429")) {
+                newResponses[newResponses.length - 1].response =
+                    "The system is experiencing heavy usage. Please wait a moment and try again.";
+            } else {
+                newResponses[newResponses.length - 1].response =
+                    "Sorry, I couldn't process your question. Please try again.";
+            }
             setResponses(newResponses);
         } finally {
             setLoading(false);
         }
     };
 
-    const generateFinalResponse = async (initialQuestion, additionalDetails) => {
-        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const generateFinalResponse = async (question, context) => {
+        try {
+            const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
 
-        const prompt = `
-        A user asked: "${initialQuestion}"
-        
-        Additional details provided: "${additionalDetails}"
-        
-        Based on the initial question and these additional details, please generate a simple, short, and straightforward response in clear language.
-        `;
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const result = await model.generateContent(prompt);
-        return result.response.text();
-    };
+            const recentContext = context.slice(-5);
+            const contextString = recentContext
+                .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
+                .join("\n\n");
 
-    const resetChatState = () => {
-        setAwaitingDetails(false);
-        setInitialQuestion("");
-        setAdditionalDetails("");
+            const prompt = `
+            The following is a conversation history between a user and an AI chatbot:
+            ${contextString}
+
+            Now, the user asks: "${question}"
+            Provide a simple, short, and clear response.
+            `;
+
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (error) {
+            console.error("API Error:", error);
+            throw new Error("Failed to generate response. Please try again later.");
+        }
     };
 
     return (
@@ -214,75 +217,50 @@ function AIChatbot() {
                 {/* User Input at the Bottom */}
                 <Box
                     as="form"
+                    onSubmit={(e) => e.preventDefault()}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                     width={{ base: "95%", md: "90%", lg: "80%" }}
                     maxWidth="1200px"
                     mx="auto"
                     mt={4}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
                     padding="1.5rem"
                     bg="rgba(255, 255, 255, 0.8)"
                     borderRadius="md"
                     boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
                 >
-                    {!awaitingDetails ? (
-                        <>
-                            <Input
-                                placeholder="Type your question here..."
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                bg="#F9FAFB"
-                                borderRadius="md"
-                                size="md"
-                                width="100%"
-                                maxWidth="700px"
-                                mr={4}
-                                disabled={loading}
-                            />
-                            <Button
-                                bg="#003366"
-                                color="white"
-                                _hover={{ bg: "#002244" }}
-                                fontSize="md"
-                                paddingX="2rem"
-                                paddingY="1.5rem"
-                                borderRadius="md"
-                                onClick={handleInitialSubmit}
-                                isLoading={loading}
-                            >
-                                Submit
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Textarea
-                                placeholder="Provide additional details here..."
-                                value={additionalDetails}
-                                onChange={(e) => setAdditionalDetails(e.target.value)}
-                                bg="#F9FAFB"
-                                borderRadius="md"
-                                size="md"
-                                width="100%"
-                                maxWidth="700px"
-                                mr={4}
-                                disabled={loading}
-                            />
-                            <Button
-                                bg="#003366"
-                                color="white"
-                                _hover={{ bg: "#002244" }}
-                                fontSize="md"
-                                paddingX="2rem"
-                                paddingY="1.5rem"
-                                borderRadius="md"
-                                onClick={handleDetailsSubmit}
-                                isLoading={loading}
-                            >
-                                Submit
-                            </Button>
-                        </>
-                    )}
+                    <Input
+                        placeholder="Type your question here..."
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        bg="#F9FAFB"
+                        borderRadius="md"
+                        size="md"
+                        width="100%"
+                        maxWidth="700px"
+                        mr={4}
+                        disabled={loading}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit();
+                            }
+                        }}
+                    />
+                    <Button
+                        bg="#003366"
+                        color="white"
+                        _hover={{ bg: "#002244" }}
+                        fontSize="md"
+                        paddingX="2rem"
+                        paddingY="1.5rem"
+                        borderRadius="md"
+                        onClick={handleSubmit}
+                        isLoading={loading}
+                    >
+                        Submit
+                    </Button>
                 </Box>
             </Box>
         </ChakraProvider>
