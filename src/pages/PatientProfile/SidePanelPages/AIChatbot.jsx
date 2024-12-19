@@ -118,7 +118,7 @@ function AIChatbot() {
                 : "No patient information available.";
 
             const prompt = `
-            The following is a conversation history between a user and an AI chatbot:
+            The following is a conversation history between a user and CareBuddy:
             ${contextString}
 
             Patient context:
@@ -165,7 +165,7 @@ function AIChatbot() {
                     </ModalHeader>
                     <ModalBody textAlign="center" fontSize="2xl" color="#00366d">
                         <Text mb={6}>
-                            This AI Chatbot is a beta feature designed to provide general health information.
+                            CareBuddy is a beta feature designed to provide general health information.
                             Responses are AI-generated and should not be considered as medical advice. 
                             Please consult a healthcare professional for personalized guidance.
                         </Text>
@@ -202,7 +202,7 @@ function AIChatbot() {
                 flexDirection="column"
                 justifyContent="space-between"
             >
-                {/* Header */}
+                {/* Introduction Section */}
                 <VStack
                     spacing={8}
                     align="stretch"
@@ -218,10 +218,11 @@ function AIChatbot() {
                     mb={4}
                 >
                     <Heading as="h1" size="lg" textAlign="center" color="#00366d">
-                        AI Chatbot
+                        Meet CareBuddy
                     </Heading>
                     <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#335d8f">
-                        How can I help you today? Type your question below.
+                        CareBuddy is your friendly AI-powered assistant here to help with your healthcare-related
+                        questions. Type your question below and get helpful, personalized responses.
                     </Text>
                 </VStack>
 
@@ -252,7 +253,7 @@ function AIChatbot() {
                                 <Box style={styles.section}>
                                     <Flex align="center" mb={2}>
                                         <Icon as={FaRobot} color="purple.700" mr={2} />
-                                        <Text style={styles.sectionTitle}>AI Chatbot:</Text>
+                                        <Text style={styles.sectionTitle}>CareBuddy:</Text>
                                     </Flex>
                                     <Text fontSize="lg">{item.response}</Text>
                                 </Box>
