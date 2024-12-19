@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ChakraProvider,
     Box,
@@ -16,9 +16,12 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
+    Spinner,
 } from "@chakra-ui/react";
 import { FaRobot, FaUser } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
@@ -26,18 +29,48 @@ function AIChatbot() {
     const [conversationContext, setConversationContext] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
+    const [patientData, setPatientData] = useState(null);
+    const [fetchingPatient, setFetchingPatient] = useState(true);
+
+    useEffect(() => {
+        const fetchPatientData = async () => {
+            const auth = getAuth();
+            const db = getFirestore();
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    try {
+                        const patientsRef = collection(db, "patients");
+                        const q = query(patientsRef, where("email", "==", user.email));
+                        const querySnapshot = await getDocs(q);
+
+                        if (!querySnapshot.empty) {
+                            const patientDoc = querySnapshot.docs[0];
+                            setPatientData({ id: patientDoc.id, ...patientDoc.data() });
+                        } else {
+                            console.error("No patient data found");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching patient data:", error);
+                    }
+                }
+                setFetchingPatient(false);
+            });
+        };
+
+        fetchPatientData();
+    }, []);
 
     const handleSubmit = async () => {
         if (!question.trim()) return;
-        
+
         setLoading(true);
         const newResponses = [...responses, { question, response: "Thinking..." }];
         setResponses(newResponses);
 
         try {
-            const finalResponse = await generateFinalResponse(question, conversationContext);
-            
-            // Append to conversation memory
+            const finalResponse = await generateFinalResponse(question, conversationContext, patientData);
+
             setConversationContext((prevContext) => [
                 ...prevContext,
                 { user: question, bot: finalResponse },
@@ -48,21 +81,16 @@ function AIChatbot() {
             setQuestion("");
         } catch (error) {
             console.error("Error:", error);
-            
-            if (error.message.includes("429")) {
-                newResponses[newResponses.length - 1].response =
-                    "The system is experiencing heavy usage. Please wait a moment and try again.";
-            } else {
-                newResponses[newResponses.length - 1].response =
-                    "Sorry, I couldn't process your question. Please try again.";
-            }
+
+            newResponses[newResponses.length - 1].response =
+                "Sorry, I couldn't process your question. Please try again.";
             setResponses(newResponses);
         } finally {
             setLoading(false);
         }
     };
 
-    const generateFinalResponse = async (question, context) => {
+    const generateFinalResponse = async (question, context, patient) => {
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
 
@@ -73,9 +101,28 @@ function AIChatbot() {
                 .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
                 .join("\n\n");
 
+            const patientContext = patient
+                ? `
+                Patient Information:
+                Name: ${patient.firstName} ${patient.lastName}
+                Age: ${patient.age}
+                Gender: ${patient.gender}
+                Diet: ${patient.diet || "Not provided"}
+                Physical Activity: ${patient.physicalActivity || "Not provided"}
+                Lifestyle: ${patient.lifestyle || "Not provided"}
+                Alcohol Consumption: ${patient.alcoholConsumption || "Not provided"}
+                Conditions: ${patient.conditions || "None reported"}
+                Allergies: ${patient.allergies || "None reported"}
+                Medications: ${patient.medications || "None reported"}
+                `
+                : "No patient information available.";
+
             const prompt = `
             The following is a conversation history between a user and an AI chatbot:
             ${contextString}
+
+            Patient context:
+            ${patientContext}
 
             Now, the user asks: "${question}"
             Provide a simple, short, and clear response.
