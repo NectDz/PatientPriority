@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
     ChakraProvider,
@@ -30,6 +31,9 @@ function AIChatbot() {
     const [loading, setLoading] = useState(false);
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
     const [patientData, setPatientData] = useState(null);
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [pastAppointments, setPastAppointments] = useState([]);
+    const [meetingSummaries, setMeetingSummaries] = useState([]);
     const [fetchingPatient, setFetchingPatient] = useState(true);
 
     useEffect(() => {
@@ -46,7 +50,10 @@ function AIChatbot() {
 
                         if (!querySnapshot.empty) {
                             const patientDoc = querySnapshot.docs[0];
-                            setPatientData({ id: patientDoc.id, ...patientDoc.data() });
+                            const patient = { id: patientDoc.id, ...patientDoc.data() };
+                            setPatientData(patient);
+                            await fetchAppointments(patient.id);
+                            await fetchMeetingSummaries(patient.id);
                         } else {
                             console.error("No patient data found");
                         }
@@ -56,6 +63,71 @@ function AIChatbot() {
                 }
                 setFetchingPatient(false);
             });
+        };
+
+        const fetchAppointments = async (patientId) => {
+            try {
+                const db = getFirestore();
+                const appointmentRef = collection(db, "appointment");
+                const appointmentQuery = query(
+                    appointmentRef,
+                    where("patient_id", "==", patientId)
+                );
+                const appointmentSnapshot = await getDocs(appointmentQuery);
+
+                const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                const currentDate = new Date();
+                const today = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    currentDate.getDate()
+                );
+
+                const upcoming = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate >= today;
+                });
+
+                const past = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate < today;
+                });
+
+                setUpcomingAppointments(upcoming);
+                setPastAppointments(past);
+            } catch (error) {
+                console.error("Error fetching appointments:", error);
+            }
+        };
+
+        const fetchMeetingSummaries = async (patientId) => {
+            try {
+                const db = getFirestore();
+                const appointmentRef = collection(db, "appointment");
+                const summaryQuery = query(
+                    appointmentRef,
+                    where("patient_id", "==", patientId)
+                );
+                const summarySnapshot = await getDocs(summaryQuery);
+
+                const summaries = summarySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    date: new Date(doc.data().appointmentDate.seconds * 1000).toLocaleDateString(),
+                    doctorName: doc.data().doctorName || "Unknown",
+                    summary: doc.data().appointmentSummary || "No summary available.",
+                    nextAppointment: doc.data().NextAppointmentDate
+                        ? `${doc.data().NextAppointmentDate} at ${doc.data().NextAppointmentTime}`
+                        : "None scheduled",
+                }));
+
+                setMeetingSummaries(summaries);
+            } catch (error) {
+                console.error("Error fetching meeting summaries:", error);
+            }
         };
 
         fetchPatientData();
@@ -69,7 +141,14 @@ function AIChatbot() {
         setResponses(newResponses);
 
         try {
-            const finalResponse = await generateFinalResponse(question, conversationContext, patientData);
+            const finalResponse = await generateFinalResponse(
+                question,
+                conversationContext,
+                patientData,
+                upcomingAppointments,
+                pastAppointments,
+                meetingSummaries
+            );
 
             setConversationContext((prevContext) => [
                 ...prevContext,
@@ -90,10 +169,9 @@ function AIChatbot() {
         }
     };
 
-    const generateFinalResponse = async (question, context, patient) => {
+    const generateFinalResponse = async (question, context, patient, upcoming, past, summaries) => {
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
-
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
             const recentContext = context.slice(-5);
@@ -106,6 +184,40 @@ function AIChatbot() {
                       ([key, med]) => `${med.name} (${med.dosage}, ${med.frequency})`
                   ).join(", ")
                 : "None reported";
+
+            const appointmentsContext = `
+                Upcoming Appointments:
+                ${upcoming
+                    .map(
+                        (appt) =>
+                            `- ${new Date(
+                                appt.appointmentDate.seconds * 1000
+                            ).toLocaleString()}: ${appt.appointmentDescription}`
+                    )
+                    .join("\n") || "None"}
+                
+                Past Appointments:
+                ${past
+                    .map(
+                        (appt) =>
+                            `- ${new Date(
+                                appt.appointmentDate.seconds * 1000
+                            ).toLocaleString()}: ${appt.appointmentDescription}`
+                    )
+                    .join("\n") || "None"}
+            `;
+
+            const meetingSummariesContext = `
+                Meeting Summaries:
+                ${summaries
+                    .map(
+                        (summary) =>
+                            `- Date: ${summary.date}, Doctor: ${summary.doctorName}\n  Summary: ${
+                                summary.summary
+                            }\n  Next Appointment: ${summary.nextAppointment}`
+                    )
+                    .join("\n\n") || "No meeting summaries available."}
+            `;
 
             const patientContext = patient
                 ? `
@@ -123,16 +235,26 @@ function AIChatbot() {
                 `
                 : "No patient information available.";
 
-            const prompt = `
-            The following is a conversation history between a user and CareBuddy:
-            ${contextString}
-
-            Patient context:
-            ${patientContext}
-
-            Now, the user asks: "${question}"
-            Provide a simple, short, and clear response.
-            `;
+                const prompt = `
+                The following is a conversation history between a user and CareBuddy:
+                ${contextString}
+                
+                Patient context:
+                ${patientContext}
+                
+                Appointments context:
+                ${appointmentsContext}
+                
+                Meeting summaries context:
+                ${meetingSummariesContext}
+                
+                Guidelines for CareBuddy's response:
+                1. Deliver accurate, general medical advice based on common medical knowledge and the provided patient, appointment, and meeting summary contexts.
+                2. If the question is inappropriate, offensive, or beyond the scope of general medical information, politely decline to answer and redirect the user to appropriate resources (e.g., "Please consult a healthcare professional for further assistance.").
+                
+                Now, the user asks: "${question}"
+                Provide a concise, simple, and clear response adhering to the guidelines above.
+                `;
 
             const result = await model.generateContent(prompt);
             return result.response.text();
