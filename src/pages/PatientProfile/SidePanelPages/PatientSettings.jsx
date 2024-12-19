@@ -15,9 +15,19 @@ import {
   FormLabel,
   IconButton,
   Select,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { FaUserEdit, FaTrashAlt, FaKey, FaSave, FaBell } from "react-icons/fa";
+import {
+  FaUserEdit,
+  FaTrashAlt,
+  FaKey,
+  FaSave,
+  FaBell,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import React, { useEffect, useState, useRef } from "react";
 import {
   getFirestore,
@@ -42,11 +52,13 @@ function PatientSettings() {
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [docID, setDocID] = useState(null);
+  const [docID, setDocID] = useState(null); //document ID
 
   // state for managing password input
   const [newPassword, setNewPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const toast = useToast();
 
@@ -233,10 +245,10 @@ function PatientSettings() {
         isClosable: true,
       });
     } catch (error) {
-      console.error("Full error details:", error);
-      console.error("Error name:", error.name);
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
+      // console.error("Full error details:", error);
+      // console.error("Error name:", error.name);
+      // console.error("Error message:", error.message);
+      // console.error("Error stack:", error.stack);
 
       console.error("Error updating profile:", error);
       toast({
@@ -289,6 +301,11 @@ function PatientSettings() {
       });
     }
   };
+  const toggleCurrentPasswordVisibility = () =>
+    setShowCurrentPassword(!showCurrentPassword);
+
+  const toggleNewPasswordVisibility = () =>
+    setShowNewPassword(!showNewPassword);
 
   const handlePatientDeletion = () => {
     toast({
@@ -315,7 +332,7 @@ function PatientSettings() {
       <Box
         p={8}
         bg="gray.50"
-        minH="100vh"
+        minH="100%"
         minWidth="100%"
         display="flex"
         justifyContent="center"
@@ -657,23 +674,47 @@ function PatientSettings() {
             <Heading as="h3" fontSize="lg" mb={4} color="#4d7098">
               Change Password
             </Heading>
-            <Grid templateColumns={isMobile ? "1fr" : "1fr 1fr"} gap={4}>
+            <Grid templateColumns={isMobile ? "1fr" : "1fr 1fr"} gap={4} mb={4}>
+              {/* Current Password */}
               <FormControl>
                 <FormLabel>Current Password:</FormLabel>
-                <Input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                />
+                <InputGroup>
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                  />
+                  <InputRightElement>
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      aria-label="Toggle Current Password Visibility"
+                      icon={showCurrentPassword ? <FaEye /> : <FaEyeSlash />}
+                      onClick={toggleCurrentPasswordVisibility}
+                    />
+                  </InputRightElement>
+                </InputGroup>
               </FormControl>
+
+              {/* New Password */}
               <FormControl>
                 <FormLabel>New Password:</FormLabel>
-                <Input
-                  mb={4}
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
+                <InputGroup>
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <InputRightElement>
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      aria-label="Toggle New Password Visibility"
+                      icon={showNewPassword ? <FaEye /> : <FaEyeSlash />}
+                      onClick={toggleNewPasswordVisibility}
+                    />
+                  </InputRightElement>
+                </InputGroup>
               </FormControl>
             </Grid>
             <Button
@@ -691,23 +732,35 @@ function PatientSettings() {
           {/* Delete Patient Section */}
           <Box mb={8}>
             <Heading as="h2" fontSize="2xl" mb={4} color="#335d8f">
-              Delete Account
+              Reveal Patient ID
             </Heading>
-            {/* <Input
-              type="text"
-              placeholder="Enter patient ID"
-              mb={4}
-              focusBorderColor="#4d7098"
-            /> */}
             <Button
-              leftIcon={<FaTrashAlt />}
-              colorScheme="red"
+              leftIcon={<FaEye />}
+              colorScheme="blue"
               variant="solid"
               width="full"
-              _hover={{ bg: "red" }}
-              onClick={handleStartEditing}
+              _hover={{ bg: "blue.600" }}
+              onClick={() => {
+                if (patient && patient.id) {
+                  toast({
+                    title: "Patient ID",
+                    description: `Your Patient ID is: ${patient.id}`,
+                    status: "info",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                } else {
+                  toast({
+                    title: "Error",
+                    description: "Patient ID could not be retrieved.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
+              }}
             >
-              Delete
+              Reveal ID
             </Button>
           </Box>
 

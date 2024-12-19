@@ -535,18 +535,45 @@ function PatientProfile() {
     fetchPatient();
   }, [toast]);
 
+  // useEffect(() => {
+  //   const fetchDoctorInfo = async () => {
+  //     if (patient) {
+  //       try {
+  //         // Fetch the patient's doctor information
+  //         const doctorQuery = query(
+  //           collection(db, "doctor"),
+  //           where("id", "==", patient.doctor_id)
+  //         );
+  //         const doctorSnapshot = await getDocs(doctorQuery);
+
+  //         // Check if the snapshot is not empty
+  //         if (!doctorSnapshot.empty) {
+  //           const doctorData = doctorSnapshot.docs[0].data();
+  //           setDoctorFirstName(doctorData.firstName);
+  //           setDoctorLastName(doctorData.lastName);
+  //           setDoctorEmail(doctorData.email);
+  //           setDoctorPFP(doctorData.profilePicture);
+  //         } else {
+  //           console.warn("No doctor found with the provided ID.");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching doctor information:", error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchDoctorInfo();
+  // }, [patient]);
   useEffect(() => {
     const fetchDoctorInfo = async () => {
-      if (patient) {
+      if (patient && patient.doctor_id) { // Only fetch doctor info if doctor_id exists
         try {
-          // Fetch the patient's doctor information
           const doctorQuery = query(
             collection(db, "doctor"),
             where("id", "==", patient.doctor_id)
           );
           const doctorSnapshot = await getDocs(doctorQuery);
-
-          // Check if the snapshot is not empty
+  
           if (!doctorSnapshot.empty) {
             const doctorData = doctorSnapshot.docs[0].data();
             setDoctorFirstName(doctorData.firstName);
@@ -555,15 +582,30 @@ function PatientProfile() {
             setDoctorPFP(doctorData.profilePicture);
           } else {
             console.warn("No doctor found with the provided ID.");
+            setDoctorFirstName("Not Connected");
+            setDoctorLastName("To A Doctor");
+            setDoctorEmail(null);
+            setDoctorPFP(null);
           }
         } catch (error) {
           console.error("Error fetching doctor information:", error);
+          setDoctorFirstName("Not Connected");
+          setDoctorLastName("To A Doctor");
+          setDoctorEmail(null);
+          setDoctorPFP(null);
         }
+      } else {
+        // If no doctor_id is associated
+        setDoctorFirstName("Not Connected");
+        setDoctorLastName("To A Doctor");
+        setDoctorEmail(null);
+        setDoctorPFP(null);
       }
     };
-
+  
     fetchDoctorInfo();
   }, [patient]);
+  
 
   // Color mode for dark/light theme
   const { toggleColorMode } = useColorMode();
