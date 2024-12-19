@@ -1105,7 +1105,7 @@ function PatientProfile() {
         >
           {/* Google Calendar Embed */}
           <Heading fontSize="xl" color="#00366d" mb={4} textAlign="center">
-            Upcoming Appointments
+            Calendar
           </Heading>
           <Box mb={8} borderRadius="md" overflow="hidden" height="400px">
             <iframe
