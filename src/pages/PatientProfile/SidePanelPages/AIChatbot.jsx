@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
     ChakraProvider,
@@ -31,6 +32,8 @@ function AIChatbot() {
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
     const [patientData, setPatientData] = useState(null);
     const [fetchingPatient, setFetchingPatient] = useState(true);
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [pastAppointments, setPastAppointments] = useState([]);
 
     useEffect(() => {
         const fetchPatientData = async () => {
@@ -46,7 +49,9 @@ function AIChatbot() {
 
                         if (!querySnapshot.empty) {
                             const patientDoc = querySnapshot.docs[0];
-                            setPatientData({ id: patientDoc.id, ...patientDoc.data() });
+                            const patient = { id: patientDoc.id, ...patientDoc.data() };
+                            setPatientData(patient);
+                            await fetchAppointments(patient.id);
                         } else {
                             console.error("No patient data found");
                         }
@@ -56,6 +61,45 @@ function AIChatbot() {
                 }
                 setFetchingPatient(false);
             });
+        };
+
+        const fetchAppointments = async (patientId) => {
+            try {
+                const db = getFirestore();
+                const appointmentRef = collection(db, "appointment");
+                const appointmentQuery = query(
+                    appointmentRef,
+                    where("patient_id", "==", patientId)
+                );
+                const appointmentSnapshot = await getDocs(appointmentQuery);
+
+                const fetchedAppointments = appointmentSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                const currentDate = new Date();
+                const today = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    currentDate.getDate()
+                );
+
+                const upcoming = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate >= today;
+                });
+
+                const past = fetchedAppointments.filter((appointment) => {
+                    const appointmentDate = appointment.appointmentDate.toDate();
+                    return appointmentDate < today;
+                });
+
+                setUpcomingAppointments(upcoming);
+                setPastAppointments(past);
+            } catch (error) {
+                console.error("Error fetching appointments:", error);
+            }
         };
 
         fetchPatientData();
@@ -69,7 +113,13 @@ function AIChatbot() {
         setResponses(newResponses);
 
         try {
-            const finalResponse = await generateFinalResponse(question, conversationContext, patientData);
+            const finalResponse = await generateFinalResponse(
+                question,
+                conversationContext,
+                patientData,
+                upcomingAppointments,
+                pastAppointments
+            );
 
             setConversationContext((prevContext) => [
                 ...prevContext,
@@ -90,10 +140,9 @@ function AIChatbot() {
         }
     };
 
-    const generateFinalResponse = async (question, context, patient) => {
+    const generateFinalResponse = async (question, context, patient, upcoming, past) => {
         try {
             const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
-
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
             const recentContext = context.slice(-5);
@@ -101,11 +150,27 @@ function AIChatbot() {
                 .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
                 .join("\n\n");
 
-            const medicationsContext = patient?.medications
-                ? Object.entries(patient.medications).map(
-                      ([key, med]) => `${med.name} (${med.dosage}, ${med.frequency})`
-                  ).join(", ")
-                : "None reported";
+            const appointmentsContext = `
+                Upcoming Appointments:
+                ${upcoming
+                    .map(
+                        (appt) =>
+                            `- ${new Date(
+                                appt.appointmentDate.seconds * 1000
+                            ).toLocaleString()}: ${appt.appointmentDescription}`
+                    )
+                    .join("\n") || "None"}
+                
+                Past Appointments:
+                ${past
+                    .map(
+                        (appt) =>
+                            `- ${new Date(
+                                appt.appointmentDate.seconds * 1000
+                            ).toLocaleString()}: ${appt.appointmentDescription}`
+                    )
+                    .join("\n") || "None"}
+            `;
 
             const patientContext = patient
                 ? `
@@ -113,13 +178,8 @@ function AIChatbot() {
                 Name: ${patient.firstName} ${patient.lastName}
                 Age: ${patient.age}
                 Gender: ${patient.gender}
-                Diet: ${patient.diet || "Not provided"}
-                Physical Activity: ${patient.physicalActivity || "Not provided"}
-                Lifestyle: ${patient.lifestyle || "Not provided"}
-                Alcohol Consumption: ${patient.alcoholConsumption || "Not provided"}
                 Conditions: ${patient.conditions || "None reported"}
                 Allergies: ${patient.allergies || "None reported"}
-                Medications: ${medicationsContext}
                 `
                 : "No patient information available.";
 
@@ -129,6 +189,9 @@ function AIChatbot() {
 
             Patient context:
             ${patientContext}
+
+            Appointments context:
+            ${appointmentsContext}
 
             Now, the user asks: "${question}"
             Provide a simple, short, and clear response.
@@ -242,9 +305,13 @@ function AIChatbot() {
                         mx="auto"
                         bg="rgba(255, 255, 255, 0.6)"
                         borderRadius="xl"
-                        padding="1.5rem"
+                        //padding="1.5rem"
                         overflowY="auto"
                         maxHeight="70vh"
+                        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
                     >
                         {responses.map((item, index) => (
                             <Box key={index} style={styles.responseContainer}>
@@ -279,10 +346,16 @@ function AIChatbot() {
                     maxWidth="1200px"
                     mx="auto"
                     mt={4}
-                    padding="1.5rem"
-                    bg="rgba(255, 255, 255, 0.8)"
-                    borderRadius="md"
-                    boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
+                    //padding="1.5rem"
+                    //bg="rgba(255, 255, 255, 0.8)"
+                    //borderRadius="md"
+                    //boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
+          bg="rgba(255, 255, 255, 0.6)"
+                        borderRadius="xl"
                 >
                     <Input
                         placeholder="Type your question here..."
@@ -303,15 +376,19 @@ function AIChatbot() {
                         }}
                     />
                     <Button
-                        bg="#003366"
-                        color="white"
-                        _hover={{ bg: "#002244" }}
+                        //bg="#003366"
+                        //color="white"
+                        //_hover={{ bg: "#002244" }}
                         fontSize="md"
                         paddingX="2rem"
                         paddingY="1.5rem"
                         borderRadius="md"
                         onClick={handleSubmit}
                         isLoading={loading}
+                        _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"
+
                     >
                         Submit
                     </Button>
