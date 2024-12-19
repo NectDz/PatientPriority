@@ -40,7 +40,13 @@ function PatientDetails() {
     alcoholConsumption: useRef(),
     conditions: useRef(),
     allergies: useRef(),
-    medications: useRef()
+    medications: {},
+  };
+  
+  const [medicationCount, setMedicationCount] = useState(1);
+
+  const addMedication = () => {
+    setMedicationCount(prev => prev + 1);
   };
 
   useEffect(() => {
@@ -91,11 +97,28 @@ function PatientDetails() {
 
   const handleSave = async () => {
     try {
+      //collect all medication entries
+      const medicationsData = {};
+      for (let i = 1; i <= medicationCount; i++) {
+        if (formRefs.medications[`name${i}`]?.current?.value) {
+          medicationsData[`med${i}`] = {
+            name: formRefs.medications[`name${i}`].current?.value || '',
+            dosage: formRefs.medications[`dosage${i}`].current?.value || '',
+            frequency: formRefs.medications[`frequency${i}`].current?.value || ''
+          };
+        }
+      }
+
       //collect values from refs
-      const formData = Object.keys(formRefs).reduce((acc, key) => {
-        acc[key] = formRefs[key].current?.value || '';
-        return acc;
-      }, {});
+      const formData = {
+        ...Object.keys(formRefs).reduce((acc, key) => {
+          if (key !== 'medications') {
+            acc[key] = formRefs[key].current?.value || '';
+          }
+          return acc;
+        }, {}),
+        medications: medicationsData
+      };
 
       await updateDoc(doc(db, "patients", id), formData); //update in doc db with the id in patients collection
       
@@ -256,16 +279,53 @@ function PatientDetails() {
               </FormControl>
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
-              <FormControl>
-                <FormLabel>Medications (comma-separated)</FormLabel>
-                <Textarea
-                  ref={formRefs.medications}
-                  name="medications"
-                  defaultValue={patient.medications}
-                  bg="white"
-                />
-              </FormControl>
-            </GridItem>
+            <FormControl>
+              <FormLabel>Medications</FormLabel>
+              {[...Array(medicationCount)].map((_, index) => {
+                const medNum = index + 1;
+                // Create refs for this medication set if they don't exist
+                if (!formRefs.medications[`name${medNum}`]) {
+                  formRefs.medications[`name${medNum}`] = useRef();
+                  formRefs.medications[`dosage${medNum}`] = useRef();
+                  formRefs.medications[`frequency${medNum}`] = useRef();
+                }
+                
+                return (
+                  <Grid key={medNum} templateColumns="repeat(3, 1fr)" gap={4} mb={4}>
+                    <Input
+                      ref={formRefs.medications[`name${medNum}`]}
+                      name={`medications.name${medNum}`}
+                      defaultValue={patient.medications?.[`med${medNum}`]?.name}
+                      placeholder="Medication Name"
+                      bg="white"
+                    />
+                    <Input
+                      ref={formRefs.medications[`dosage${medNum}`]}
+                      name={`medications.dosage${medNum}`}
+                      defaultValue={patient.medications?.[`med${medNum}`]?.dosage}
+                      placeholder="Dosage"
+                      bg="white"
+                    />
+                    <Input
+                      ref={formRefs.medications[`frequency${medNum}`]}
+                      name={`medications.frequency${medNum}`}
+                      defaultValue={patient.medications?.[`med${medNum}`]?.frequency}
+                      placeholder="Frequency"
+                      bg="white"
+                    />
+                  </Grid>
+                );
+              })}
+              <Button
+                size="sm"
+                colorScheme="green"
+                onClick={addMedication}
+                mt={2}
+              >
+                Add Another Medication
+              </Button>
+            </FormControl>
+          </GridItem>
           </>
         ) : (
           <>
@@ -302,11 +362,12 @@ function PatientDetails() {
                 label="Medications" 
                 value={
                   patient.medications ? 
-                  patient.medications.split(',').map((medication, index) => (
-                    <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
-                      {medication.trim()}
+                  Object.entries(patient.medications).map(([key, med]) => (
+                    <Badge key={key} colorScheme="purple" variant="subtle" fontSize="sm" p={2} mr={2} mb={2}>
+                      {`${med.name} (${med.dosage}, ${med.frequency})`}
                     </Badge>
-                  )) : 
+                  ))
+                  : 
                   "None reported"
                 }
               />

@@ -965,20 +965,20 @@ function PatientProfile() {
                 </List>
               </Box>
               <Box>
-                <Flex align="center" color="gray.600" mb={2}>
-                  <Icon as={FaCapsules} mr={2} />
-                  <Text fontWeight="bold">Current Medications:</Text>
-                </Flex>
-                <List spacing={1} color="#335d8f">
-                  {patient.medications && patient.medications.length > 0 ? (
-                    patient.medications.map((med, index) => (
-                      <ListItem key={index}>{med}</ListItem>
-                    ))
-                  ) : (
-                    <ListItem>No Medications</ListItem>
-                  )}
-                </List>
-              </Box>
+              <Flex align="center" color="gray.600" mb={2}>
+                <Icon as={FaCapsules} mr={2} />
+                <Text fontWeight="bold">Current Medications:</Text>
+              </Flex>
+              <List spacing={1} color="#335d8f">
+                {patient.medications && Object.keys(patient.medications).length > 0 ? (
+                  Object.values(patient.medications).map((med, index) => (
+                    <ListItem key={index}>{med.name}</ListItem>
+                  ))
+                ) : (
+                  <ListItem>No Medications</ListItem>
+                )}
+              </List>
+            </Box>
             </Stack>
           </Box>
 
@@ -1191,9 +1191,11 @@ function PatientProfile() {
             Recent Medications History
           </Heading>
           <List spacing={1} color="#335d8f">
-            {patient.medications.length > 0 ? (
-              patient.medications.map((med, index) => (
-                <ListItem key={index}>{med}</ListItem>
+            {patient.medications && Object.keys(patient.medications).length > 0 ? (
+              Object.values(patient.medications).map((med, index) => (
+                <ListItem key={index}>
+                  {med.name} ({med.dosage}, {med.frequency})
+                </ListItem>
               ))
             ) : (
               <ListItem>No Medications</ListItem>
