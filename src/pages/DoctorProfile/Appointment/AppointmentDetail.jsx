@@ -96,10 +96,10 @@ const generateFinalResponseAndSummary = async (transcript) => {
   // Clean up the response to ensure it's valid JSON
   extractedItemsJson = extractedItemsJson.trim();
   // Remove any markdown code block syntax if present
-  if (extractedItemsJson.startsWith("```")) {
+  if (extractedItemsJson.startsWith("\`\`\`")) {
     extractedItemsJson = extractedItemsJson
-      .replace(/^```[a-z]*\n/, "")
-      .replace(/```$/, "");
+      .replace(/^\`\`\`[a-z]*\n/, "")
+      .replace(/\`\`\`$/, "");
   }
 
   const extractedItems = JSON.parse(extractedItemsJson);
@@ -297,7 +297,7 @@ function AppointmentDetail() {
 
   return (
     <Box p={8}>
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
         Appointment Details
       </Heading>
       <Box
@@ -330,7 +330,7 @@ function AppointmentDetail() {
       </Box>
       <Divider my={6} />
 
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
         Important Appointment Items
       </Heading>
       <Box
@@ -380,7 +380,7 @@ function AppointmentDetail() {
         )}
       </Box>
 
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
         Appointment Summary
       </Heading>
       <Box
@@ -408,7 +408,7 @@ function AppointmentDetail() {
         )}
       </Box>
 
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
         Appointment Transcript
       </Heading>
       <Box
@@ -440,6 +440,9 @@ function AppointmentDetail() {
 
       {!appointment.appointmentTranscript && (
         <Box mt={6}>
+          <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+            Upload or Record Audio
+          </Heading>
           <Input
             type="file"
             accept="audio/*"
@@ -522,3 +525,4 @@ function AppointmentDetail() {
 }
 
 export default AppointmentDetail;
+
