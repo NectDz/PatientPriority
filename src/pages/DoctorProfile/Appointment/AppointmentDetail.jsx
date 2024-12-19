@@ -22,6 +22,7 @@ import {
 } from "firebase/firestore";
 import { FaMicrophone, FaStop } from "react-icons/fa";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FaCalendarAlt, FaClipboardList, FaFileAlt, FaFileAudio, FaUpload, FaPrescription, FaPills, FaCommentMedical, FaCalendarPlus, FaStethoscope, FaUserMd } from "react-icons/fa";
 
 const db = getFirestore();
 
@@ -96,10 +97,10 @@ const generateFinalResponseAndSummary = async (transcript) => {
   // Clean up the response to ensure it's valid JSON
   extractedItemsJson = extractedItemsJson.trim();
   // Remove any markdown code block syntax if present
-  if (extractedItemsJson.startsWith("\`\`\`")) {
+  if (extractedItemsJson.startsWith("```")) {
     extractedItemsJson = extractedItemsJson
-      .replace(/^\`\`\`[a-z]*\n/, "")
-      .replace(/\`\`\`$/, "");
+      .replace(/^```[a-z]*\n/, "")
+      .replace(/```$/, "");
   }
 
   const extractedItems = JSON.parse(extractedItemsJson);
@@ -298,11 +299,12 @@ function AppointmentDetail() {
   return (
     <Box p={8}>
       <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaCalendarAlt} mr={2} />
         Appointment Details
       </Heading>
       <Box
         p={6}
-        bg="white"
+        bg="gray.50"
         borderRadius="md"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
@@ -331,6 +333,7 @@ function AppointmentDetail() {
       <Divider my={6} />
 
       <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaClipboardList} mr={2} />
         Important Appointment Items
       </Heading>
       <Box
@@ -344,43 +347,51 @@ function AppointmentDetail() {
       >
         {appointment.VisitReason && (
           <Text>
+            <Icon as={FaClipboardList} mr={2} />
             <strong>Visit Reason:</strong> {appointment.VisitReason}
           </Text>
         )}
         {appointment.Prescription && (
           <Text>
+            <Icon as={FaPrescription} mr={2} />
             <strong>Prescription:</strong> {appointment.Prescription}
           </Text>
         )}
         {appointment.Dosage && (
           <Text>
+            <Icon as={FaPills} mr={2} />
             <strong>Dosage:</strong> {appointment.Dosage}
           </Text>
         )}
         {appointment.Advice && (
           <Text>
+            <Icon as={FaCommentMedical} mr={2} />
             <strong>Advice:</strong> {appointment.Advice}
           </Text>
         )}
         {appointment.NextAppointmentDate && appointment.NextAppointmentTime && (
           <Text>
+            <Icon as={FaCalendarPlus} mr={2} />
             <strong>Next Appointment:</strong> {appointment.NextAppointmentDate}{" "}
             at {appointment.NextAppointmentTime}
           </Text>
         )}
         {appointment.Diagnosis && (
           <Text>
+            <Icon as={FaStethoscope} mr={2} />
             <strong>Diagnosis:</strong> {appointment.Diagnosis}
           </Text>
         )}
         {appointment.Referrals && (
           <Text>
+            <Icon as={FaUserMd} mr={2} />
             <strong>Referrals:</strong> {appointment.Referrals}
           </Text>
         )}
       </Box>
 
       <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaFileAlt} mr={2} />
         Appointment Summary
       </Heading>
       <Box
@@ -409,6 +420,7 @@ function AppointmentDetail() {
       </Box>
 
       <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaFileAudio} mr={2} />
         Appointment Transcript
       </Heading>
       <Box
@@ -454,6 +466,7 @@ function AppointmentDetail() {
             as="label"
             htmlFor="audio-upload"
             mt={4}
+            leftIcon={<Icon as={FaUpload} />}
             _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
             transition="all 0.3s"
             marginRight={3}
@@ -466,6 +479,7 @@ function AppointmentDetail() {
           <Button
             onClick={handleUpload}
             mt={4}
+            leftIcon={<Icon as={FaFileAudio} />}
             isLoading={uploading}
             _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
             transition="all 0.3s"
@@ -525,4 +539,3 @@ function AppointmentDetail() {
 }
 
 export default AppointmentDetail;
-
