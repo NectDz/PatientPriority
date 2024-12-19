@@ -6,6 +6,23 @@
   .pulse-animation:hover {
     animation: pulse 5s infinite; /*only animate on hover*/
   }
+
+  .scroll-background {
+    background-image: url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 1s ease-in; /* Smooth transition for opacity */
+    height: 100vh; /* Full viewport height */
+    width: 100%; /* Full width */
+    position: fixed; /* Stays in the background */
+    z-index: -1; /* Behind other content */
+  }
+  
+  .scroll-background.visible {
+    opacity: 1; /* Visible when the class is applied */
+  }
   
   @keyframes pulse {
     0% {

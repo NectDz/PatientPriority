@@ -518,6 +518,9 @@ const Home = () => {
  const [isAuthenticating, setIsAuthenticating] = useState(false);
  const audioRef = useRef(null);
  const [currentSlide, setCurrentSlide] = useState(0);
+ const [isVisible, setIsVisible] = useState(false);
+
+
 
  //services
  const services = [
@@ -701,6 +704,8 @@ const Home = () => {
    return () => clearInterval(timer);
  }, []);
 
+ 
+
  return (
    <ChakraProvider theme={theme}>
      <Box
@@ -709,6 +714,11 @@ const Home = () => {
        width="100vw"
        backgroundColor="#f1f8ff"
        overflowY="auto" 
+       backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')" // Replace with your image path
+      backgroundSize="175px" // Ensures the image covers the entire area
+      backgroundPosition="center" // Centers the image
+      backgroundRepeat="no-repeat" // Prevents repeating the image
+      backgroundAttachment="fixed" // Keeps the image fixed during scroll
      >
        {isAuthenticating && (
          <Box
@@ -863,6 +873,8 @@ const Home = () => {
        <Footer />
      </Box>
    </ChakraProvider>
+
+   
  );
 };
 

@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
           setUserRole(null);
         }
       } else {
-        console.log("User is not logged in");
+        // console.log("User is not logged in");
         setUserRole(null);
       }
   

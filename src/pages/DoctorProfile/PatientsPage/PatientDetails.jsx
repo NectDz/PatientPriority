@@ -21,6 +21,8 @@ import {
 import { useParams } from "react-router-dom";
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { FaUser, FaAddressBook, FaHeartbeat, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
+import { Icon } from "@chakra-ui/react";
 
 const db = getFirestore();
 
@@ -40,7 +42,13 @@ function PatientDetails() {
     alcoholConsumption: useRef(),
     conditions: useRef(),
     allergies: useRef(),
-    medications: useRef()
+    medications: {},
+  };
+  
+  const [medicationCount, setMedicationCount] = useState(1);
+
+  const addMedication = () => {
+    setMedicationCount(prev => prev + 1);
   };
 
   useEffect(() => {
@@ -81,21 +89,52 @@ function PatientDetails() {
 
   const handleStartEditing = () => {
     setIsEditing(true);
-    //set initial values when entering edit mode
+    // Set initial values when entering edit mode
     Object.keys(formRefs).forEach(key => {
-      if (formRefs[key].current) {
+      if (key !== 'medications' && formRefs[key].current) {
         formRefs[key].current.value = patient[key] || '';
+      }
+    });
+    
+    //set medication count based on existing medications
+    const medicationKeys = Object.keys(patient.medications || {});
+    setMedicationCount(Math.max(medicationKeys.length, 1));
+    
+    //initialize medication refs
+    medicationKeys.forEach((key, index) => {
+      const medNum = index + 1;
+      if (!formRefs.medications[`name${medNum}`]) {
+        formRefs.medications[`name${medNum}`] = React.createRef();
+        formRefs.medications[`dosage${medNum}`] = React.createRef();
+        formRefs.medications[`frequency${medNum}`] = React.createRef();
       }
     });
   };
 
   const handleSave = async () => {
     try {
+      //collect all medication entries
+      const medicationsData = {};
+      for (let i = 1; i <= medicationCount; i++) {
+        if (formRefs.medications[`name${i}`]?.current?.value) {
+          medicationsData[`med${i}`] = {
+            name: formRefs.medications[`name${i}`].current?.value || '',
+            dosage: formRefs.medications[`dosage${i}`].current?.value || '',
+            frequency: formRefs.medications[`frequency${i}`].current?.value || ''
+          };
+        }
+      }
+
       //collect values from refs
-      const formData = Object.keys(formRefs).reduce((acc, key) => {
-        acc[key] = formRefs[key].current?.value || '';
-        return acc;
-      }, {});
+      const formData = {
+        ...Object.keys(formRefs).reduce((acc, key) => {
+          if (key !== 'medications') {
+            acc[key] = formRefs[key].current?.value || '';
+          }
+          return acc;
+        }, {}),
+        medications: medicationsData
+      };
 
       await updateDoc(doc(db, "patients", id), formData); //update in doc db with the id in patients collection
       
@@ -141,7 +180,8 @@ function PatientDetails() {
       _hover={{ transform: "translateY(-2px)" }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Heading as="h2" size="md" color="green.600">
+        <Heading as="h2" size="md" color="green.600" >
+          <Icon as={FaHeartbeat} color="green.600" w={5} h={5} mr={2} />
           Health Information
         </Heading>
         {isEditing ? ( //if false then static if not then dynamic
@@ -257,13 +297,52 @@ function PatientDetails() {
             </GridItem>
             <GridItem colSpan={{ base: 1, md: 2 }}>
               <FormControl>
-                <FormLabel>Medications (comma-separated)</FormLabel>
-                <Textarea
-                  ref={formRefs.medications}
-                  name="medications"
-                  defaultValue={patient.medications}
-                  bg="white"
-                />
+                <FormLabel>Medications</FormLabel>
+                {[...Array(medicationCount)].map((_, index) => {
+                  const medNum = index + 1;
+                  const medKey = `med${medNum}`;
+
+                  // Ensure refs exist for this medication
+                  if (!formRefs.medications[`name${medNum}`]) {
+                    formRefs.medications[`name${medNum}`] = React.createRef();
+                    formRefs.medications[`dosage${medNum}`] = React.createRef();
+                    formRefs.medications[`frequency${medNum}`] = React.createRef();
+                  }
+
+                  return (
+                    <Grid key={medNum} templateColumns="repeat(3, 1fr)" gap={4} mb={4}>
+                      <Input
+                        ref={formRefs.medications[`name${medNum}`]}
+                        name={`medications.name${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.name || ''}
+                        placeholder="Medication Name"
+                        bg="white"
+                      />
+                      <Input
+                        ref={formRefs.medications[`dosage${medNum}`]}
+                        name={`medications.dosage${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.dosage || ''}
+                        placeholder="Dosage"
+                        bg="white"
+                      />
+                      <Input
+                        ref={formRefs.medications[`frequency${medNum}`]}
+                        name={`medications.frequency${medNum}`}
+                        defaultValue={patient.medications?.[medKey]?.frequency || ''}
+                        placeholder="Frequency"
+                        bg="white"
+                      />
+                    </Grid>
+                  );
+                })}
+                <Button
+                  size="sm"
+                  colorScheme="green"
+                  onClick={addMedication}
+                  mt={2}
+                >
+                  Add Another Medication
+                </Button>
               </FormControl>
             </GridItem>
           </>
@@ -302,11 +381,12 @@ function PatientDetails() {
                 label="Medications" 
                 value={
                   patient.medications ? 
-                  patient.medications.split(',').map((medication, index) => (
-                    <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
-                      {medication.trim()}
+                  Object.entries(patient.medications).map(([key, med]) => (
+                    <Badge key={key} colorScheme="purple" variant="subtle" fontSize="sm" p={2} mr={2} mb={2}>
+                      {`${med.name} (${med.dosage}, ${med.frequency})`}
                     </Badge>
-                  )) : 
+                  ))
+                  : 
                   "None reported"
                 }
               />
@@ -335,6 +415,22 @@ function PatientDetails() {
     );
   }
 
+  const SectionBox = ({ title, icon: Icon, bgColor, iconColor, children }) => (
+    <Box 
+        p={6} 
+        bg={bgColor} 
+        borderRadius="lg"
+        transition="transform 0.2s"
+        _hover={{ transform: "translateY(-2px)" }}
+    >
+        <Heading as="h2" size="md" color={iconColor} mb={4} display="flex" alignItems="center">
+            <Icon style={{ marginRight: "8px" }} />
+            {title}
+        </Heading>
+        {children}
+    </Box>
+);
+
   return (
     <ChakraProvider>
       <Box 
@@ -357,84 +453,48 @@ function PatientDetails() {
           _hover={{ boxShadow: "2xl" }}
         >
           {/* Patient Info */}
-          <Box 
-            p={6} 
-            bg="blue.50" 
-            borderRadius="lg"
-            transition="transform 0.2s"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <Heading as="h2" size="md" color="blue.600" mb={4}>
-              Patient Information
-            </Heading>
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-              <InfoField label="Name" value={`${patient.firstName} ${patient.lastName}`} />
-              <InfoField label="Age" value={patient.age} />
-              <InfoField label="Gender" value={patient.gender} />
-              <InfoField label="Phone" value={patient.phone} />
-              <GridItem colSpan={{ base: 1, md: 2 }}>
-                <InfoField label="Email" value={patient.email} />
-              </GridItem>
-            </Grid>
-          </Box>
+          <SectionBox title="Patient Information" icon={FaUser} bgColor="blue.50" iconColor="blue.600">
+                        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+                            <InfoField label="Name" value={`${patient.firstName} ${patient.lastName}`} />
+                            <InfoField label="Age" value={patient.age} />
+                            <InfoField label="Gender" value={patient.gender} />
+                            <InfoField label="Phone" value={patient.phone} />
+                            <GridItem colSpan={{ base: 1, md: 2 }}>
+                                <InfoField label="Email" value={patient.email} />
+                            </GridItem>
+                        </Grid>
+                    </SectionBox>
 
           {/* Address Info */}
-          <Box 
-            p={6} 
-            bg="purple.50" 
-            borderRadius="lg"
-            transition="transform 0.2s"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <Heading as="h2" size="md" color="purple.600" mb={4}>
-              Address
-            </Heading>
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-              <InfoField label="Street" value={patient.address?.street} />
-              <InfoField label="City" value={patient.address?.city} />
-              <InfoField label="State" value={patient.address?.state} />
-              <InfoField label="ZIP" value={patient.address?.zip} />
-            </Grid>
-          </Box>
+          <SectionBox title="Address" icon={FaAddressBook} bgColor="purple.50" iconColor="purple.600">
+                        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+                            <InfoField label="Street" value={patient.address.street} />
+                            <InfoField label="City" value={patient.address.city} />
+                            <InfoField label="State" value={patient.address.state} />
+                            <InfoField label="ZIP" value={patient.address.zip} />
+                        </Grid>
+                    </SectionBox>
 
           {/* below is the new health box which doctors can now edit -- code above */}
           <EditableHealthInfo />
           
           {/* Emergency Info */}
-          <Box 
-            p={6} 
-            bg="red.50" 
-            borderRadius="lg"
-            transition="transform 0.2s"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <Heading as="h2" size="md" color="red.600" mb={4}>
-              Emergency Contact
-            </Heading>
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-              <InfoField label="Name" value={patient.emergencyContact?.name} />
-              <InfoField label="Relationship" value={patient.emergencyContact?.relationship} />
-              <InfoField label="Phone" value={patient.emergencyContact?.phone} />
-              <InfoField label="Email" value={patient.emergencyContact?.email} />
-            </Grid>
-          </Box>
+          <SectionBox title="Emergency Contact" icon={FaPhoneAlt} bgColor="red.50" iconColor="red.600">
+                        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+                            <InfoField label="Name" value={patient.emergencyContact.name} />
+                            <InfoField label="Relationship" value={patient.emergencyContact.relationship} />
+                            <InfoField label="Phone" value={patient.emergencyContact.phone} />
+                            <InfoField label="Email" value={patient.emergencyContact.email} />
+                        </Grid>
+                    </SectionBox>
 
           {/* Insurance Info */}
-          <Box 
-            p={6} 
-            bg="yellow.50" 
-            borderRadius="lg"
-            transition="transform 0.2s"
-            _hover={{ transform: "translateY(-2px)" }}
-          >
-            <Heading as="h2" size="md" color="yellow.700" mb={4}>
-              Insurance Information
-            </Heading>
-            <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
-              <InfoField label="Provider" value={patient.insuranceProvider} />
-              <InfoField label="Policy Number" value={patient.policyNumber} />
-            </Grid>
-          </Box>
+          <SectionBox title="Insurance Information" icon={FaShieldAlt} bgColor="yellow.50" iconColor="yellow.700">
+                        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
+                            <InfoField label="Provider" value={patient.insuranceProvider} />
+                            <InfoField label="Policy Number" value={patient.policyNumber} />
+                        </Grid>
+                    </SectionBox>
         </VStack>
       </Box>
     </ChakraProvider>

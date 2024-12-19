@@ -1,5 +1,3 @@
-// Contact.jsx
-
 import React, { useState } from "react";
 import {
   Box,
@@ -17,8 +15,9 @@ import {
   HStack,
   Icon,
   Divider,
+  Flex,
 } from "@chakra-ui/react";
-import { FaPhoneAlt, FaEnvelope, FaInfoCircle, FaUserMd, FaUser } from "react-icons/fa";
+import { FaPhoneAlt, FaEnvelope, FaInfoCircle, FaUserMd, FaUser, FaArrowLeft } from "react-icons/fa";
 import Footer from "./Footer"; // Footer component
 import { useNavigate } from "react-router-dom";
 
@@ -77,13 +76,13 @@ const Contact = () => {
   const getEmailAddress = (inquiryType) => {
     switch (inquiryType) {
       case "General Inquiry":
-        return "general.patientpriority@gmail.com";
+        return "contact.patientpriority@gmail.com";
       case "Patient Support":
-        return "patientsupport.patientpriority@gmail.com";
+        return "hr.patientpriority@gmail.com";
       case "Doctor Support":
-        return "doctorsupport.patientpriority@gmail.com";
+        return "hr.patientpriority@gmail.com";
       default:
-        return "general.patientpriority@gmail.com";
+        return "contact.patientpriority@gmail.com";
     }
   };
 
@@ -96,14 +95,43 @@ const Contact = () => {
       minHeight="100vh"
       p={8}
       backgroundColor="#f1f8ff"
+      backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')"
+      backgroundSize="175px"
+      backgroundPosition="center"
+      backgroundRepeat="no-repeat"
+      backgroundAttachment="fixed"
     >
       <Box height="100px" />
 
       {/* Header Section */}
-      <Heading fontSize="6xl" color="#00366d" mb={4} textAlign="center">
-        Contact Us
-      </Heading>
-      <Text fontSize="2xl" color="#00366d" textAlign="center" mb={12} maxW="80%">
+      <Box
+        position="relative"
+        mb={8}
+        mt={12}
+        textAlign="center"
+        _before={{
+          content: '""',
+          position: "absolute",
+          bottom: "-10px",
+          left: "50%",
+          width: "60%",
+          height: "4px",
+          background: "linear-gradient(to right, #00366d, #4d7098)",
+          transform: "translateX(-50%)",
+          borderRadius: "2px",
+        }}
+      >
+        <Heading
+          fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+          color="#00366d"
+          fontWeight="bold"
+          textTransform="uppercase"
+          letterSpacing="wide"
+        >
+          Contact Us
+        </Heading>
+      </Box>
+      <Text fontSize="xl" color="#00366d" textAlign="center" mb={12} maxW="80%">
         Select your inquiry type and reach out to us directly.
       </Text>
 
@@ -114,77 +142,90 @@ const Contact = () => {
         p="8"
         backgroundColor="white"
         borderRadius="md"
+        opacity={0.9}
         onSubmit={handleSubmit}
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-                  padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-                  transition="all 0.3s"
-                  _hover={{ boxShadow: "2xl" }}
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+        spacing={4}
       >
         <FormControl>
           <FormLabel color="#00366d" fontSize="lg">Name</FormLabel>
-          <Input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-            borderColor="#00366d"
-            focusBorderColor="highlight"
-          />
+          <Flex align="center">
+            <Icon as={FaUser} mr={2} color="#335d8f" />
+            <Input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+              borderColor="#00366d"
+              focusBorderColor="#4d7098"
+            />
+          </Flex>
         </FormControl>
 
         <FormControl>
           <FormLabel color="#00366d" fontSize="lg">Email</FormLabel>
-          <Input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            borderColor="secondary"
-            focusBorderColor="highlight"
-          />
+          <Flex align="center">
+            <Icon as={FaEnvelope} mr={2} color="#335d8f" />
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              borderColor="#00366d"
+              focusBorderColor="#4d7098"
+            />
+          </Flex>
         </FormControl>
 
         <FormControl>
           <FormLabel color="#00366d" fontSize="lg">Inquiry Type</FormLabel>
-          <Select
-            name="inquiryType"
-            value={formData.inquiryType}
-            onChange={handleChange}
-            placeholder="Select inquiry type"
-            borderColor="secondary"
-            focusBorderColor="highlight"
-          >
-            <option value="General Inquiry">General Inquiry</option>
-            <option value="Patient Support">Patient Support</option>
-            <option value="Doctor Support">Doctor Support</option>
-          </Select>
+          <Flex align="center">
+            <Icon as={FaInfoCircle} mr={2} color="#335d8f" />
+            <Select
+              name="inquiryType"
+              value={formData.inquiryType}
+              onChange={handleChange}
+              placeholder="Select inquiry type"
+              borderColor="#00366d"
+              focusBorderColor="#4d7098"
+            >
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="Patient Support">Patient Support</option>
+              <option value="Doctor Support">Doctor Support</option>
+            </Select>
+          </Flex>
         </FormControl>
 
         <FormControl>
           <FormLabel color="#00366d" fontSize="lg">Message</FormLabel>
-          <Textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Type your message here"
-            borderColor="secondary"
-            focusBorderColor="highlight"
-          />
+          <Flex align="flex-start">
+            <Icon as={FaEnvelope} mr={2} mt={2} color="#335d8f" />
+            <Textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Type your message here"
+              borderColor="#00366d"
+              focusBorderColor="#4d7098"
+            />
+          </Flex>
         </FormControl>
-
-        <Divider borderColor="secondary" />
 
         <Button
           type="submit"
-          backgroundColor="#003366"  // Dark navy blue background color
-          color="white"  // White text color
-          _hover={{ backgroundColor: "#002244" }}  // Darker hover color
+          backgroundColor="#335d8f"
+          color="white"
+          _hover={{ backgroundColor: "#4d7098" }}
           size="lg"
           width="full"
           isLoading={loading}
           fontSize="lg"
+          mt={4}
         >
           Send Message
         </Button>
@@ -201,6 +242,7 @@ const Contact = () => {
           p={6}
           boxShadow="lg"
           width="100%"
+          opacity={0.95}
         >
           <HStack spacing={4} align="center" mb={4}>
             <Icon as={FaInfoCircle} boxSize="2em" color="#00366d" />
@@ -209,12 +251,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:general.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              general.patientpriority@gmail.com
+            <Link href="mailto:contact.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              contact.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7890
+            <Icon as={FaPhoneAlt} mr={2} /> (347) 264-9232
           </Text>
 
           <Divider my={4} />
@@ -226,12 +268,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:patientsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              patientsupport.patientpriority@gmail.com
+            <Link href="mailto:hr.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              hr.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7891
+            <Icon as={FaPhoneAlt} mr={2} /> (929) 235-4770
           </Text>
 
           <Divider my={4} />
@@ -243,12 +285,12 @@ const Contact = () => {
             </Heading>
           </HStack>
           <Text fontSize="lg" color="secondary">
-            <Link href="mailto:doctorsupport.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
-              doctorsupport.patientpriority@gmail.com
+            <Link href="mailto:hr.patientpriority@gmail.com" color="#00366d" fontWeight="bold" isExternal>
+              hr.patientpriority@gmail.com
             </Link>
           </Text>
           <Text fontSize="lg" color="secondary">
-            <Icon as={FaPhoneAlt} mr={2} /> (123) 456-7892
+            <Icon as={FaPhoneAlt} mr={2} /> (929) 235-4770
           </Text>
         </Box>
       </VStack>
@@ -266,6 +308,7 @@ const Contact = () => {
         borderWidth="2px"
         _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
         transition="all 0.3s"
+        leftIcon={<FaArrowLeft />}
       >
         Back to Home
       </Button>
@@ -276,3 +319,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

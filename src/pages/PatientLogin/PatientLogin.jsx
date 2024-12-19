@@ -97,7 +97,6 @@
 
 // export default PatientLogin;
 
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -113,9 +112,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth, db } from "../../firebase-config";
 import { useAuth } from "../../Context/AuthContext";
 import Footer from "../Home/Footer";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const PatientLogin = () => {
   const { login, userRole, logout } = useAuth();
@@ -144,14 +145,64 @@ const PatientLogin = () => {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast({
+        title: "Error",
+        description: "Please enter your email to reset your password.",
+        status: "warning",
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      // Query the "patients" collection to verify the email exists
+      const patientsRef = collection(db, "patients");
+      const q = query(patientsRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast({
+          title: "Access Denied",
+          description: "This email does not belong to a registered patient.",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      // If email exists in the database, proceed to send reset email
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: "Password Reset Email Sent",
+        description: `An email has been sent to ${email} with instructions to reset your password.`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error during password reset:", error);
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
   useEffect(() => {
     // debugging
-    console.log("Current userRole:", userRole);
-    console.log("Auth loading state:", loading);
-  
+    // console.log("Current userRole:", userRole);
+    // console.log("Auth loading state:", loading);
+
     if (userRole) {
       // debugging
-      console.log("UserRole type:", userRole.type);
+      // console.log("UserRole type:", userRole.type);
       if (userRole.type === "patient") {
         toast({
           title: "Login Successful",
@@ -178,13 +229,19 @@ const PatientLogin = () => {
   return (
     <ChakraProvider>
       <Flex justify="center" align="center" height="100vh" bg="#f1f8ff">
-      <Box bg="rgba(255, 255, 255, 0.6)" p={6} rounded="md" shadow="xl" w={["90%", "400px"]} 
-      border="1px solid rgba(0, 0, 0, 0.1)" 
-      //boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-      boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
-                    padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
-                    transition="all 0.3s"
-                    _hover={{ boxShadow: "2xl" }}>
+        <Box
+          bg="rgba(255, 255, 255, 0.6)"
+          p={6}
+          rounded="md"
+          shadow="xl"
+          w={["90%", "400px"]}
+          border="1px solid rgba(0, 0, 0, 0.1)"
+          //boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
+        >
           <Grid gap={4}>
             <Heading as="h2" size="lg" textAlign="center" color="#00366d">
               Patient Login
@@ -211,14 +268,22 @@ const PatientLogin = () => {
             </FormControl>
 
             <Button
+              variant="link"
+              color="#335d8f"
+              onClick={handlePasswordReset}
+            >
+              Forgot Password?
+            </Button>
+
+            <Button
               //_hover={{ bg: "#4d7098" }}
               color="#f1f8ff"
               bg="#335d8f"
               onClick={handleLogin}
               borderColor="#f1f8ff"
-               borderWidth="2px"
-               _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
-          transition="all 0.3s"
+              borderWidth="2px"
+              _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
+              transition="all 0.3s"
               isLoading={loading} //loading spinner while logging in
             >
               Log In
@@ -228,18 +293,18 @@ const PatientLogin = () => {
               color="#335d8f"
               bg="#e6eef7"
               onClick={() => navigate("/home")}
-              _hover={{ bg: "#e6eef7", color: "#335d8f" ,boxShadow: "2xl" }}
-               borderColor="#f1f8ff"
-               borderWidth="2px"
-          transition="all 0.3s"
+              _hover={{ bg: "#e6eef7", color: "#335d8f", boxShadow: "2xl" }}
+              borderColor="#f1f8ff"
+              borderWidth="2px"
+              transition="all 0.3s"
               //isLoading={loading} //loading spinner while logging in
             >
               Back to Home
             </Button>
-          </Grid> 
+          </Grid>
         </Box>
       </Flex>
-      <Footer/>
+      <Footer />
     </ChakraProvider>
   );
 };

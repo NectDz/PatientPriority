@@ -63,7 +63,11 @@ function AddPatient() {
       email: "",
     },
     conditions: "",
-    medications: "",
+    medications: {
+      name: "",
+      dosage: "",
+      frequency: ""
+    },
     allergies: "",
   });
 
@@ -647,16 +651,43 @@ function AddPatient() {
                 />
               </FormControl>
 
-              <FormControl id="medications">
-                <FormLabel>Current Medications</FormLabel>
-                <Textarea
-                  name="medications"
-                  value={formData.medications}
-                  onChange={handleChange}
-                  focusBorderColor="#335d8f"
-                  borderRadius="md"
-                />
-              </FormControl>
+              <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+                <FormControl id="medicationName" isRequired>
+                  <FormLabel>Medication Name</FormLabel>
+                  <Input
+                    name="name"
+                    value={formData.medications.name}
+                    onChange={(e) => handleNestedChange(e, "medications", "name")}
+                    focusBorderColor="#335d8f"
+                    borderRadius="md"
+                    placeholder="e.g., percocet"
+                  />
+                </FormControl>
+
+                <FormControl id="medicationDosage" isRequired>
+                  <FormLabel>Medication Dosage</FormLabel>
+                  <Input
+                    name="dosage"
+                    value={formData.medications.dosage}
+                    onChange={(e) => handleNestedChange(e, "medications", "dosage")}
+                    focusBorderColor="#335d8f"
+                    borderRadius="md"
+                    placeholder="e.g., 30mg"
+                  />
+                </FormControl>
+
+                <FormControl id="medicationFrequency" isRequired>
+                  <FormLabel>Medication Frequency</FormLabel>
+                  <Input
+                    name="frequency"
+                    value={formData.medications.frequency}
+                    onChange={(e) => handleNestedChange(e, "medications", "frequency")}
+                    focusBorderColor="#335d8f"
+                    borderRadius="md"
+                    placeholder="e.g., thrice daily"
+                  />
+                </FormControl>
+              </Grid>
 
               <FormControl id="surgeries">
                 <FormLabel>Past Surgeries</FormLabel>

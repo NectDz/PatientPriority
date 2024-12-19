@@ -151,6 +151,7 @@ import MeetingSummaries from "./pages/PatientProfile/SidePanelPages/MeetingSumma
 import AIInsights from "./pages/PatientProfile/SidePanelPages/AIInsights.jsx";
 import PatientHomePage from "./pages/PatientProfile/SidePanelPages/patientHomePage.jsx"
 import AIChatbot from "./pages/PatientProfile/SidePanelPages/AIChatbot.jsx";
+import PatientSettings from "./pages/PatientProfile/SidePanelPages/PatientSettings.jsx";
 
 import DoctorProfile from "./pages/DoctorProfile/DoctorProfile";
 import Appointments from "./pages/DoctorProfile/Appointment/Appointment.jsx";
@@ -260,6 +261,7 @@ ReactDOM.createRoot(rootElement).render(
                 <Route path="ai-insights" element={<AIInsights />} />
                 <Route path="ai-chatbot" element={<AIChatbot />} />
                 <Route path="audio-test" element={<AudioTest />} />
+                <Route path="settings" element={<PatientSettings />}/>
                 {/* Redirect to home if no sub-route specified */}
                 <Route index element={<Navigate to="home" replace />} />
               </Route>

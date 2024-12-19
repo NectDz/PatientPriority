@@ -20,42 +20,122 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { FaMicrophone, FaStop } from "react-icons/fa"; // Import icons
+import { FaMicrophone, FaStop } from "react-icons/fa";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FaCalendarAlt, FaClipboardList, FaFileAlt, FaFileAudio, FaUpload, FaPrescription, FaPills, FaCommentMedical, FaCalendarPlus, FaStethoscope, FaUserMd } from "react-icons/fa";
 
 const db = getFirestore();
 
+// Initialize GoogleGenerativeAI and model once
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY_2);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+// Helper function to retry on RATE_LIMIT_EXCEEDED errors
+async function generateContentWithRetry(prompt, maxRetries = 3) {
+  let delay = 3000; // 3 seconds delay on each retry
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (error) {
+      if (
+        error.message &&
+        error.message.includes("RATE_LIMIT_EXCEEDED") &&
+        attempt < maxRetries
+      ) {
+        // Wait before retrying
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2; // Exponential backoff
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
+// Modify generateFinalResponseAndSummary function
+const generateFinalResponseAndSummary = async (transcript) => {
+  const finalResponsePrompt = `
+  Identify the speakers in the following transcription and label them as 'Doctor' and 'Patient' accordingly. Make sure to correctly determine what the doctor says and the patient is saying using context and that makes logical sense\n:\n\n${transcript}
+  `;
+  const summaryPrompt = `
+    Summarize the following transcript as first person of the doctor, highlighting key points and actions taken during the appointment:\n\n${transcript}
+  `;
+
+  // Generate finalResponse first
+  const finalResponse = await generateContentWithRetry(finalResponsePrompt);
+
+  // Introduce a delay before the next call to avoid rate limits
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  // Generate summary next
+  const summary = await generateContentWithRetry(summaryPrompt);
+
+  // New prompt to extract items
+  const extractItemsPrompt = `
+    Extract the following items from the medical transcription and output them in plain JSON format without any additional text or formatting:
+
+    - VisitReason
+    - Prescription
+    - Dosage
+    - Advice
+    - NextAppointmentDate
+    - NextAppointmentTime
+    - Diagnosis
+    - Referrals
+
+    Do not include any explanations or extra text, only output the JSON.
+
+    Transcript:
+    ${transcript}
+  `;
+
+  // Generate extracted items
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  let extractedItemsJson = await generateContentWithRetry(extractItemsPrompt);
+
+  // Clean up the response to ensure it's valid JSON
+  extractedItemsJson = extractedItemsJson.trim();
+  // Remove any markdown code block syntax if present
+  if (extractedItemsJson.startsWith("```")) {
+    extractedItemsJson = extractedItemsJson
+      .replace(/^```[a-z]*\n/, "")
+      .replace(/```$/, "");
+  }
+
+  const extractedItems = JSON.parse(extractedItemsJson);
+
+  // Return finalResponse, summary, and extractedItems
+  return { finalResponse, summary, extractedItems };
+};
+
 function AppointmentDetail() {
-  const { id } = useParams(); // Get appointment ID from URL params
+  const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [patientName, setPatientName] = useState("");
-  const [audioFile, setAudioFile] = useState(null); // Audio upload
+  const [audioFile, setAudioFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // Voice recording state
   const [recording, setRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0); // Recording time in seconds
+  const [recordingTime, setRecordingTime] = useState(0);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const timerIntervalRef = useRef(null); // Reference to the timer interval
+  const timerIntervalRef = useRef(null);
 
   useEffect(() => {
     async function fetchAppointment() {
       try {
-        // Fetch appointment details using ID
         const appointmentDoc = await getDoc(doc(db, "appointment", id));
         if (appointmentDoc.exists()) {
           const appointmentData = appointmentDoc.data();
           setAppointment(appointmentData);
 
-          // Fetch patient details using the patient_id in the appointment
           const patientsQuery = query(
             collection(db, "patients"),
             where("id", "==", appointmentData.patient_id)
           );
-
           const patientsSnapshot = await getDocs(patientsQuery);
           if (!patientsSnapshot.empty) {
             const patientData = patientsSnapshot.docs[0].data();
@@ -75,7 +155,6 @@ function AppointmentDetail() {
 
     fetchAppointment();
 
-    // Cleanup function to clear interval when component unmounts
     return () => {
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
@@ -107,18 +186,20 @@ function AppointmentDetail() {
 
       if (response.ok) {
         const transcript = await response.text();
+        const { finalResponse, summary, extractedItems } =
+          await generateFinalResponseAndSummary(transcript);
 
-        // Generate final response using AI model
-        const finalResponse = await generateFinalResponse(transcript);
-
-        // Update appointment with the transcript in Firestore
         await updateDoc(doc(db, "appointment", id), {
           appointmentTranscript: finalResponse,
+          appointmentSummary: summary,
+          ...extractedItems,
         });
 
         setAppointment((prevAppointment) => ({
           ...prevAppointment,
           appointmentTranscript: finalResponse,
+          appointmentSummary: summary,
+          ...extractedItems,
         }));
 
         setMessage("Transcript uploaded and saved.");
@@ -133,19 +214,6 @@ function AppointmentDetail() {
     }
   };
 
-  const generateFinalResponse = async (transcript) => {
-    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY); // Replace with your actual API key
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const prompt = `
-    Please identify the speakers in the following transcription and label them as 'Doctor' and 'Patient' accordingly on top of each time stamp and make timestamp more readable by rounding up\n:\n\n${transcript}
-    `;
-
-    const result = await model.generateContent(prompt);
-    return result.response.text();
-  };
-
-  // Voice recording functions
   const startRecording = async () => {
     setMessage("");
     if (!navigator.mediaDevices || !window.MediaRecorder) {
@@ -181,7 +249,6 @@ function AppointmentDetail() {
       setRecording(true);
       setRecordingTime(0);
 
-      // Start timer
       timerIntervalRef.current = setInterval(() => {
         setRecordingTime((prevTime) => prevTime + 1);
       }, 1000);
@@ -196,7 +263,6 @@ function AppointmentDetail() {
       mediaRecorderRef.current.stop();
       setRecording(false);
 
-      // Stop timer
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;
@@ -232,12 +298,13 @@ function AppointmentDetail() {
 
   return (
     <Box p={8}>
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaCalendarAlt} mr={2} />
         Appointment Details
       </Heading>
       <Box
         p={6}
-        bg="white"
+        bg="gray.50"
         borderRadius="md"
         boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
         padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
@@ -265,8 +332,95 @@ function AppointmentDetail() {
       </Box>
       <Divider my={6} />
 
-      {/* Transcript Section */}
-      <Heading as="h1" size="xl" mb={6} color="#00366d">
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaClipboardList} mr={2} />
+        Important Appointment Items
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {appointment.VisitReason && (
+          <Text>
+            <Icon as={FaClipboardList} mr={2} />
+            <strong>Visit Reason:</strong> {appointment.VisitReason}
+          </Text>
+        )}
+        {appointment.Prescription && (
+          <Text>
+            <Icon as={FaPrescription} mr={2} />
+            <strong>Prescription:</strong> {appointment.Prescription}
+          </Text>
+        )}
+        {appointment.Dosage && (
+          <Text>
+            <Icon as={FaPills} mr={2} />
+            <strong>Dosage:</strong> {appointment.Dosage}
+          </Text>
+        )}
+        {appointment.Advice && (
+          <Text>
+            <Icon as={FaCommentMedical} mr={2} />
+            <strong>Advice:</strong> {appointment.Advice}
+          </Text>
+        )}
+        {appointment.NextAppointmentDate && appointment.NextAppointmentTime && (
+          <Text>
+            <Icon as={FaCalendarPlus} mr={2} />
+            <strong>Next Appointment:</strong> {appointment.NextAppointmentDate}{" "}
+            at {appointment.NextAppointmentTime}
+          </Text>
+        )}
+        {appointment.Diagnosis && (
+          <Text>
+            <Icon as={FaStethoscope} mr={2} />
+            <strong>Diagnosis:</strong> {appointment.Diagnosis}
+          </Text>
+        )}
+        {appointment.Referrals && (
+          <Text>
+            <Icon as={FaUserMd} mr={2} />
+            <strong>Referrals:</strong> {appointment.Referrals}
+          </Text>
+        )}
+      </Box>
+
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaFileAlt} mr={2} />
+        Appointment Summary
+      </Heading>
+      <Box
+        p={6}
+        bg="gray.50"
+        borderRadius="md"
+        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+        padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+        transition="all 0.3s"
+        _hover={{ boxShadow: "2xl" }}
+      >
+        {appointment.appointmentSummary ? (
+          <Box
+            p={4}
+            bg="white"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="auto"
+            maxH="450px"
+          >
+            <Text whiteSpace="pre-wrap">{appointment.appointmentSummary}</Text>
+          </Box>
+        ) : (
+          <Text>No summary available for this appointment.</Text>
+        )}
+      </Box>
+
+      <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+        <Icon as={FaFileAudio} mr={2} />
         Appointment Transcript
       </Heading>
       <Box
@@ -296,9 +450,11 @@ function AppointmentDetail() {
         )}
       </Box>
 
-      {/* Render buttons depending on if there's a transcript or not */}
       {!appointment.appointmentTranscript && (
         <Box mt={6}>
+          <Heading as="h1" size="xl" mb={6} mt={8} color="#00366d">
+            Upload or Record Audio
+          </Heading>
           <Input
             type="file"
             accept="audio/*"
@@ -310,6 +466,7 @@ function AppointmentDetail() {
             as="label"
             htmlFor="audio-upload"
             mt={4}
+            leftIcon={<Icon as={FaUpload} />}
             _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
             transition="all 0.3s"
             marginRight={3}
@@ -322,6 +479,7 @@ function AppointmentDetail() {
           <Button
             onClick={handleUpload}
             mt={4}
+            leftIcon={<Icon as={FaFileAudio} />}
             isLoading={uploading}
             _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
             transition="all 0.3s"
@@ -332,20 +490,18 @@ function AppointmentDetail() {
           >
             Upload and Transcribe
           </Button>
-          {/* Voice Recording Buttons */}
           <Button
             onClick={recording ? stopRecording : startRecording}
             mt={4}
             _hover={{ bg: recording ? "#c53030" : "#4d7098", boxShadow: "2xl" }}
             transition="all 0.3s"
             color="#f1f8ff"
-            bg={recording ? "#e53e3e" : "#335d8f"} // Change color when recording
-            leftIcon={<Icon as={recording ? FaStop : FaMicrophone} />} // Change icon
+            bg={recording ? "#e53e3e" : "#335d8f"}
+            leftIcon={<Icon as={recording ? FaStop : FaMicrophone} />}
             isDisabled={uploading}
           >
             {recording ? "Stop Recording" : "Start Recording"}
           </Button>
-          {/* Recording Indicator */}
           {recording && (
             <Box mt={4} display="flex" alignItems="center">
               <Box
@@ -355,7 +511,7 @@ function AppointmentDetail() {
                 borderRadius="50%"
                 bg="red.500"
                 mr={2}
-                className="blink" // CSS class for blinking effect
+                className="blink"
               />
               <Text color="red.500" fontWeight="bold" mr={2}>
                 Recording in progress...
@@ -368,7 +524,6 @@ function AppointmentDetail() {
         </Box>
       )}
       {message && <Box mt={4}>{message}</Box>}
-      {/* Add CSS for blinking effect */}
       <style>
         {`
           .blink {

@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer"; // Footer component
+import {FaArrowLeft} from "react-icons/fa";
 import {
   FaInfoCircle,
   FaPhoneAlt,
@@ -119,13 +120,18 @@ const FAQ = () => {
       minHeight="100vh"
       p={8}
       backgroundColor="#f1f8ff"
+      backgroundImage="url('https://static.vecteezy.com/system/resources/previews/015/309/491/non_2x/heart-rate-pulse-free-png.png')" // Replace with your image path
+      backgroundSize="175px" // Ensures the image covers the entire area
+      backgroundPosition="center" // Centers the image
+      backgroundRepeat="no-repeat" // Prevents repeating the image
+      backgroundAttachment="fixed" // Keeps the image fixed during scroll
     >
       <Box height="100px" />
 
       <Heading fontSize="6xl" color="#00366d" mb={4} textAlign="center">
         FAQ
       </Heading>
-      <Text fontSize="2xl" color="#00366d" textAlign="center" mb={12} maxW="80%">
+      <Text fontSize="2xl" color="#335d8f" textAlign="center" mb={12} maxW="80%">
         Frequently Asked Questions
       </Text>
 
@@ -133,7 +139,7 @@ const FAQ = () => {
         {faqData.map((faq, index) => (
           <Box 
             key={index} 
-            backgroundColor="rgba(255, 255, 255, 0.6)"
+            backgroundColor="rgba(255, 255, 255, 0.9)"
             borderRadius="md" 
             p={8} 
             boxShadow="lg"
@@ -141,13 +147,13 @@ const FAQ = () => {
             _hover={{ transform: "scale(1.1)", boxShadow: "xl" }} 
           >
             <Stack direction="row" align="center" spacing={4} mb={4}>
-              <Icon as={faq.icon} boxSize="1.5em" color={theme.colors[faq.iconColor]} />
-              <Heading fontSize="xl" color="primary">
+              <Icon as={faq.icon} boxSize="1.5em" color="#00366d" />
+              <Heading fontSize="xl" color="#00366d">
                 {faq.question}
               </Heading>
             </Stack>
-            <Divider mb={4} borderColor="secondary" />
-            <Text fontSize="lg" color="secondary" lineHeight="1.7">
+            <Divider mb={4} borderColor="#00366d" />
+            <Text fontSize="lg" color="#335d8f" lineHeight="1.7">
               {faq.answer}
             </Text>
           </Box>
@@ -168,6 +174,7 @@ const FAQ = () => {
         borderWidth="2px"
         _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
         transition="all 0.3s"
+        leftIcon={<FaArrowLeft />}
       >
         Back to Home
       </Button>
