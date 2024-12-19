@@ -101,6 +101,12 @@ function AIChatbot() {
                 .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
                 .join("\n\n");
 
+            const medicationsContext = patient?.medications
+                ? Object.entries(patient.medications).map(
+                      ([key, med]) => `${med.name} (${med.dosage}, ${med.frequency})`
+                  ).join(", ")
+                : "None reported";
+
             const patientContext = patient
                 ? `
                 Patient Information:
@@ -113,7 +119,7 @@ function AIChatbot() {
                 Alcohol Consumption: ${patient.alcoholConsumption || "Not provided"}
                 Conditions: ${patient.conditions || "None reported"}
                 Allergies: ${patient.allergies || "None reported"}
-                Medications: ${patient.medications || "None reported"}
+                Medications: ${medicationsContext}
                 `
                 : "No patient information available.";
 
