@@ -207,9 +207,17 @@ function Overview() {
                                     label="Medications" 
                                     value={
                                         patient.medications ? 
-                                        patient.medications.split(',').map((medication, index) => (
-                                            <Badge key={index} mr={2} mb={2} colorScheme="purple" variant="subtle" fontSize="sm">
-                                                {medication.trim()}
+                                        Object.entries(patient.medications).map(([key, med]) => (
+                                            <Badge 
+                                                key={key} 
+                                                mr={2} 
+                                                mb={2} 
+                                                colorScheme="purple" 
+                                                variant="subtle" 
+                                                fontSize="sm"
+                                                p={2}
+                                            >
+                                                {`${med.name} (${med.dosage}, ${med.frequency})`}
                                             </Badge>
                                         )) : 
                                         "None reported"
