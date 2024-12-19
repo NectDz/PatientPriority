@@ -235,22 +235,26 @@ function AIChatbot() {
                 `
                 : "No patient information available.";
 
-            const prompt = `
-            The following is a conversation history between a user and CareBuddy:
-            ${contextString}
-
-            Patient context:
-            ${patientContext}
-
-            Appointments context:
-            ${appointmentsContext}
-
-            Meeting summaries context:
-            ${meetingSummariesContext}
-
-            Now, the user asks: "${question}"
-            Provide a simple, short, and clear response.
-            `;
+                const prompt = `
+                The following is a conversation history between a user and CareBuddy:
+                ${contextString}
+                
+                Patient context:
+                ${patientContext}
+                
+                Appointments context:
+                ${appointmentsContext}
+                
+                Meeting summaries context:
+                ${meetingSummariesContext}
+                
+                Guidelines for CareBuddy's response:
+                1. Deliver accurate, general medical advice based on common medical knowledge and the provided patient, appointment, and meeting summary contexts.
+                2. If the question is inappropriate, offensive, or beyond the scope of general medical information, politely decline to answer and redirect the user to appropriate resources (e.g., "Please consult a healthcare professional for further assistance.").
+                
+                Now, the user asks: "${question}"
+                Provide a concise, simple, and clear response adhering to the guidelines above.
+                `;
 
             const result = await model.generateContent(prompt);
             return result.response.text();
