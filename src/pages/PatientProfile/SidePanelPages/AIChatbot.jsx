@@ -242,9 +242,13 @@ function AIChatbot() {
                         mx="auto"
                         bg="rgba(255, 255, 255, 0.6)"
                         borderRadius="xl"
-                        padding="1.5rem"
+                        //padding="1.5rem"
                         overflowY="auto"
                         maxHeight="70vh"
+                        boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
                     >
                         {responses.map((item, index) => (
                             <Box key={index} style={styles.responseContainer}>
@@ -279,10 +283,16 @@ function AIChatbot() {
                     maxWidth="1200px"
                     mx="auto"
                     mt={4}
-                    padding="1.5rem"
-                    bg="rgba(255, 255, 255, 0.8)"
-                    borderRadius="md"
-                    boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
+                    //padding="1.5rem"
+                    //bg="rgba(255, 255, 255, 0.8)"
+                    //borderRadius="md"
+                    //boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
+                    boxShadow="0px 4px 10px rgba(0, 0, 0, 0.3)"
+          padding={{ base: "1.5rem", md: "2rem", lg: "3rem" }}
+          transition="all 0.3s"
+          _hover={{ boxShadow: "2xl" }}
+          bg="rgba(255, 255, 255, 0.6)"
+                        borderRadius="xl"
                 >
                     <Input
                         placeholder="Type your question here..."
@@ -303,15 +313,19 @@ function AIChatbot() {
                         }}
                     />
                     <Button
-                        bg="#003366"
-                        color="white"
-                        _hover={{ bg: "#002244" }}
+                        //bg="#003366"
+                        //color="white"
+                        //_hover={{ bg: "#002244" }}
                         fontSize="md"
                         paddingX="2rem"
                         paddingY="1.5rem"
                         borderRadius="md"
                         onClick={handleSubmit}
                         isLoading={loading}
+                        _hover={{ bg: "#4d7098" }}
+              color="#f1f8ff"
+              bg="#335d8f"
+
                     >
                         Submit
                     </Button>
