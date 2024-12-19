@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { FaUser, FaAddressBook, FaHeartbeat, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
 
 const db = getFirestore();
 const auth = getAuth();
@@ -88,6 +89,22 @@ function Overview() {
         </Box>
     );
 
+    const SectionBox = ({ title, icon: Icon, bgColor, iconColor, children }) => (
+        <Box 
+            p={6} 
+            bg={bgColor} 
+            borderRadius="lg"
+            transition="transform 0.2s"
+            _hover={{ transform: "translateY(-2px)" }}
+        >
+            <Heading as="h2" size="md" color={iconColor} mb={4} display="flex" alignItems="center">
+                <Icon style={{ marginRight: "8px" }} />
+                {title}
+            </Heading>
+            {children}
+        </Box>
+    );
+
     return (
         <ChakraProvider>
             <Box 
@@ -109,29 +126,8 @@ function Overview() {
                     transition="all 0.3s"
                     _hover={{ boxShadow: "2xl" }}
                 >
-                    {/* <Box mb={6}>
-                        <Heading 
-                            as="h1" 
-                            size="xl" 
-                            bgGradient="linear(to-r, blue.600, blue.400)" 
-                            bgClip="text"
-                            textAlign="center"
-                        >
-                            Patient Overview
-                        </Heading>
-                    </Box> */}
-
                     {/* Patient Info */}
-                    <Box 
-                        p={6} 
-                        bg="blue.50" 
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                        _hover={{ transform: "translateY(-2px)" }}
-                    >
-                        <Heading as="h2" size="md" color="blue.600" mb={4}>
-                            Patient Information
-                        </Heading>
+                    <SectionBox title="Patient Information" icon={FaUser} bgColor="blue.50" iconColor="blue.600">
                         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
                             <InfoField label="Name" value={`${patient.firstName} ${patient.lastName}`} />
                             <InfoField label="Age" value={patient.age} />
@@ -141,38 +137,20 @@ function Overview() {
                                 <InfoField label="Email" value={patient.email} />
                             </GridItem>
                         </Grid>
-                    </Box>
+                    </SectionBox>
 
                     {/* Address Info */}
-                    <Box 
-                        p={6} 
-                        bg="purple.50" 
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                        _hover={{ transform: "translateY(-2px)" }}
-                    >
-                        <Heading as="h2" size="md" color="purple.600" mb={4}>
-                            Address
-                        </Heading>
+                    <SectionBox title="Address" icon={FaAddressBook} bgColor="purple.50" iconColor="purple.600">
                         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
                             <InfoField label="Street" value={patient.address.street} />
                             <InfoField label="City" value={patient.address.city} />
                             <InfoField label="State" value={patient.address.state} />
                             <InfoField label="ZIP" value={patient.address.zip} />
                         </Grid>
-                    </Box>
+                    </SectionBox>
 
                     {/* Health Info */}
-                    <Box 
-                        p={6} 
-                        bg="green.50" 
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                        _hover={{ transform: "translateY(-2px)" }}
-                    >
-                        <Heading as="h2" size="md" color="green.600" mb={4}>
-                            Health Information
-                        </Heading>
+                    <SectionBox title="Health Information" icon={FaHeartbeat} bgColor="green.50" iconColor="green.600">
                         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
                             <InfoField label="Diet" value={patient.diet} />
                             <InfoField label="Physical Activity" value={patient.physicalActivity} />
@@ -225,43 +203,25 @@ function Overview() {
                                 />
                             </GridItem>
                         </Grid>
-                    </Box>
+                    </SectionBox>
 
                     {/* Emergency Info */}
-                    <Box 
-                        p={6} 
-                        bg="red.50" 
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                        _hover={{ transform: "translateY(-2px)" }}
-                    >
-                        <Heading as="h2" size="md" color="red.600" mb={4}>
-                            Emergency Contact
-                        </Heading>
+                    <SectionBox title="Emergency Contact" icon={FaPhoneAlt} bgColor="red.50" iconColor="red.600">
                         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
                             <InfoField label="Name" value={patient.emergencyContact.name} />
                             <InfoField label="Relationship" value={patient.emergencyContact.relationship} />
                             <InfoField label="Phone" value={patient.emergencyContact.phone} />
                             <InfoField label="Email" value={patient.emergencyContact.email} />
                         </Grid>
-                    </Box>
+                    </SectionBox>
 
                     {/* Insurance Info */}
-                    <Box 
-                        p={6} 
-                        bg="yellow.50" 
-                        borderRadius="lg"
-                        transition="transform 0.2s"
-                        _hover={{ transform: "translateY(-2px)" }}
-                    >
-                        <Heading as="h2" size="md" color="yellow.700" mb={4}>
-                            Insurance Information
-                        </Heading>
+                    <SectionBox title="Insurance Information" icon={FaShieldAlt} bgColor="yellow.50" iconColor="yellow.700">
                         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
                             <InfoField label="Provider" value={patient.insuranceProvider} />
                             <InfoField label="Policy Number" value={patient.policyNumber} />
                         </Grid>
-                    </Box>
+                    </SectionBox>
                 </VStack>
             </Box>
         </ChakraProvider>
