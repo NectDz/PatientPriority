@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ChakraProvider,
     Box,
@@ -7,7 +7,6 @@ import {
     Text,
     Divider,
     Input,
-    Textarea,
     Button,
     Icon,
     Flex,
@@ -17,73 +16,124 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
+    Spinner,
 } from "@chakra-ui/react";
 import { FaRobot, FaUser } from 'react-icons/fa';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function AIChatbot() {
     const [question, setQuestion] = useState("");
-    const [additionalDetails, setAdditionalDetails] = useState("");
     const [responses, setResponses] = useState([]);
+    const [conversationContext, setConversationContext] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [awaitingDetails, setAwaitingDetails] = useState(false);
-    const [initialQuestion, setInitialQuestion] = useState("");
     const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
+    const [patientData, setPatientData] = useState(null);
+    const [fetchingPatient, setFetchingPatient] = useState(true);
 
-    const handleInitialSubmit = async () => {
+    useEffect(() => {
+        const fetchPatientData = async () => {
+            const auth = getAuth();
+            const db = getFirestore();
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    try {
+                        const patientsRef = collection(db, "patients");
+                        const q = query(patientsRef, where("email", "==", user.email));
+                        const querySnapshot = await getDocs(q);
+
+                        if (!querySnapshot.empty) {
+                            const patientDoc = querySnapshot.docs[0];
+                            setPatientData({ id: patientDoc.id, ...patientDoc.data() });
+                        } else {
+                            console.error("No patient data found");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching patient data:", error);
+                    }
+                }
+                setFetchingPatient(false);
+            });
+        };
+
+        fetchPatientData();
+    }, []);
+
+    const handleSubmit = async () => {
         if (!question.trim()) return;
+
         setLoading(true);
-
-        const newResponses = [...responses, { question, response: "Can you give me some more details?" }];
-        setResponses(newResponses);
-        setInitialQuestion(question);
-        setQuestion("");
-
-        setAwaitingDetails(true);
-        setLoading(false);
-    };
-
-    const handleDetailsSubmit = async () => {
-        if (!additionalDetails.trim()) return;
-        setLoading(true);
-
-        const newResponses = [...responses, { question: additionalDetails, response: "Thinking..." }];
+        const newResponses = [...responses, { question, response: "Thinking..." }];
         setResponses(newResponses);
 
         try {
-            const finalResponse = await generateFinalResponse(initialQuestion, additionalDetails);
+            const finalResponse = await generateFinalResponse(question, conversationContext, patientData);
+
+            setConversationContext((prevContext) => [
+                ...prevContext,
+                { user: question, bot: finalResponse },
+            ]);
+
             newResponses[newResponses.length - 1].response = finalResponse;
             setResponses(newResponses);
-            resetChatState();
+            setQuestion("");
         } catch (error) {
             console.error("Error:", error);
-            newResponses[newResponses.length - 1].response = "Sorry, I couldn't process your question. Please try again.";
+
+            newResponses[newResponses.length - 1].response =
+                "Sorry, I couldn't process your question. Please try again.";
             setResponses(newResponses);
         } finally {
             setLoading(false);
         }
     };
 
-    const generateFinalResponse = async (initialQuestion, additionalDetails) => {
-        const genAI = new GoogleGenerativeAI("AIzaSyBjS1JWxIHWelk5RAByztdZ2WzS2X2tlf0"); // Replace with your actual API key
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const generateFinalResponse = async (question, context, patient) => {
+        try {
+            const genAI = new GoogleGenerativeAI("AIzaSyConKBu9nojKO-DzqtK-dKI5X57RiVIRUQ");
 
-        const prompt = `
-        A user asked: "${initialQuestion}"
-        
-        Additional details provided: "${additionalDetails}"
-        
-        Based on the initial question and these additional details, please generate a simple, short, and straightforward response in clear language.
-        `;
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const result = await model.generateContent(prompt);
-        return result.response.text();
-    };
+            const recentContext = context.slice(-5);
+            const contextString = recentContext
+                .map((exchange, index) => `Turn ${index + 1}: User: ${exchange.user}\nBot: ${exchange.bot}`)
+                .join("\n\n");
 
-    const resetChatState = () => {
-        setAwaitingDetails(false);
-        setInitialQuestion("");
-        setAdditionalDetails("");
+            const patientContext = patient
+                ? `
+                Patient Information:
+                Name: ${patient.firstName} ${patient.lastName}
+                Age: ${patient.age}
+                Gender: ${patient.gender}
+                Diet: ${patient.diet || "Not provided"}
+                Physical Activity: ${patient.physicalActivity || "Not provided"}
+                Lifestyle: ${patient.lifestyle || "Not provided"}
+                Alcohol Consumption: ${patient.alcoholConsumption || "Not provided"}
+                Conditions: ${patient.conditions || "None reported"}
+                Allergies: ${patient.allergies || "None reported"}
+                Medications: ${patient.medications || "None reported"}
+                `
+                : "No patient information available.";
+
+            const prompt = `
+            The following is a conversation history between a user and CareBuddy:
+            ${contextString}
+
+            Patient context:
+            ${patientContext}
+
+            Now, the user asks: "${question}"
+            Provide a simple, short, and clear response.
+            `;
+
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (error) {
+            console.error("API Error:", error);
+            throw new Error("Failed to generate response. Please try again later.");
+        }
     };
 
     return (
@@ -115,7 +165,7 @@ function AIChatbot() {
                     </ModalHeader>
                     <ModalBody textAlign="center" fontSize="2xl" color="#00366d">
                         <Text mb={6}>
-                            This AI Chatbot is a beta feature designed to provide general health information.
+                            CareBuddy is a beta feature designed to provide general health information.
                             Responses are AI-generated and should not be considered as medical advice. 
                             Please consult a healthcare professional for personalized guidance.
                         </Text>
@@ -152,7 +202,7 @@ function AIChatbot() {
                 flexDirection="column"
                 justifyContent="space-between"
             >
-                {/* Header */}
+                {/* Introduction Section */}
                 <VStack
                     spacing={8}
                     align="stretch"
@@ -168,10 +218,11 @@ function AIChatbot() {
                     mb={4}
                 >
                     <Heading as="h1" size="lg" textAlign="center" color="#00366d">
-                        AI Chatbot
+                        Meet CareBuddy
                     </Heading>
                     <Text fontSize={{ base: "sm", md: "md" }} textAlign="center" color="#335d8f">
-                        How can I help you today? Type your question below.
+                        CareBuddy is your friendly AI-powered assistant here to help with your healthcare-related
+                        questions. Type your question below and get helpful, personalized responses.
                     </Text>
                 </VStack>
 
@@ -202,7 +253,7 @@ function AIChatbot() {
                                 <Box style={styles.section}>
                                     <Flex align="center" mb={2}>
                                         <Icon as={FaRobot} color="purple.700" mr={2} />
-                                        <Text style={styles.sectionTitle}>AI Chatbot:</Text>
+                                        <Text style={styles.sectionTitle}>CareBuddy:</Text>
                                     </Flex>
                                     <Text fontSize="lg">{item.response}</Text>
                                 </Box>
@@ -214,75 +265,50 @@ function AIChatbot() {
                 {/* User Input at the Bottom */}
                 <Box
                     as="form"
+                    onSubmit={(e) => e.preventDefault()}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                     width={{ base: "95%", md: "90%", lg: "80%" }}
                     maxWidth="1200px"
                     mx="auto"
                     mt={4}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
                     padding="1.5rem"
                     bg="rgba(255, 255, 255, 0.8)"
                     borderRadius="md"
                     boxShadow="0px 2px 8px rgba(0, 0, 0, 0.2)"
                 >
-                    {!awaitingDetails ? (
-                        <>
-                            <Input
-                                placeholder="Type your question here..."
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                bg="#F9FAFB"
-                                borderRadius="md"
-                                size="md"
-                                width="100%"
-                                maxWidth="700px"
-                                mr={4}
-                                disabled={loading}
-                            />
-                            <Button
-                                bg="#003366"
-                                color="white"
-                                _hover={{ bg: "#002244" }}
-                                fontSize="md"
-                                paddingX="2rem"
-                                paddingY="1.5rem"
-                                borderRadius="md"
-                                onClick={handleInitialSubmit}
-                                isLoading={loading}
-                            >
-                                Submit
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Textarea
-                                placeholder="Provide additional details here..."
-                                value={additionalDetails}
-                                onChange={(e) => setAdditionalDetails(e.target.value)}
-                                bg="#F9FAFB"
-                                borderRadius="md"
-                                size="md"
-                                width="100%"
-                                maxWidth="700px"
-                                mr={4}
-                                disabled={loading}
-                            />
-                            <Button
-                                bg="#003366"
-                                color="white"
-                                _hover={{ bg: "#002244" }}
-                                fontSize="md"
-                                paddingX="2rem"
-                                paddingY="1.5rem"
-                                borderRadius="md"
-                                onClick={handleDetailsSubmit}
-                                isLoading={loading}
-                            >
-                                Submit
-                            </Button>
-                        </>
-                    )}
+                    <Input
+                        placeholder="Type your question here..."
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        bg="#F9FAFB"
+                        borderRadius="md"
+                        size="md"
+                        width="100%"
+                        maxWidth="700px"
+                        mr={4}
+                        disabled={loading}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmit();
+                            }
+                        }}
+                    />
+                    <Button
+                        bg="#003366"
+                        color="white"
+                        _hover={{ bg: "#002244" }}
+                        fontSize="md"
+                        paddingX="2rem"
+                        paddingY="1.5rem"
+                        borderRadius="md"
+                        onClick={handleSubmit}
+                        isLoading={loading}
+                    >
+                        Submit
+                    </Button>
                 </Box>
             </Box>
         </ChakraProvider>
