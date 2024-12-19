@@ -15,7 +15,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { FaHeartbeat, FaChartLine, FaLightbulb, FaUserShield } from "react-icons/fa";
+import { FaHeartbeat, FaChartLine, FaLightbulb, FaUserShield, FaArrowLeft } from "react-icons/fa";
 import Footer from "./Footer"; // Footer component
 
 const theme = extendTheme({
@@ -206,6 +206,7 @@ const AboutUs = () => {
           borderWidth="2px"
           _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
           transition="all 0.3s"
+          leftIcon={<FaArrowLeft />}
         >
           Back to Home
         </Button>

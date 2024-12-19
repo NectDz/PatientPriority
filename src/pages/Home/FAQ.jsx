@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer"; // Footer component
+import {FaArrowLeft} from "react-icons/fa";
 import {
   FaInfoCircle,
   FaPhoneAlt,
@@ -173,6 +174,7 @@ const FAQ = () => {
         borderWidth="2px"
         _hover={{ bg: "#4d7098", boxShadow: "2xl" }}
         transition="all 0.3s"
+        leftIcon={<FaArrowLeft />}
       >
         Back to Home
       </Button>

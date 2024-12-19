@@ -727,7 +727,7 @@ function PatientProfile() {
             </Flex>
           </Box>
 
-          {/* Recent Medications History */}
+          {/* Recent Medications */}
           <Heading
             fontSize="xl"
             color="#00366d"
@@ -735,9 +735,9 @@ function PatientProfile() {
             mb={4}
             textAlign="center"
           >
-            Recent Medications History
+            Recent Medications
           </Heading>
-          <List spacing={1} color="#335d8f">
+          <List spacing={1} color="#335d8f" styleType="disc" pl={4}>
             {patient.medications && Object.keys(patient.medications).length > 0 ? (
               Object.values(patient.medications).map((med, index) => (
                 <ListItem key={index}>
