@@ -153,12 +153,12 @@ function RemindersAndAppointments() {
           _hover={{ boxShadow: "2xl" }}
         >
           <Heading as="h1" size="lg" textAlign="center" color="#00366d">
-            Reminders and Appointments
+            Appointments
           </Heading>
           <Divider />
 
           {/* Reminders */}
-          <Box>
+          {/* <Box>
             <Heading as="h2" size="md" color="#00366d" mb={2}>
               Reminders
             </Heading>
@@ -169,7 +169,7 @@ function RemindersAndAppointments() {
                 <Text>- Submit lab results to the online portal</Text>
               </>
             )}
-          </Box>
+          </Box> */}
 
           <Divider />
 

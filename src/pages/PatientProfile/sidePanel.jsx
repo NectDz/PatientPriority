@@ -250,7 +250,7 @@ const SidePanel = () => {
         >
           <FaCalendarAlt />
           <Text fontWeight="bold" _hover={{ textDecoration: "none" }}>
-            Reminders & Appointments
+            Appointments
           </Text>
         </HStack>
 
