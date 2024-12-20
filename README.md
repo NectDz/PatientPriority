@@ -16,10 +16,23 @@ Ensure you have the following installed:
 - [Node.js (v18+)](https://nodejs.org/) and npm (comes with Node)
 - [Vite](https://vitejs.dev/)
 - [Firebase CLI](https://firebase.google.com/docs/cli)
+- [FFMPEG] (https://www.ffmpeg.org/download.html)
   
 ### API Keys & Environment Setup
-- **Firebase**: Create a Firebase project and obtain your Firebase configuration details.
-- **OpenAI**: Sign up and get an API key for using ChatGPT.
-- **Gemini Whisper**: Get the Gemini Whisper API key for transcription (contact Google for access).
+- **Gemini AI**: Get the Gemini API key for transcription (contact Google for access).
+
+## Server Folder Installation
+Go to the Server Folder and do
+
+Download OpenAI Whisper Model: ** pip install git+https://github.com/openai/whisper.git **
+** npm install **
+
+## Src Folder Installation
+** npm install **
+
+## Run the Web App
+
+** npm run dev ** 
+
 
 Create a `.env` file at the root of the project with our env variables which we can give to you if you want :)
